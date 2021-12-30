@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "FileRenamer (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "FileRenamer (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
