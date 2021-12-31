@@ -76,7 +76,17 @@ public sealed class Test_RemoveAction
 	[TestCase(neverForget, 0, 17, "never forget kindnesses")]
 	public void Test8(string input, int startIndex, int count, string expected)
 	{
-		Test(expected, input, startIndex, count);
+		Assert.AreEqual(expected, new RemoveAction(new FixedIndexFinder(startIndex), count).Run(input));
+		Assert.Pass();
+	}
+
+	[Test]
+	[TestCase(quickBrownFox, -2, "the quick brown fox jumps over the lazy do")]
+	[TestCase(quickBrownFox, -3, "the quick brown fox jumps over the lazy d")]
+	[TestCase(quickBrownFox, -5, "the quick brown fox jumps over the lazy")]
+	public void Test9(string input, int count, string expected)
+	{
+		Assert.AreEqual(expected, new RemoveAction(new EndIndexFinder(), count).Run(input));
 		Assert.Pass();
 	}
 
@@ -84,10 +94,5 @@ public sealed class Test_RemoveAction
 	private static void Test(string expected, string input, IIndexFinder startIndexFinder, IIndexFinder endIndexFinder)
 	{
 		Assert.AreEqual(expected, new RemoveAction(startIndexFinder, endIndexFinder).Run(input));
-	}
-
-	private static void Test(string expected, string input, int startIndex, int count)
-	{
-		Assert.AreEqual(expected, new RemoveAction(new FixedIndexFinder(startIndex), count).Run(input));
 	}
 }
