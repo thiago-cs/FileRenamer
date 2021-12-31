@@ -168,4 +168,54 @@ public class FindIndexTests
 		Assert.AreEqual(-1, new SubstringIndexFinder(".", false).FindIn(neverForget));
 		Assert.Pass();
 	}
+
+	[Test]
+	public void FileExtensionIndexFinderTest1()
+	{
+		const string fileName = "new document.txt";
+		const int expected = 12;
+
+		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
+		Assert.Pass();
+	}
+
+	[Test]
+	public void FileExtensionIndexFinderTest2()
+	{
+		const string fileName = "savefile";
+		const int expected = -1;
+
+		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
+		Assert.Pass();
+	}
+
+	[Test]
+	public void FileExtensionIndexFinderTest3()
+	{
+		const string fileName = "area.effect";
+		const int expected = 4;
+
+		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
+		Assert.Pass();
+	}
+
+	[Test]
+	public void FileExtensionIndexFinderTest4()
+	{
+		const string fileName = "using .NET right now";
+		const int expected = -1;
+
+		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
+		Assert.Pass();
+	}
+
+	[Test]
+	public void FileExtensionIndexFinderTest()
+	{
+		const string fileName = "using .NET_right-now";
+		const int expected = 6;
+
+		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
+		Assert.Pass();
+	}
 }
