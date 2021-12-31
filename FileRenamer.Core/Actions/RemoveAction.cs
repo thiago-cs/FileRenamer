@@ -33,7 +33,7 @@ public sealed class RemoveAction : RenameActionBase
 		// 1.2. 
 		int startIndex = startIndexFinder.FindIn(input);
 
-		if (startIndex < 0 || input.Length <= startIndex)
+		if (startIndex < 0 || input.Length < startIndex)
 			return input;
 
 		// 1.3. 
@@ -41,9 +41,15 @@ public sealed class RemoveAction : RenameActionBase
 
 		if (endIndexFinder == null)
 		{
-			endIndex = startIndex <= int.MaxValue - count
-				? startIndex + count
-				: int.MaxValue;
+			if (count < 0)
+			{
+				endIndex = startIndex;
+				startIndex += count;
+			}
+			else
+				endIndex = startIndex <= int.MaxValue - count
+					? startIndex + count
+					: int.MaxValue;
 		}
 		else
 		{
