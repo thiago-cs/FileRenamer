@@ -86,135 +86,32 @@ public class Test_FindIndex
 	}
 
 	[Test]
-	public void SubstringIndexFinderTest1()
+	[TestCase(quickBrownFox, "fox", false, 19)]
+	[TestCase(quickBrownFox, "dog", true, 40)]
+	[TestCase(fiveBoxingWizards, "quick", true, 29)]
+	[TestCase(fiveBoxingWizards, "quick", false, 34)]
+	[TestCase(loremIpsum, "r", true, 2)]
+	[TestCase(loremIpsum, "Lorem", true, 0)]
+	[TestCase(loremIpsum, "ipsum.", false, 118)]
+	[TestCase(loremIpsum, "lorem", true, -1)]
+	[TestCase(loremIpsum, "lorem", false, -1)]
+	[TestCase(neverForget, "never", true, 17)]
+	[TestCase(neverForget, "never", false, 22)]
+	[TestCase(neverForget, ".", false, -1)]
+	public void SubstringIndexFinderTest(string input, string reference, bool isBefore, int expected)
 	{
-		Assert.AreEqual(19, new SubstringIndexFinder("fox", false).FindIn(quickBrownFox));
+		Assert.AreEqual(expected, new SubstringIndexFinder(reference, isBefore).FindIn(input));
 		Assert.Pass();
 	}
 
 	[Test]
-	public void SubstringIndexFinderTest2()
+	[TestCase("new document.txt", 12)]
+	[TestCase("savefile", -1)]
+	[TestCase("area.effect", 4)]
+	[TestCase("using .NET right now", -1)]
+	[TestCase("using .NET_right-now", 6)]
+	public void FileExtensionIndexFinderTest1(string fileName, int expected)
 	{
-		Assert.AreEqual(40, new SubstringIndexFinder("dog", true).FindIn(quickBrownFox));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest3()
-	{
-		Assert.AreEqual(29, new SubstringIndexFinder("quick", true).FindIn(fiveBoxingWizards));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest4()
-	{
-		Assert.AreEqual(34, new SubstringIndexFinder("quick", false).FindIn(fiveBoxingWizards));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest5()
-	{
-		Assert.AreEqual(2, new SubstringIndexFinder("r", true).FindIn(loremIpsum));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest6()
-	{
-		Assert.AreEqual(0, new SubstringIndexFinder("Lorem", true).FindIn(loremIpsum));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest7()
-	{
-		Assert.AreEqual(118, new SubstringIndexFinder("ipsum.", false).FindIn(loremIpsum));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest8()
-	{
-		Assert.AreEqual(-1, new SubstringIndexFinder("lorem", true).FindIn(loremIpsum));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest9()
-	{
-		Assert.AreEqual(-1, new SubstringIndexFinder("lorem", false).FindIn(loremIpsum));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest10()
-	{
-		Assert.AreEqual(17, new SubstringIndexFinder("never", true).FindIn(neverForget));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest11()
-	{
-		Assert.AreEqual(22, new SubstringIndexFinder("never", false).FindIn(neverForget));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void SubstringIndexFinderTest12()
-	{
-		Assert.AreEqual(-1, new SubstringIndexFinder(".", false).FindIn(neverForget));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void FileExtensionIndexFinderTest1()
-	{
-		const string fileName = "new document.txt";
-		const int expected = 12;
-
-		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void FileExtensionIndexFinderTest2()
-	{
-		const string fileName = "savefile";
-		const int expected = -1;
-
-		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void FileExtensionIndexFinderTest3()
-	{
-		const string fileName = "area.effect";
-		const int expected = 4;
-
-		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void FileExtensionIndexFinderTest4()
-	{
-		const string fileName = "using .NET right now";
-		const int expected = -1;
-
-		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void FileExtensionIndexFinderTest()
-	{
-		const string fileName = "using .NET_right-now";
-		const int expected = 6;
-
 		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
 		Assert.Pass();
 	}
