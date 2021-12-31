@@ -66,6 +66,26 @@ public class FindIndexTests
 	}
 
 	[Test]
+	public void FixedIndexFinderTest()
+	{
+		if (testStrings == null)
+		{
+			Assert.Inconclusive($"This test could not be ran because the {nameof(testStrings)} variable is null.");
+			return;
+		}
+
+		System.Random random = new();
+
+		for (int i = 0; i < testStrings.Length; i++)
+		{
+			int r = random.Next(100);
+			Assert.AreEqual(r, new FixedIndexFinder(r).FindIn(testStrings[i]));
+		}
+
+		Assert.Pass();
+	}
+
+	[Test]
 	public void SubstringIndexFinderTest1()
 	{
 		Assert.AreEqual(19, new SubstringIndexFinder("fox", false).FindIn(quickBrownFox));
