@@ -18,48 +18,29 @@ public class Test_InsertAction
 
 
 	[Test]
-	public void Test1()
+	[TestCase(quickBrownFox, "Maybe ")]
+	[TestCase("", "Empty")]
+	public void AddToBeginning(string input, string addend)
 	{
-		Assert.AreEqual("Maybe " + quickBrownFox, 
-						Compute(new BeginingIndexFinder(), "Maybe ", quickBrownFox));
+		Assert.AreEqual(addend + input, new InsertAction(new BeginingIndexFinder(), addend).Run(input));
 		Assert.Pass();
 	}
 
 	[Test]
-	public void Test2()
+	[TestCase(neverForget, ".")]
+	public void AddToEnd(string input, string addend)
 	{
-		Assert.AreEqual("The five boxing wizards do not jump quickly.", 
-						Compute(new SubstringIndexFinder("wizards", false), " do not", fiveBoxingWizards));
+		Assert.AreEqual(input + addend, new InsertAction(new EndIndexFinder(), addend).Run(input));
 		Assert.Pass();
 	}
 
 	[Test]
-	public void Test3()
+	[TestCase(fiveBoxingWizards, "wizards", false, " do not", "The five boxing wizards do not jump quickly.")]
+	[TestCase(loremIpsum, "Etiam ", false, "m", "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam mat sem consectetur, egestas velit vitae, lacinia ipsum.")]
+	[TestCase(quickBrownFox, "dog", true, "old ", "the quick brown fox jumps over the lazy old dog.")]
+	public void InsertInTheMiddle(string input, string reference, bool isBefore, string addend, string expected)
 	{
-		Assert.AreEqual("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam mat sem consectetur, egestas velit vitae, lacinia ipsum.",
-						Compute(new SubstringIndexFinder("Etiam ", false), "m", loremIpsum));
+		Assert.AreEqual(expected, new InsertAction(new SubstringIndexFinder(reference, isBefore), addend).Run(input));
 		Assert.Pass();
-	}
-
-	[Test]
-	public void Test4()
-	{
-		Assert.AreEqual(neverForget + ".",
-						Compute(new EndIndexFinder(), ".", neverForget));
-		Assert.Pass();
-	}
-
-	[Test]
-	public void Test5()
-	{
-		Assert.AreEqual("the quick brown fox jumps over the lazy old dog.",
-						Compute(new SubstringIndexFinder("dog", true), "old ", quickBrownFox));
-		Assert.Pass();
-	}
-
-
-	private static string Compute(IIndexFinder insertIndexFinder, string value, string input)
-	{
-		return new InsertAction(insertIndexFinder, value).Run(input);
 	}
 }
