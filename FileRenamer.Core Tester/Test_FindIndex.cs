@@ -32,7 +32,7 @@ public class Test_FindIndex
 	}
 
 	[Test]
-	public void BeginingIndexFinderTest()
+	public void BeginningIndexFinderTest()
 	{
 		if (testStrings == null)
 		{
@@ -40,7 +40,7 @@ public class Test_FindIndex
 			return;
 		}
 
-		BeginingIndexFinder indexFinder = new();
+		BeginningIndexFinder indexFinder = new();
 
 		for (int i = 0; i < testStrings.Length; i++)
 			Assert.AreEqual(0, indexFinder.FindIn(testStrings[i]));

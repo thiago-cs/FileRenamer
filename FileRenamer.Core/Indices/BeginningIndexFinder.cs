@@ -1,6 +1,6 @@
 ﻿namespace FileRenamer.Core.Indices;
 
-public sealed class BeginingIndexFinder : IIndexFinder
+public sealed class BeginningIndexFinder : IIndexFinder
 {
 	public int FindIn(string input)
 	{

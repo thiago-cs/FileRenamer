@@ -20,7 +20,7 @@ public class Test_RemoveAction
 	[Test]
 	public void Test1()
 	{
-		Test("", quickBrownFox, new BeginingIndexFinder(), new EndIndexFinder());
+		Test("", quickBrownFox, new BeginningIndexFinder(), new EndIndexFinder());
 		Assert.Pass();
 	}
 
@@ -44,7 +44,7 @@ public class Test_RemoveAction
 	[Test]
 	public void Test4()
 	{
-		Test("never forget kindnesses", neverForget, new BeginingIndexFinder(), new SubstringIndexFinder(", ", false));
+		Test("never forget kindnesses", neverForget, new BeginningIndexFinder(), new SubstringIndexFinder(", ", false));
 		Assert.Pass();
 	}
 
