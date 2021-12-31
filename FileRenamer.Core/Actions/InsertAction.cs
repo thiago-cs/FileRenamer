@@ -3,7 +3,7 @@
 
 namespace FileRenamer.Core.Actions;
 
-public class InsertAction : RenameActionBase
+public sealed class InsertAction : RenameActionBase
 {
 	private readonly IIndexFinder insertIndexFinder;
 	private readonly string value;

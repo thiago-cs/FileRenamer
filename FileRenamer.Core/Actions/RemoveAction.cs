@@ -3,7 +3,7 @@
 
 namespace FileRenamer.Core.Actions;
 
-public class RemoveAction : RenameActionBase
+public sealed class RemoveAction : RenameActionBase
 {
 	private readonly IIndexFinder startIndexFinder;
 	private readonly IIndexFinder? endIndexFinder;
