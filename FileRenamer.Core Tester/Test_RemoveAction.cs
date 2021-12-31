@@ -69,9 +69,25 @@ public sealed class Test_RemoveAction
 		Assert.Pass();
 	}
 
+	[Test]
+	[TestCase(loremIpsum, 00, int.MaxValue, "")]
+	[TestCase(loremIpsum, 11, 107, "Lorem ipsum")]
+	[TestCase(loremIpsum, 26, int.MaxValue, "Lorem ipsum dolor sit amet")]
+	[TestCase(neverForget, 0, 17, "never forget kindnesses")]
+	public void Test8(string input, int startIndex, int count, string expected)
+	{
+		Test(expected, input, startIndex, count);
+		Assert.Pass();
+	}
+
 
 	private static void Test(string expected, string input, IIndexFinder startIndexFinder, IIndexFinder endIndexFinder)
 	{
 		Assert.AreEqual(expected, new RemoveAction(startIndexFinder, endIndexFinder).Run(input));
+	}
+
+	private static void Test(string expected, string input, int startIndex, int count)
+	{
+		Assert.AreEqual(expected, new RemoveAction(new FixedIndexFinder(startIndex), count).Run(input));
 	}
 }

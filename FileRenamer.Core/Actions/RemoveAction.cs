@@ -6,13 +6,20 @@ namespace FileRenamer.Core.Actions;
 public class RemoveAction : RenameActionBase
 {
 	private readonly IIndexFinder startIndexFinder;
-	private readonly IIndexFinder endIndexFinder;
+	private readonly IIndexFinder? endIndexFinder;
+	private readonly int count;
 
 
 	public RemoveAction(IIndexFinder startIndexFinder, IIndexFinder endIndexFinder)
 	{
 		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));
 		this.endIndexFinder = endIndexFinder ?? throw new ArgumentNullException(nameof(endIndexFinder));
+	}
+
+	public RemoveAction(IIndexFinder startIndexFinder, int count)
+	{
+		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));
+		this.count = count;
 	}
 
 
@@ -30,10 +37,21 @@ public class RemoveAction : RenameActionBase
 			return input;
 
 		// 1.3. 
-		int endIndex = endIndexFinder.FindIn(input);
+		int endIndex;
 
-		if (endIndex < startIndex)
-			return input;
+		if (endIndexFinder == null)
+		{
+			endIndex = startIndex <= int.MaxValue - count
+				? startIndex + count
+				: int.MaxValue;
+		}
+		else
+		{
+			endIndex = endIndexFinder.FindIn(input);
+
+			if (endIndex < startIndex)
+				return input;
+		}
 
 
 		// 2. 
