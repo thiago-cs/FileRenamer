@@ -10,6 +10,8 @@ public sealed class FixedIndexFinder : IIndexFinder
 		index = value;
 	}
 
+	public static implicit operator FixedIndexFinder(int value) => new(value);
+
 
 	public int FindIn(string input)
 	{
