@@ -5,7 +5,7 @@ using FileRenamer.Core.Actions;
 
 namespace FileRenamer.Core_Tester;
 
-public class Test_RemoveAction
+public sealed class Test_RemoveAction
 {
 	#region Fields
 

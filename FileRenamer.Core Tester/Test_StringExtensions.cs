@@ -1,12 +1,10 @@
 using NUnit.Framework;
-using FileRenamer.Core.Indices;
-using FileRenamer.Core.Actions;
 using FileRenamer.Core.Extensions;
 
 
 namespace FileRenamer.Core_Tester;
 
-public class Test_StringExtensions
+public sealed class Test_StringExtensions
 {
 	private const string text1 = "a tale of two cities";
 	private const string text2 = "gROWL to the rescue";

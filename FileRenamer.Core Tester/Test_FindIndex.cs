@@ -4,7 +4,7 @@ using FileRenamer.Core.Indices;
 
 namespace FileRenamer.Core_Tester;
 
-public class Test_FindIndex
+public sealed class Test_FindIndex
 {
 	#region Fields
 
