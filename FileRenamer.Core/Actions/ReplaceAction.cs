@@ -32,7 +32,7 @@ public sealed class ReplaceAction : RenameActionBase
 				if (ignoreCase)
 					regexOptions |= RegexOptions.IgnoreCase;
 
-				regex = new Regex(oldString, regexOptions);
+				regex = new(oldString, regexOptions);
 			}
 
 			return regex.Replace(input, newString ?? "");

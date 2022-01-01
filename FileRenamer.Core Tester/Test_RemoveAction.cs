@@ -27,7 +27,7 @@ public sealed class Test_RemoveAction
 	[Test]
 	public void Test2()
 	{
-		Test("The five boxing wizards", fiveBoxingWizards, new SubstringIndexFinder("wizards", false, false), new EndIndexFinder());
+		Test("The five boxing wizards", fiveBoxingWizards, new SubstringIndexFinder("wizards", false, false, false), new EndIndexFinder());
 		Assert.Pass();
 	}
 
@@ -36,36 +36,36 @@ public sealed class Test_RemoveAction
 	{
 		Test("Lorem ipsum dolor sit amet. Etiam at sem consectetur, egestas velit vitae, lacinia ipsum.",
 			loremIpsum,
-			new SubstringIndexFinder(", ", true, false),
-			new SubstringIndexFinder(".", true, false));
+			new SubstringIndexFinder(", ", true, false, false),
+			new SubstringIndexFinder(".", true, false, false));
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test4()
 	{
-		Test("never forget kindnesses", neverForget, new BeginningIndexFinder(), new SubstringIndexFinder(", ", false, false));
+		Test("never forget kindnesses", neverForget, new BeginningIndexFinder(), new SubstringIndexFinder(", ", false, false, false));
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test5()
 	{
-		Test(quickBrownFox, quickBrownFox, new SubstringIndexFinder("dog", true, false), new SubstringIndexFinder("fox", true, false));
+		Test(quickBrownFox, quickBrownFox, new SubstringIndexFinder("dog", true, false, false), new SubstringIndexFinder("fox", true, false, false));
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test6()
 	{
-		Test(loremIpsum, loremIpsum, new SubstringIndexFinder("Hello", true, false), new SubstringIndexFinder(".", true, false));
+		Test(loremIpsum, loremIpsum, new SubstringIndexFinder("Hello", true, false, false), new SubstringIndexFinder(".", true, false, false));
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test7()
 	{
-		Test(loremIpsum, loremIpsum, new SubstringIndexFinder("o", true, false), new SubstringIndexFinder("World!", true, false));
+		Test(loremIpsum, loremIpsum, new SubstringIndexFinder("o", true, false, false), new SubstringIndexFinder("World!", true, false, false));
 		Assert.Pass();
 	}
 

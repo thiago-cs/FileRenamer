@@ -86,27 +86,30 @@ public sealed class Test_FindIndex
 	}
 
 	[Test]
-	[TestCase(quickBrownFox, "fox", false, false, 19)]
-	[TestCase(quickBrownFox, "Fox", false, true, 19)]
-	[TestCase(quickBrownFox, "Fox", false, false, -1)]
-	[TestCase(quickBrownFox, "dog", true, false, 40)]
-	[TestCase(quickBrownFox, "Dog", true, true, 40)]
-	[TestCase(quickBrownFox, "Dog", true, false, -1)]
-	[TestCase(fiveBoxingWizards, "quick", true, false, 29)]
-	[TestCase(fiveBoxingWizards, "quick", false, false, 34)]
-	[TestCase(loremIpsum, "r", true, false, 2)]
-	[TestCase(loremIpsum, "Lorem", true, false, 0)]
-	[TestCase(loremIpsum, "lorem", false, false, -1)]
-	[TestCase(loremIpsum, "lorem", false, true, 5)]
-	[TestCase(loremIpsum, "lorem", true, false, -1)]
-	[TestCase(loremIpsum, "lorem", true, true, 0)]
-	[TestCase(loremIpsum, "ipsum.", false, false, 118)]
-	[TestCase(neverForget, "never", true, false, 17)]
-	[TestCase(neverForget, "never", false, false, 22)]
-	[TestCase(neverForget, ".", false, false, -1)]
-	public void SubstringIndexFinderTest(string input, string reference, bool isBefore, bool ignoreCase, int expected)
+	[TestCase(quickBrownFox, "fox", false, false, false, 19)]
+	[TestCase(quickBrownFox, "Fox", false, true, false, 19)]
+	[TestCase(quickBrownFox, "Fox", false, false, false, -1)]
+	[TestCase(quickBrownFox, "dog", true, false, false, 40)]
+	[TestCase(quickBrownFox, "Dog", true, true, false, 40)]
+	[TestCase(quickBrownFox, "Dog", true, false, false, -1)]
+	[TestCase(fiveBoxingWizards, "quick", true, false, false, 29)]
+	[TestCase(fiveBoxingWizards, "quick", false, false, false, 34)]
+	[TestCase(loremIpsum, "r", true, false, false, 2)]
+	[TestCase(loremIpsum, "Lorem", true, false, false, 0)]
+	[TestCase(loremIpsum, "lorem", false, false, false, -1)]
+	[TestCase(loremIpsum, "lorem", false, true, false, 5)]
+	[TestCase(loremIpsum, "lorem", true, false, false, -1)]
+	[TestCase(loremIpsum, "lorem", true, true, false, 0)]
+	[TestCase(loremIpsum, "ipsum.", false, false, false, 118)]
+	[TestCase(neverForget, "never", true, false, false, 17)]
+	[TestCase(neverForget, "never", false, false, false, 22)]
+	[TestCase(neverForget, ".", false, false, false, -1)]
+	// Tests using Regex:
+	[TestCase(neverForget, ".", false, false, true, 1)]
+	[TestCase(loremIpsum, "[thiago]{3,}", true, true, true, 58)]
+	public void SubstringIndexFinderTest(string input, string reference, bool isBefore, bool ignoreCase, bool useRegex, int expected)
 	{
-		Assert.AreEqual(expected, new SubstringIndexFinder(reference, isBefore, ignoreCase).FindIn(input));
+		Assert.AreEqual(expected, new SubstringIndexFinder(reference, isBefore, ignoreCase, useRegex).FindIn(input));
 		Assert.Pass();
 	}
 
