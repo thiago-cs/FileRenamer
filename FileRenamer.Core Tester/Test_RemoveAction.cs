@@ -27,7 +27,7 @@ public sealed class Test_RemoveAction
 	[Test]
 	public void Test2()
 	{
-		Test("The five boxing wizards", fiveBoxingWizards, new SubstringIndexFinder("wizards", false), new EndIndexFinder());
+		Test("The five boxing wizards", fiveBoxingWizards, new SubstringIndexFinder("wizards", false, false), new EndIndexFinder());
 		Assert.Pass();
 	}
 
@@ -36,36 +36,36 @@ public sealed class Test_RemoveAction
 	{
 		Test("Lorem ipsum dolor sit amet. Etiam at sem consectetur, egestas velit vitae, lacinia ipsum.",
 			loremIpsum,
-			new SubstringIndexFinder(", ", true),
-			new SubstringIndexFinder(".", true));
+			new SubstringIndexFinder(", ", true, false),
+			new SubstringIndexFinder(".", true, false));
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test4()
 	{
-		Test("never forget kindnesses", neverForget, new BeginningIndexFinder(), new SubstringIndexFinder(", ", false));
+		Test("never forget kindnesses", neverForget, new BeginningIndexFinder(), new SubstringIndexFinder(", ", false, false));
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test5()
 	{
-		Test(quickBrownFox, quickBrownFox, new SubstringIndexFinder("dog", true), new SubstringIndexFinder("fox", true));
+		Test(quickBrownFox, quickBrownFox, new SubstringIndexFinder("dog", true, false), new SubstringIndexFinder("fox", true, false));
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test6()
 	{
-		Test(loremIpsum, loremIpsum, new SubstringIndexFinder("Hello", true), new SubstringIndexFinder(".", true));
+		Test(loremIpsum, loremIpsum, new SubstringIndexFinder("Hello", true, false), new SubstringIndexFinder(".", true, false));
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test7()
 	{
-		Test(loremIpsum, loremIpsum, new SubstringIndexFinder("o", true), new SubstringIndexFinder("World!", true));
+		Test(loremIpsum, loremIpsum, new SubstringIndexFinder("o", true, false), new SubstringIndexFinder("World!", true, false));
 		Assert.Pass();
 	}
 

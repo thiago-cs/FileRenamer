@@ -86,21 +86,21 @@ public sealed class Test_FindIndex
 	}
 
 	[Test]
-	[TestCase(quickBrownFox, "fox", false, 19)]
-	[TestCase(quickBrownFox, "dog", true, 40)]
-	[TestCase(fiveBoxingWizards, "quick", true, 29)]
-	[TestCase(fiveBoxingWizards, "quick", false, 34)]
-	[TestCase(loremIpsum, "r", true, 2)]
-	[TestCase(loremIpsum, "Lorem", true, 0)]
-	[TestCase(loremIpsum, "ipsum.", false, 118)]
-	[TestCase(loremIpsum, "lorem", true, -1)]
-	[TestCase(loremIpsum, "lorem", false, -1)]
-	[TestCase(neverForget, "never", true, 17)]
-	[TestCase(neverForget, "never", false, 22)]
-	[TestCase(neverForget, ".", false, -1)]
-	public void SubstringIndexFinderTest(string input, string reference, bool isBefore, int expected)
+	[TestCase(quickBrownFox, "fox", false, false, 19)]
+	[TestCase(quickBrownFox, "dog", true, false, 40)]
+	[TestCase(fiveBoxingWizards, "quick", true, false, 29)]
+	[TestCase(fiveBoxingWizards, "quick", false, false, 34)]
+	[TestCase(loremIpsum, "r", true, false, 2)]
+	[TestCase(loremIpsum, "Lorem", true, false, 0)]
+	[TestCase(loremIpsum, "ipsum.", false, false, 118)]
+	[TestCase(loremIpsum, "lorem", true, false, -1)]
+	[TestCase(loremIpsum, "lorem", false, false, -1)]
+	[TestCase(neverForget, "never", true, false, 17)]
+	[TestCase(neverForget, "never", false, false, 22)]
+	[TestCase(neverForget, ".", false, false, -1)]
+	public void SubstringIndexFinderTest(string input, string reference, bool isBefore, bool ignoreCase, int expected)
 	{
-		Assert.AreEqual(expected, new SubstringIndexFinder(reference, isBefore).FindIn(input));
+		Assert.AreEqual(expected, new SubstringIndexFinder(reference, isBefore, ignoreCase).FindIn(input));
 		Assert.Pass();
 	}
 

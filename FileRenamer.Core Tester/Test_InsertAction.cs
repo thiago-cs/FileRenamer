@@ -40,7 +40,7 @@ public sealed class Test_InsertAction
 	[TestCase(quickBrownFox, "dog", true, "old ", "the quick brown fox jumps over the lazy old dog.")]
 	public void InsertInTheMiddle(string input, string reference, bool isBefore, string addend, string expected)
 	{
-		Assert.AreEqual(expected, new InsertAction(new SubstringIndexFinder(reference, isBefore), addend).Run(input));
+		Assert.AreEqual(expected, new InsertAction(new SubstringIndexFinder(reference, isBefore, false), addend).Run(input));
 		Assert.Pass();
 	}
 }
