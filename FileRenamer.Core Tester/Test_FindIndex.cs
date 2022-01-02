@@ -105,8 +105,8 @@ public sealed class Test_FindIndex
 	[TestCase(neverForget, "never", false, false, false, 22)]
 	[TestCase(neverForget, ".", false, false, false, -1)]
 	// Tests using Regex:
-	[TestCase(neverForget, ".", false, false, true, 1)]
-	[TestCase(loremIpsum, "[thiago]{3,}", true, true, true, 58)]
+	[TestCase(neverForget, /* language=regex */ ".", false, false, true, 1)]
+	[TestCase(loremIpsum,  /* language=regex */ "[thiago]{3,}", true, true, true, 58)]
 	public void SubstringIndexFinderTest(string input, string reference, bool isBefore, bool ignoreCase, bool useRegex, int expected)
 	{
 		Assert.AreEqual(expected, new SubstringIndexFinder(reference, isBefore, ignoreCase, useRegex).FindIn(input));
