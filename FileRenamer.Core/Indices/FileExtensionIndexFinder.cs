@@ -2,6 +2,15 @@
 
 public sealed class FileExtensionIndexFinder : IIndexFinder
 {
+	public IndexFinderDescription Description { get; private set; }
+
+
+	public FileExtensionIndexFinder()
+	{
+		Description = new("before", "file's extension");
+	}
+
+
 	public int FindIn(string input)
 	{
 		for (int i = input.Length - 1; i >= 0; i--)

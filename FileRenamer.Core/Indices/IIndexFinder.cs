@@ -6,6 +6,12 @@
 public interface IIndexFinder
 {
 	/// <summary>
+	/// Gets this objects description to be used to compose a <see cref="Actions.RenameActionBase"/>'s own description.
+	/// </summary>
+	public IndexFinderDescription Description { get; }
+
+
+	/// <summary>
 	/// Finds an index within the specified string according to the logic implemented in a derived class.
 	/// </summary>
 	/// <param name="input">A <see cref="string"/>.</param>

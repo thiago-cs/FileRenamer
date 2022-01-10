@@ -12,12 +12,19 @@ public sealed class SubstringIndexFinder : IIndexFinder
 	private Regex? regex;
 
 
+	public IndexFinderDescription Description { get; private set; }
+
+
 	public SubstringIndexFinder(string value, bool before, bool ignoreCase, bool useRegex)
 	{
 		this.value = value;
 		this.before = before;
 		this.ignoreCase = ignoreCase;
 		this.useRegex = useRegex;
+
+		string startPrepositon = before ? "before" : "after";
+		string description = useRegex ? @$"the expression ""{value}""" : @$"""{value}""";
+		Description = new(startPrepositon, description);
 	}
 
 
