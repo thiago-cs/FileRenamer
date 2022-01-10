@@ -1,36 +1,13 @@
 using NUnit.Framework;
 using FileRenamer.Core.Indices;
+using static FileRenamer.Core_Tester.Resources;
 
 
 namespace FileRenamer.Core_Tester;
 
+[TestFixture]
 public sealed class Test_FindIndex
 {
-	#region Fields
-
-	private const string quickBrownFox = "the quick brown fox jumps over the lazy dog.";
-	private const string fiveBoxingWizards = "The five boxing wizards jump quickly.";
-	private const string loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam at sem consectetur, egestas velit vitae, lacinia ipsum.";
-	private const string neverForget = "Forget injuries, never forget kindnesses";
-
-	private string[]? testStrings;
-
-	#endregion
-
-
-	[SetUp]
-	public void Setup()
-	{
-		testStrings = new[]
-			{
-				string.Empty,
-				loremIpsum,
-				quickBrownFox,
-				fiveBoxingWizards,
-				neverForget,
-			};
-	}
-
 	[Test]
 	public void BeginningIndexFinderTest()
 	{
@@ -104,7 +81,6 @@ public sealed class Test_FindIndex
 	[TestCase(neverForget, "never", true, false, false, 17)]
 	[TestCase(neverForget, "never", false, false, false, 22)]
 	[TestCase(neverForget, ".", false, false, false, -1)]
-	// Tests using Regex:
 	[TestCase(neverForget, /* language=regex */ ".", false, false, true, 1)]
 	[TestCase(loremIpsum,  /* language=regex */ "[thiago]{3,}", true, true, true, 58)]
 	public void SubstringIndexFinderTest(string input, string reference, bool isBefore, bool ignoreCase, bool useRegex, int expected)

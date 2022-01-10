@@ -6,6 +6,7 @@ using FileRenamer.Core.Extensions;
 
 namespace FileRenamer.Core_Tester;
 
+[TestFixture]
 public sealed class Test_ToCaseAction
 {
 	[Test]

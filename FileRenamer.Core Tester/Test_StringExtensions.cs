@@ -1,34 +1,29 @@
 using NUnit.Framework;
 using FileRenamer.Core.Extensions;
+using static FileRenamer.Core_Tester.Resources;
 
 
 namespace FileRenamer.Core_Tester;
 
+[TestFixture]
 public sealed class Test_StringExtensions
 {
-	private const string text1 = "a tale of two cities";
-	private const string text2 = "gROWL to the rescue";
-	private const string text3 = "sports and MLB baseball";
-	private const string text4 = "UNICEF and children";
-	private const string text5 = "UNICEF AND CHILDREN";
-
-
 	[Test]
-	[TestCase(text1, TextCasing.TitleCase, "A Tale Of Two Cities")]
-	[TestCase(text2, TextCasing.TitleCase, "GROWL To The Rescue")]
-	[TestCase(text3, TextCasing.LowerCase, "sports and mlb baseball")]
-	[TestCase(text3, TextCasing.UpperCase, "SPORTS AND MLB BASEBALL")]
-	[TestCase(text3, TextCasing.SentenceCase, "Sports and MLB baseball")]
-	[TestCase(text3, TextCasing.TitleCase, "Sports And MLB Baseball")]
-	[TestCase(text4, TextCasing.LowerCase, "unicef and children")]
-	[TestCase(text4, TextCasing.UpperCase, "UNICEF AND CHILDREN")]
-	[TestCase(text4, TextCasing.SentenceCase, "UNICEF and children")]
-	[TestCase(text4, TextCasing.TitleCase, "UNICEF And Children")]
-	[TestCase(text5, TextCasing.SentenceCase, "Unicef and children")]
-	[TestCase(text5, TextCasing.TitleCase, "Unicef And Children")]
-	public void Test(string input, TextCasing textCase, string expected)
+	[TestCase(1, TextCasing.TitleCase, "A Tale Of Two Cities")]
+	[TestCase(2, TextCasing.TitleCase, "GROWL To The Rescue")]
+	[TestCase(3, TextCasing.LowerCase, "sports and mlb baseball")]
+	[TestCase(3, TextCasing.UpperCase, "SPORTS AND MLB BASEBALL")]
+	[TestCase(3, TextCasing.SentenceCase, "Sports and MLB baseball")]
+	[TestCase(3, TextCasing.TitleCase, "Sports And MLB Baseball")]
+	[TestCase(4, TextCasing.LowerCase, "unicef and children")]
+	[TestCase(4, TextCasing.UpperCase, "UNICEF AND CHILDREN")]
+	[TestCase(4, TextCasing.SentenceCase, "UNICEF and children")]
+	[TestCase(4, TextCasing.TitleCase, "UNICEF And Children")]
+	[TestCase(5, TextCasing.SentenceCase, "Unicef and children")]
+	[TestCase(5, TextCasing.TitleCase, "Unicef And Children")]
+	public void Test(int textIndex, TextCasing textCase, string expected)
 	{
-		Assert.AreEqual(expected, input.ToCase(textCase));
+		Assert.AreEqual(expected, texts[textIndex - 1].ToCase(textCase));
 		Assert.Pass();
 	}
 }

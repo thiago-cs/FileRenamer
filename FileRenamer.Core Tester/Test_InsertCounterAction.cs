@@ -5,6 +5,7 @@ using FileRenamer.Core.Actions;
 
 namespace FileRenamer.Core_Tester;
 
+[TestFixture]
 public sealed class Test_InsertCounterAction
 {
 	[Test]

@@ -1,22 +1,14 @@
 using NUnit.Framework;
 using FileRenamer.Core.Indices;
 using FileRenamer.Core.Actions;
+using static FileRenamer.Core_Tester.Resources;
 
 
 namespace FileRenamer.Core_Tester;
 
+[TestFixture]
 public sealed class Test_RemoveAction
 {
-	#region Fields
-
-	private const string quickBrownFox = "the quick brown fox jumps over the lazy dog.";
-	private const string fiveBoxingWizards = "The five boxing wizards jump quickly.";
-	private const string loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam at sem consectetur, egestas velit vitae, lacinia ipsum.";
-	private const string neverForget = "Forget injuries, never forget kindnesses";
-
-	#endregion
-
-
 	[Test]
 	public void Test1()
 	{
