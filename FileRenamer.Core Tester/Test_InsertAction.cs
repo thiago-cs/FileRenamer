@@ -14,8 +14,21 @@ public sealed class Test_InsertAction
 	private const string loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam at sem consectetur, egestas velit vitae, lacinia ipsum.";
 	private const string neverForget = "Forget injuries, never forget kindnesses";
 
+	private readonly IIndexFinder[] finders =
+	{
+		new BeginningIndexFinder(),
+		new FixedIndexFinder(3),
+		new SubstringIndexFinder("sunset", true, false, false),
+		new SubstringIndexFinder("dark", false, false, false),
+		new SubstringIndexFinder("(Hi|Hello) kitty", false, false, true),
+		new FileExtensionIndexFinder(),
+		new EndIndexFinder(),
+	};
+
 	#endregion
 
+
+	#region Insertion tests
 
 	[Test]
 	[TestCase(quickBrownFox, "Maybe ")]
@@ -43,4 +56,24 @@ public sealed class Test_InsertAction
 		Assert.AreEqual(expected, new InsertAction(new SubstringIndexFinder(reference, isBefore, false, false), addend).Run(input));
 		Assert.Pass();
 	}
+
+	#endregion
+
+
+	#region Description tests
+
+	[Test]
+	[TestCase(0, "this", @"insert ""this"" at the beginning")]
+	[TestCase(6, "that", @"insert ""that"" at the end")]
+	[TestCase(1, "third", @"insert ""third"" after char. #3")]
+	[TestCase(2, "Jesse", @"insert ""Jesse"" before ""sunset""")]
+	[TestCase(3, "mint", @"insert ""mint"" after ""dark""")]
+	[TestCase(4, "!", @"insert ""!"" after the expression ""(Hi|Hello) kitty""")]
+	[TestCase(5, ".part", @"insert "".part"" before file's extension")]
+	public void TestDescriptionBeginning(int indexFinderIndex, string value, string expected)
+	{
+		Assert.AreEqual(expected, new InsertAction(finders[indexFinderIndex], value).Description);
+	}
+
+	#endregion
 }

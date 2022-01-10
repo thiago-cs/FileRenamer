@@ -13,6 +13,8 @@ public sealed class InsertAction : RenameActionBase
 	{
 		this.insertIndexFinder = insertIndexFinder ?? throw new ArgumentNullException(nameof(insertIndexFinder));
 		this.value = value ?? throw new ArgumentNullException(nameof(value));
+
+		Description = @$"insert ""{this.value}"" {this.insertIndexFinder.Description.ToString(includePreposition: true)}";
 	}
 
 
