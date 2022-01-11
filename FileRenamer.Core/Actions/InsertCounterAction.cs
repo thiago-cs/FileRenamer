@@ -17,6 +17,8 @@ public sealed class InsertCounterAction : RenameActionBase
 		this.startValue = startValue;
 		this.minWidth = minWidth;
 
+		Description = $"insert a {this.minWidth}-char counter starting from {this.startValue} {this.insertIndexFinder.Description.ToString(includePreposition: true)}";
+
 		Reset();
 	}
 

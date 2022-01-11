@@ -87,4 +87,15 @@ public sealed class Test_RemoveAction
 	{
 		Assert.AreEqual(expected, new RemoveAction(startIndexFinder, endIndexFinder).Run(input));
 	}
+
+
+	[Test]
+	[TestCase(0, 5, "remove file name")]
+	[TestCase(0, 6, "remove all characters")]
+	[TestCase(5, 6, "remove file extension")]
+	[TestCase(1, 3, @"remove characters from char. #3 to after ""dark""")]
+	public void TestDescription(int startIndexFinderIndex, int endIndexFinderIndex, string expected)
+	{
+		Assert.AreEqual(expected, new RemoveAction(finders[startIndexFinderIndex], finders[endIndexFinderIndex]).Description);
+	}
 }

@@ -14,9 +14,28 @@ public sealed class ToCaseAction : RenameActionBase
 
 	public ToCaseAction(IIndexFinder startIndexFinder, IIndexFinder endIndexFinder, TextCasing textCase)
 	{
-		this.textCase = textCase;
-		this.endIndexFinder = endIndexFinder;
 		this.startIndexFinder = startIndexFinder;
+		this.endIndexFinder = endIndexFinder;
+		this.textCase = textCase;
+
+		string range = (this.startIndexFinder, this.endIndexFinder) switch
+		{
+			(BeginningIndexFinder, EndIndexFinder) => $"all characters",
+			(BeginningIndexFinder, FileExtensionIndexFinder) => $"file name",
+			(FileExtensionIndexFinder, EndIndexFinder) => $"file extension",
+			_ => $"characters from {this.startIndexFinder.Description.ToString(includePreposition: false)} to {this.endIndexFinder.Description.ToString(includePreposition: false)}",
+		};
+
+		string @case = this.textCase switch
+		{
+			TextCasing.LowerCase => "lowercase",
+			TextCasing.UpperCase => "uppercase",
+			TextCasing.SentenceCase => "sentence case",
+			TextCasing.TitleCase => "title case",
+			_ => this.textCase.ToString(),
+		};
+
+		Description = $"convert {range} to {@case}";
 	}
 
 

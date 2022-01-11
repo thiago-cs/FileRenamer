@@ -29,6 +29,12 @@ public static class Resources
 		"UNICEF AND CHILDREN",
 	};
 
+	public static readonly string[] fileNames =
+	{
+		"new document.txt",
+		"Area.effect",
+	};
+
 
 	// language=regex
 	public const string regex1 = @",[^\.]*(?=,)";

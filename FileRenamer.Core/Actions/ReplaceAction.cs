@@ -18,6 +18,22 @@ public sealed class ReplaceAction : RenameActionBase
 		this.newString = newString;
 		this.ignoreCase = ignoreCase;
 		this.useRegex = useRegex;
+
+		System.Text.StringBuilder sb = new("replace ");
+
+		if (this.useRegex)
+			sb.Append("the expression ");
+
+		sb.Append('"')
+		  .Append(this.oldString)
+		  .Append(@""" with """);
+
+		if (this.newString != null)
+			sb.Append(this.newString);
+
+		sb.Append('"');
+
+		Description = sb.ToString();
 	}
 
 

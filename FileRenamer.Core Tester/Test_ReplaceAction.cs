@@ -16,9 +16,17 @@ public sealed class Test_ReplaceAction
 	[TestCase(fiveBoxingWizards, " ", ".", false, false, "The.five.boxing.wizards.jump.quickly.")]
 	[TestCase(loremIpsum, regex1, null, false, true, "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam at sem consectetur, lacinia ipsum.")]
 	[TestCase(neverForget, regex1, "", false, true, neverForget)]
-	public void Test(string input, string oldString, string newString, bool ignoreCase, bool useRegex, string expected)
+	public void TestRun(string input, string oldString, string newString, bool ignoreCase, bool useRegex, string expected)
 	{
 		Assert.AreEqual(expected, new ReplaceAction(oldString, newString, ignoreCase, useRegex).Run(input));
-		Assert.Pass();
+	}
+
+
+	[Test]
+	[TestCase("fox", "ninja cat", false, @"replace ""fox"" with ""ninja cat""")]
+	[TestCase(regex1, "new text", true, @"replace the expression "",[^\.]*(?=,)"" with ""new text""")]
+	public void TestDescription(string oldString, string newString, bool useRegex, string expected)
+	{
+		Assert.AreEqual(expected, new ReplaceAction(oldString, newString, false, useRegex).Description);
 	}
 }
