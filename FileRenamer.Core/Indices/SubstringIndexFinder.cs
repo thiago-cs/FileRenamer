@@ -22,9 +22,9 @@ public sealed class SubstringIndexFinder : IIndexFinder
 		this.ignoreCase = ignoreCase;
 		this.useRegex = useRegex;
 
-		string startPrepositon = before ? "before" : "after";
+		string prepositon = before ? "before " : "after ";
 		string description = useRegex ? @$"the expression ""{value}""" : @$"""{value}""";
-		Description = new(startPrepositon, description);
+		Description = new(null, prepositon + description);
 	}
 
 
