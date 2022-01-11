@@ -11,7 +11,7 @@ public sealed class FixedIndexFinder : IIndexFinder
 	public FixedIndexFinder(int value)
 	{
 		index = value;
-		Description = new("", $"after char. #{value}");
+		Description = new("after", $"char. #{value}");
 	}
 
 	public static implicit operator FixedIndexFinder(int value) => new(value);
