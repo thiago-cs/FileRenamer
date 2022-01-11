@@ -2,20 +2,20 @@
 
 public sealed class IndexFinderDescription
 {
-	public string StartPrepositon { get; }
-	public string Description { get; }
+	private readonly string? startPrepositon;
+	private readonly string description;
 
 
-	public IndexFinderDescription(string startPrepositon, string description)
+	public IndexFinderDescription(string? startPrepositon, string description)
 	{
-		StartPrepositon = startPrepositon;
-		Description = description;
+		this.startPrepositon = startPrepositon;
+		this.description = description;
 	}
 
 	internal object ToString(bool includePreposition)
 	{
-		return includePreposition && !string.IsNullOrWhiteSpace(StartPrepositon)
-			? $"{StartPrepositon} {Description}"
-			: Description;
+		return includePreposition && !string.IsNullOrWhiteSpace(startPrepositon)
+			? $"{startPrepositon} {description}"
+			: description;
 	}
 }
