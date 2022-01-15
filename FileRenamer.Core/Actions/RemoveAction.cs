@@ -15,15 +15,7 @@ public sealed class RemoveAction : RenameActionBase
 		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));
 		this.endIndexFinder = endIndexFinder ?? throw new ArgumentNullException(nameof(endIndexFinder));
 
-		string range = (this.startIndexFinder, this.endIndexFinder) switch
-		{
-			(BeginningIndexFinder, EndIndexFinder) => $"all characters",
-			(BeginningIndexFinder, FileExtensionIndexFinder) => $"file name",
-			(FileExtensionIndexFinder, EndIndexFinder) => $"file extension",
-			_ => $"characters from {this.startIndexFinder.Description.ToString(includePreposition: false)} to {this.endIndexFinder.Description.ToString(includePreposition: false)}",
-		};
-
-		Description = $"remove {range}";
+		Description = $"remove {Helpers.DescriptionHelper.GetRangeFriendlyName(this.startIndexFinder, this.endIndexFinder)}";
 	}
 
 	public RemoveAction(IIndexFinder startIndexFinder, int count)
