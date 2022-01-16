@@ -21,6 +21,10 @@ public sealed class Test_StringExtensions
 	[TestCase(4, TextCasing.TitleCase, "UNICEF And Children")]
 	[TestCase(5, TextCasing.SentenceCase, "Unicef and children")]
 	[TestCase(5, TextCasing.TitleCase, "Unicef And Children")]
+	[TestCase(1, TextCasing.TitleCaseIgnoreCommonWords, "A Tale of Two Cities")]
+	[TestCase(2, TextCasing.TitleCaseIgnoreCommonWords, "GROWL to the Rescue")]
+	[TestCase(4, TextCasing.TitleCaseIgnoreCommonWords, "UNICEF and Children")]
+	[TestCase(5, TextCasing.TitleCaseIgnoreCommonWords, "Unicef and Children")]
 	public void Test(int textIndex, TextCasing textCase, string expected)
 	{
 		Assert.AreEqual(expected, texts[textIndex - 1].ToCase(textCase));

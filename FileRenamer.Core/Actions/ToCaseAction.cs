@@ -9,7 +9,6 @@ public sealed class ToCaseAction : RenameActionBase
 	private readonly IIndexFinder startIndexFinder;
 	private readonly IIndexFinder endIndexFinder;
 	private readonly TextCasing textCase;
-	//public TextCase Case { get; set; }
 
 
 	public ToCaseAction(IIndexFinder startIndexFinder, IIndexFinder endIndexFinder, TextCasing textCase)
@@ -32,6 +31,7 @@ public sealed class ToCaseAction : RenameActionBase
 			TextCasing.UpperCase => "uppercase",
 			TextCasing.SentenceCase => "sentence case",
 			TextCasing.TitleCase => "title case",
+			TextCasing.TitleCaseIgnoreCommonWords => "title case (ignore common words)",
 			_ => this.textCase.ToString(),
 		};
 
