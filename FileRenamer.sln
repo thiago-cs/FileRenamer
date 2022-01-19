@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileRenamer", "FileRenamer\FileRenamer.csproj", "{9021EABC-2845-49D4-9AF6-02061669BC98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileRenamer", "FileRenamer\FileRenamer.csproj", "{9021EABC-2845-49D4-9AF6-02061669BC98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileRenamer.Core Tester", "FileRenamer.Core Tester\FileRenamer.Core Tester.csproj", "{D0FFB052-94E6-43BA-B029-22410B1CF3D5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileRenamer.Core Tester", "FileRenamer.Core Tester\FileRenamer.Core Tester.csproj", "{D0FFB052-94E6-43BA-B029-22410B1CF3D5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileRenamer.Core", "FileRenamer.Core\FileRenamer.Core.csproj", "{6AB7BF7F-7C6D-4F26-BF5F-06867BC0A792}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileRenamer.Core", "FileRenamer.Core\FileRenamer.Core.csproj", "{6AB7BF7F-7C6D-4F26-BF5F-06867BC0A792}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
