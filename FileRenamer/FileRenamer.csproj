@@ -37,4 +37,10 @@
   <ItemGroup>
     <ProjectReference Include="..\FileRenamer.Core\FileRenamer.Core.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Page Update="Styles\_Colors.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
 </Project>
