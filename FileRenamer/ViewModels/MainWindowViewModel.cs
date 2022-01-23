@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FileRenamer.Core;
+﻿using FileRenamer.Core;
 
 
-namespace FileRenamer;
+namespace FileRenamer.ViewModels;
 
 public sealed class MainWindowViewModel : Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObject
 {
