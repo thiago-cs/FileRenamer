@@ -45,5 +45,8 @@
     <Page Update="Styles\_Thickness.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="UserControls\ToolbarGroup.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>
