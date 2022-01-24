@@ -4,20 +4,56 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d"
-	xmlns:local="using:FileRenamer"
-	xmlns:core="using:FileRenamer.Core" >
+	xmlns:uc="using:FileRenamer.UserControls"
+	mc:Ignorable="d" >
 
-	<Grid>
-		<Grid.Resources>
+	<Grid Margin="{StaticResource XSmallLeftTopRightBottomMargin}" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
 
-			<DataTemplate x:Key="ProjectActionsDataTemplate" x:DataType="core:Project" >
-				<ListBox  >
+		<Grid Grid.Column="0" MinWidth="500" MaxWidth="800" RowSpacing="{StaticResource MediumSpacing}" >
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
 
-				</ListBox>
-			</DataTemplate>
+			<uc:Toolbar Grid.Row="0" >
+				<uc:ToolbarGroup Header="Project" >
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind NewProjectCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind LoadProjectCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind SaveProjectCommand}" />
+				</uc:ToolbarGroup>
+				<uc:ToolbarGroup Header="Management" >
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind MoveUpActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind MoveDownActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind EditActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind DuplicateActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind RemoveActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind RemoveAllActionCommand}" />
+				</uc:ToolbarGroup>
+				<uc:ToolbarGroup Header="Actions" >
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddInsertActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddRemoveActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddInsertCounterActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddReplaceActionCommand}" />
+					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddConvertCaseActionCommand}" />
+				</uc:ToolbarGroup>
+			</uc:Toolbar>
 
-		</Grid.Resources>
+			<!-- Action list view -->
+			<ListView Grid.Row="1" CornerRadius="4" Background="#3888" 
+					  ItemsSource="{x:Bind ViewModel.Project.Actions, Mode=OneWay}" SelectedItem="{x:Bind ViewModel.SelectedAction, Mode=TwoWay}" >
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<CheckBox Margin="{StaticResource XSmallLeftMargin}" FontSize="12" VerticalContentAlignment="Center"
+								  IsChecked="{Binding IsEnabled, Mode=TwoWay}" Content="{Binding Description}" />
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ListView>
+
+		</Grid>
 
 	</Grid>
 </Window>
