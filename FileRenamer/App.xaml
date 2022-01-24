@@ -12,6 +12,7 @@
 				<!-- Other merged dictionaries here -->
 				<ResourceDictionary Source="/Styles/_Colors.xaml" />
 				<ResourceDictionary Source="/Styles/_Thickness.xaml" />
+				<ResourceDictionary Source="/Themes/Generic.xaml" />
 
 			</ResourceDictionary.MergedDictionaries>
 
