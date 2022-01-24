@@ -39,4 +39,41 @@
 
 	<!--#endregion-->
 
+	<!--#region Toolbar button resources -->
+
+	<!--#region Medium button resources -->
+
+	<x:Double x:Key="MediumToolbarIconSize" >14</x:Double>
+
+	<Style x:Key="MediumToolbarButtonStyle" TargetType="ContentControl" BasedOn="{StaticResource ToolbarItemBaseStyle}" >
+		<Setter Property="Content" Value="{Binding}" />
+		<Setter Property="ContentTemplate" Value="{StaticResource MediumToolbarButtonDataTemplate}" />
+	</Style>
+
+	<DataTemplate x:Key="MediumToolbarButtonDataTemplate" >
+		<Button Style="{StaticResource ButtonStyle1}" Command="{Binding}" AccessKey="{Binding AccessKey}" >
+			<StackPanel Orientation="Horizontal" >
+				<Viewbox Margin="{StaticResource XSmallRightMargin}" Width="{StaticResource MediumToolbarIconSize}" Height="{StaticResource MediumToolbarIconSize}" >
+					<IconSourceElement IconSource="{Binding IconSource}" />
+				</Viewbox>
+				<TextBlock VerticalAlignment="Center" Text="{Binding Label}" />
+			</StackPanel>
+		</Button>
+	</DataTemplate>
+
+	<Style x:Key="ButtonStyle1" TargetType="Button" >
+		<Setter Property="MinWidth" Value="40" />
+		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="BorderBrush" Value="Transparent" />
+		<Setter Property="CornerRadius" Value="2" />
+		<Setter Property="Padding" Value="{StaticResource XXSmallLeftTopRightBottomMargin}" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="FontSize" Value="11" />
+		<Setter Property="Command" Value="{Binding}" />
+	</Style>
+
+	<!--#endregion-->
+
+	<!--#endregion-->
+
 </ResourceDictionary>
