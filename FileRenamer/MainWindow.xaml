@@ -17,6 +17,7 @@
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
 			<uc:Toolbar Grid.Row="0" >
@@ -52,6 +53,13 @@
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ListView>
+
+			<!-- Test lab -->
+			<StackPanel Grid.Row="2" Spacing="{StaticResource XXSmallSpacing}" >
+				<TextBox Text="{x:Bind ViewModel.TestInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent"
+						 PlaceholderText="  Input a test text here" PlaceholderForeground="Gray" />
+				<TextBox Text="{x:Bind ViewModel.TestOutput, Mode=OneWay}" Background="Transparent" IsReadOnly="True" />
+			</StackPanel>
 
 		</Grid>
 
