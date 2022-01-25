@@ -1,0 +1,11 @@
+﻿<UserControl
+	x:Class="FileRenamer.UserControls.ToolbarButton"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
+	<UserControl.Resources>
+		<StaticResource ResourceKey="MediumToolbarButtonStyle" x:Key="ToolbarItemSize.Medium" />
+	</UserControl.Resources>
+
+	<ContentControl Name="MyContentControl" Style="{StaticResource ToolbarItemSize.Medium}" />
+
+</UserControl>

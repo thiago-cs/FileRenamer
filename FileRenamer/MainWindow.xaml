@@ -21,24 +21,24 @@
 
 			<uc:Toolbar Grid.Row="0" >
 				<uc:ToolbarGroup Header="Project" >
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind NewProjectCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind LoadProjectCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind SaveProjectCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind NewProjectCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind LoadProjectCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind SaveProjectCommand}" />
 				</uc:ToolbarGroup>
 				<uc:ToolbarGroup Header="Management" >
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind MoveUpActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind MoveDownActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind EditActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind DuplicateActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind RemoveActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind RemoveAllActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveUpActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveDownActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind EditActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind DuplicateActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveAllActionCommand}" />
 				</uc:ToolbarGroup>
 				<uc:ToolbarGroup Header="Actions" >
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddInsertActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddRemoveActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddInsertCounterActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddReplaceActionCommand}" />
-					<ContentControl Style="{StaticResource MediumToolbarButtonStyle}" DataContext="{x:Bind AddConvertCaseActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddRemoveActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertCounterActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddReplaceActionCommand}" />
+					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddConvertCaseActionCommand}" />
 				</uc:ToolbarGroup>
 			</uc:Toolbar>
 

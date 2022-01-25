@@ -54,5 +54,8 @@
     <Page Update="UserControls\ToolbarGroup.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="UserControls\ToolbarButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
 </Project>
