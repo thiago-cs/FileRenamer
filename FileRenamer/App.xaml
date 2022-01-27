@@ -2,7 +2,7 @@
 	x:Class="FileRenamer.App"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="using:FileRenamer">
+	xmlns:c="using:FileRenamer.Converters" >
 
 	<Application.Resources>
 		<ResourceDictionary>
@@ -17,6 +17,7 @@
 			</ResourceDictionary.MergedDictionaries>
 
 			<!-- Other app resources here -->
+			<c:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
 
 		</ResourceDictionary>
 	</Application.Resources>
