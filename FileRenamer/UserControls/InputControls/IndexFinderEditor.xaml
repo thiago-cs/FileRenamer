@@ -1,0 +1,57 @@
+﻿<UserControl
+	x:Class="FileRenamer.UserControls.InputControls.IndexFinderEditor"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:uic="using:FileRenamer.UserControls.InputControls"
+	mc:Ignorable="d" >
+
+	<UserControl.Resources>
+
+		<DataTemplate x:Key="NumberInputDataTemplate" x:DataType="uic:IndexFinderEditor" >
+			<NumberBox HorizontalAlignment="Left" Width="160" HorizontalContentAlignment="Right" 
+					   Minimum="0" Maximum="1000" Value="{Binding Number}" SpinButtonPlacementMode="Inline" />
+		</DataTemplate>
+
+		<DataTemplate x:Key="TextInputDataTemplate" x:DataType="uic:IndexFinderEditor" >
+			<Grid ColumnSpacing="{StaticResource XXSmallSpacing}" RowSpacing="{StaticResource XXSmallSpacing}" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<ComboBox Grid.Row="0" Grid.Column="0" MinWidth="100" SelectedIndex="0"  PlaceholderText="chose..."
+						  ItemsSource="{x:Bind uic:IndexFinderEditor.TextTypes}" SelectedItem="{x:Bind TextType, Mode=TwoWay}" >
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ComboBox>
+
+				<CheckBox Grid.Row="0" Grid.Column="1" Content="ignore case" IsChecked="{x:Bind IgnoreCase, Mode=TwoWay}" />
+
+				<TextBox  Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" MinWidth="120" Text="{x:Bind Text, Mode=TwoWay}" />
+			</Grid>
+		</DataTemplate>
+
+	</UserControl.Resources>
+
+	<Grid ColumnSpacing="{StaticResource XXSmallSpacing}" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<ComboBox Grid.Column="0" Name="IndexTypeSelector" Width="160" PlaceholderText="chose"
+				  ItemsSource="{x:Bind uic:IndexFinderEditor.IndexFinderTypes}" SelectedValue="{x:Bind IndexType, Mode=TwoWay}" 
+				  DisplayMemberPath="DescriptionWithPreposition" SelectedValuePath="Type" />
+
+		<ContentControl Grid.Column="1" Content="{Binding}" ContentTemplate="{x:Bind ExtraDataTemplate, Mode=TwoWay}" HorizontalContentAlignment="Stretch" />
+	</Grid>
+</UserControl>
