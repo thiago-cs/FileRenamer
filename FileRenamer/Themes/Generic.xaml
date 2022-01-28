@@ -9,8 +9,8 @@
 
 	<Style x:Key="ToolbarBorderStyle" TargetType="Border" >
 		<!--<Setter Property="Margin" Value="{StaticResource XSmallLeftTopRightBottomMargin}" />-->
-		<Setter Property="Background" Value="{StaticResource ToolbarBackgroundBrush}" />
-		<Setter Property="BorderBrush" Value="{StaticResource ToolbarBorderBrush}" />
+		<Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}" />
+		<Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="CornerRadius" Value="8" />
 		<Setter Property="Padding" Value="{StaticResource XXSmallLeftTopRightBottomMargin}" />
@@ -29,7 +29,7 @@
 		<Setter Property="Grid.RowSpan" Value="2" />
 		<Setter Property="Y2" Value="1" />
 		<Setter Property="Stretch" Value="Fill" />
-		<Setter Property="Stroke" Value="{StaticResource ToolbarBorderBrush}" />
+		<Setter Property="Stroke" Value="{StaticResource ControlBorderBrush}" />
 	</Style>
 
 	<Style x:Key="ToolbarItemBaseStyle" TargetType="Control" >
