@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace FileRenamer.ViewModels;
 
-public sealed class MainWindowViewModel : Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObject
+public sealed class MainWindowViewModel : BindableBase
 {
 	private Project _project;
 	public Project Project

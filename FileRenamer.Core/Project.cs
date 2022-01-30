@@ -10,7 +10,7 @@ using FileRenamer.Core.FileSystem;
 
 namespace FileRenamer.Core;
 
-public sealed class Project : Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObject
+public sealed class Project : System.ComponentModel.BindableBase
 {
 	public ActionCollection Actions { get; } = new();
 
