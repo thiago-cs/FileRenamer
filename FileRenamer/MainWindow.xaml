@@ -54,8 +54,8 @@
 			<!-- Test lab -->
 			<StackPanel Grid.Row="2" Spacing="{StaticResource XXSmallSpacing}" >
 				<TextBox Text="{x:Bind ViewModel.TestInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent"
-						 PlaceholderText="  Input a test text here" PlaceholderForeground="Gray" />
-				<TextBox Text="{x:Bind ViewModel.TestOutput, Mode=OneWay}" Background="Transparent" IsReadOnly="True" />
+						 PlaceholderText="  Input a test text here" PlaceholderForeground="Gray" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" />
+				<TextBox Text="{x:Bind ViewModel.TestOutput, Mode=OneWay}" Background="Transparent" IsReadOnly="True" IsSpellCheckEnabled="False" />
 			</StackPanel>
 
 		</Grid>
