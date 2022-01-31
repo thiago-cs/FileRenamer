@@ -45,27 +45,7 @@ public sealed partial class IndexFinderEditor
 		}
 	}
 
-	private IndexFinderType _indexType = IndexFinderType.None;
-	public IndexFinderType IndexType
-	{
-		get => _indexType;
-		set
-		{
-			if (_indexType == value)
-				return;
-
-			_indexType = value;
-			UpdateExtraDataTemplate();
-		}
-	}
-
-	public int Number { get; set; }
-
-	public TextType TextType { get; set; }
-
-	public string Text { get; set; }
-
-	public bool IgnoreCase { get; set; }
+	public IndexFinderEditorData Data { get; } = new();
 
 	#region ExtraDataTemplate DependencyProperty
 	public DataTemplate ExtraDataTemplate
@@ -88,21 +68,32 @@ public sealed partial class IndexFinderEditor
 
 	public IndexFinderEditor()
 	{
-		DataContext = this;
-
+		//
 		InitializeComponent();
 
+		//
 		if (Resources.TryGetValue(numberInputDataTemplateKey, out object o))
 			numberInputDataTemplate = o as DataTemplate;
 
 		if (Resources.TryGetValue(textInputDataTemplateKey, out o))
 			textInputDataTemplate = o as DataTemplate;
+
+		UpdateExtraDataTemplate();
+
+		//
+		Data.PropertyChanged += Data_PropertyChanged;
 	}
 
 
+	private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(Data.IndexType))
+			UpdateExtraDataTemplate();
+	}
+
 	private void UpdateExtraDataTemplate()
 	{
-		ExtraDataTemplate = IndexType switch
+		ExtraDataTemplate = Data.IndexType switch
 		{
 			IndexFinderType.Position => numberInputDataTemplate,
 			IndexFinderType.After or IndexFinderType.Before => textInputDataTemplate,
@@ -112,15 +103,15 @@ public sealed partial class IndexFinderEditor
 
 	public IIndexFinder GetIndexFinder()
 	{
-		return IndexType switch
+		return Data.IndexType switch
 		{
 			IndexFinderType.None => null,
 			IndexFinderType.Beginning => new BeginningIndexFinder(),
 			IndexFinderType.End => new EndIndexFinder(),
 			IndexFinderType.FileExtension => new FileExtensionIndexFinder(),
-			IndexFinderType.Position => new FixedIndexFinder(Number),
-			IndexFinderType.Before => new SubstringIndexFinder(Text, true, IgnoreCase, TextType == TextType.Regex),
-			IndexFinderType.After => new SubstringIndexFinder(Text, true, IgnoreCase, TextType == TextType.Regex),
+			IndexFinderType.Position => new FixedIndexFinder(Data.IndexPosition),
+			IndexFinderType.Before => new SubstringIndexFinder(Data.Text, true, Data.IgnoreCase, Data.TextType == TextType.Regex),
+			IndexFinderType.After => new SubstringIndexFinder(Data.Text, true, Data.IgnoreCase, Data.TextType == TextType.Regex),
 			_ => throw new NotImplementedException(),
 		};
 	}

@@ -9,13 +9,13 @@
 
 	<UserControl.Resources>
 
-		<DataTemplate x:Key="NumberInputDataTemplate" x:DataType="uic:IndexFinderEditor" >
+		<DataTemplate x:Key="NumberInputDataTemplate" x:DataType="uic:IndexFinderEditorData" >
 			<NumberBox HorizontalAlignment="Left" Width="160" HorizontalContentAlignment="Right" 
-					   Minimum="0" Maximum="1000" Value="{Binding Number}" SpinButtonPlacementMode="Inline" />
+					   Minimum="0" Maximum="1000" Value="{x:Bind IndexPosition, Mode=TwoWay}" SpinButtonPlacementMode="Inline" />
 		</DataTemplate>
 
-		<DataTemplate x:Key="TextInputDataTemplate" x:DataType="uic:IndexFinderEditor" >
-			<Grid ColumnSpacing="{StaticResource XXSmallSpacing}" RowSpacing="{StaticResource XXSmallSpacing}" >
+		<DataTemplate x:Key="TextInputDataTemplate" x:DataType="uic:IndexFinderEditorData" >
+			<Grid ColumnSpacing="{StaticResource SmallSpacing}" RowSpacing="{StaticResource SmallSpacing}" >
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="*" />
@@ -25,7 +25,7 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<ComboBox Grid.Row="0" Grid.Column="0" MinWidth="100" SelectedIndex="0"  PlaceholderText="chose..."
+				<ComboBox Grid.Row="0" Grid.Column="0" MinWidth="100" SelectedIndex="0" PlaceholderText="chose..."
 						  ItemsSource="{x:Bind uic:IndexFinderEditor.TextTypes}" SelectedItem="{x:Bind TextType, Mode=TwoWay}" >
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
@@ -36,22 +36,23 @@
 
 				<CheckBox Grid.Row="0" Grid.Column="1" Content="ignore case" IsChecked="{x:Bind IgnoreCase, Mode=TwoWay}" />
 
-				<TextBox  Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Stretch" MinWidth="120" Text="{x:Bind Text, Mode=TwoWay}" />
+				<StackPanel Grid.Row="1" Grid.ColumnSpan="2" >
+					<TextBox HorizontalAlignment="Stretch" MinWidth="120" Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+							 IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" />
+					<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind TextError, Mode=OneWay}" />
+				</StackPanel>
 			</Grid>
 		</DataTemplate>
 
 	</UserControl.Resources>
 
-	<Grid ColumnSpacing="{StaticResource XXSmallSpacing}" >
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="*" />
-		</Grid.ColumnDefinitions>
-
-		<ComboBox Grid.Column="0" Name="IndexTypeSelector" Width="160" PlaceholderText="chose"
-				  ItemsSource="{x:Bind uic:IndexFinderEditor.IndexFinderTypes}" SelectedValue="{x:Bind IndexType, Mode=TwoWay}" 
-				  DisplayMemberPath="DescriptionWithPreposition" SelectedValuePath="Type" />
-
-		<ContentControl Grid.Column="1" Content="{Binding}" ContentTemplate="{x:Bind ExtraDataTemplate, Mode=TwoWay}" HorizontalContentAlignment="Stretch" />
-	</Grid>
+	<StackPanel Orientation="Horizontal" Spacing="{StaticResource SmallSpacing}" >
+		<StackPanel>
+			<ComboBox Grid.Column="0" Name="IndexTypeSelector" Width="160" PlaceholderText="chose"
+					  ItemsSource="{x:Bind uic:IndexFinderEditor.IndexFinderTypes}" SelectedValue="{x:Bind Data.IndexType, Mode=TwoWay}" 
+					  DisplayMemberPath="DescriptionWithPreposition" SelectedValuePath="Type" />
+			<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind Data.IndexTypeError, Mode=OneWay}" />
+		</StackPanel>
+		<ContentControl Grid.Column="1" Content="{x:Bind Data}" ContentTemplate="{x:Bind ExtraDataTemplate, Mode=TwoWay}" HorizontalContentAlignment="Stretch" />
+	</StackPanel>
 </UserControl>
