@@ -5,10 +5,7 @@
 
 	<!--#region Toolbar resources -->
 
-	<!--<x:Double x:Key="ToolbarItemSpacing" >4</x:Double>-->
-
 	<Style x:Key="ToolbarBorderStyle" TargetType="Border" >
-		<!--<Setter Property="Margin" Value="{StaticResource XSmallLeftTopRightBottomMargin}" />-->
 		<Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{StaticResource ControlBorderBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
@@ -73,6 +70,15 @@
 	</Style>
 
 	<!--#endregion-->
+
+	<!--#endregion-->
+
+	<!--#region Action editors -->
+
+	<Style x:Key="ErrorMessageTextBlockStyle" TargetType="TextBlock" >
+		<Setter Property="Foreground" Value="Crimson" />
+		<Setter Property="FontSize" Value="12" />
+	</Style>
 
 	<!--#endregion-->
 
