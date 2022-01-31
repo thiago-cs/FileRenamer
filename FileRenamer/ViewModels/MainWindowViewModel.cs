@@ -73,14 +73,11 @@ public sealed class MainWindowViewModel : BindableBase
 			case NotifyCollectionChangedAction.Add:
 				foreach (RenameActionBase action in e.NewItems)
 					action.PropertyChanged += Action_PropertyChanged;
-
 				break;
 
-			case NotifyCollectionChangedAction.Reset:
 			case NotifyCollectionChangedAction.Remove:
 				foreach (RenameActionBase action in e.OldItems)
 					action.PropertyChanged -= Action_PropertyChanged;
-
 				break;
 
 			case NotifyCollectionChangedAction.Replace:
@@ -92,6 +89,7 @@ public sealed class MainWindowViewModel : BindableBase
 
 				break;
 
+			case NotifyCollectionChangedAction.Reset:
 			case NotifyCollectionChangedAction.Move:
 			default:
 				break;
