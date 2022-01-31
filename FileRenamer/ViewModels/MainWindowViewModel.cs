@@ -28,6 +28,8 @@ public sealed class MainWindowViewModel : BindableBase
 	private RenameActionBase _selectedAction;
 	public RenameActionBase SelectedAction { get => _selectedAction; set => SetProperty(ref _selectedAction, value); }
 
+	public int SelectedIndex { get; set; }
+
 
 	public MainWindowViewModel()
 	{

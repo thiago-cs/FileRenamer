@@ -42,7 +42,8 @@
 
 			<!-- Action list view -->
 			<ListView Grid.Row="1" CornerRadius="4" Background="#3888" CanReorderItems="True" SelectionMode="Single" AllowDrop="True"
-					  ItemsSource="{x:Bind ViewModel.Project.Actions, Mode=OneWay}" SelectedItem="{x:Bind ViewModel.SelectedAction, Mode=TwoWay}" >
+					  ItemsSource="{x:Bind ViewModel.Project.Actions, Mode=OneWay}" 
+					  SelectedItem="{x:Bind ViewModel.SelectedAction, Mode=TwoWay}" SelectedIndex="{x:Bind ViewModel.SelectedIndex, Mode=TwoWay}" >
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<CheckBox Margin="{StaticResource XSmallLeftMargin}" FontSize="12" VerticalContentAlignment="Center"
