@@ -1,7 +1,6 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-	xmlns:m="using:FileRenamer.Models" >
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
 
 
 	<!--#region Toolbar resources -->
@@ -48,7 +47,8 @@
 		<Setter Property="ContentTemplate" Value="{StaticResource MediumToolbarButtonDataTemplate}" />
 	</Style>
 
-	<DataTemplate x:Key="MediumToolbarButtonDataTemplate" x:DataType="m:UICommand" >
+	<DataTemplate x:Key="MediumToolbarButtonDataTemplate" >
+		<!-- x:DataType="UICommand" -->
 		<Button Style="{StaticResource ButtonStyle1}" Command="{Binding}" AccessKey="{Binding AccessKey}" ToolTipService.ToolTip="{Binding Description}" >
 			<StackPanel Orientation="Horizontal" >
 				<Viewbox Margin="{StaticResource XSmallRightMargin}" Width="{StaticResource MediumToolbarIconSize}" Height="{StaticResource MediumToolbarIconSize}" >
