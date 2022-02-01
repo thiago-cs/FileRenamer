@@ -45,7 +45,33 @@ public sealed partial class IndexFinderEditor
 		}
 	}
 
-	public IndexFinderEditorData Data { get; } = new();
+	#region Data DependencyProperty
+	public IndexFinderEditorData Data
+	{
+		get => (IndexFinderEditorData)GetValue(DataProperty);
+		set => SetValue(DataProperty, value);
+	}
+
+	// Using a DependencyProperty as the backing store for Data.  This enables animation, styling, binding, etc...
+	public static readonly DependencyProperty DataProperty =
+		DependencyProperty.Register(
+			nameof(Data),
+			typeof(IndexFinderEditorData),
+			typeof(IndexFinderEditor),
+			new PropertyMetadata(null, OnDataChanged));
+
+	private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is not IndexFinderEditor @this)
+			return;
+
+		if (e.OldValue is IndexFinderEditorData oldData)
+			oldData.PropertyChanged -= @this.Data_PropertyChanged;
+
+		if (e.NewValue is IndexFinderEditorData newData)
+			newData.PropertyChanged += @this.Data_PropertyChanged;
+	}
+	#endregion Data DependencyProperty
 
 	#region ExtraDataTemplate DependencyProperty
 	public DataTemplate ExtraDataTemplate
@@ -78,10 +104,7 @@ public sealed partial class IndexFinderEditor
 		if (Resources.TryGetValue(textInputDataTemplateKey, out o))
 			textInputDataTemplate = o as DataTemplate;
 
-		UpdateExtraDataTemplate();
-
-		//
-		Data.PropertyChanged += Data_PropertyChanged;
+		ExtraDataTemplate = emptyDataTemplate;
 	}
 
 
