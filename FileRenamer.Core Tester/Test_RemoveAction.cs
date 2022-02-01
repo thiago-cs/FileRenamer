@@ -62,23 +62,26 @@ public sealed class Test_RemoveAction
 	}
 
 	[Test]
-	[TestCase(loremIpsum, 00, int.MaxValue, "")]
-	[TestCase(loremIpsum, 11, 107, "Lorem ipsum")]
-	[TestCase(loremIpsum, 26, int.MaxValue, "Lorem ipsum dolor sit amet")]
-	[TestCase(neverForget, 0, 17, "never forget kindnesses")]
-	public void Test8(string input, int startIndex, int count, string expected)
+	[TestCase(loremIpsum, 00, int.MaxValue, "remove 2147483647 characters starting from char. #0", "")]
+	[TestCase(loremIpsum, 11, 107, "remove 107 characters starting from char. #11", "Lorem ipsum")]
+	[TestCase(loremIpsum, 26, int.MaxValue, "remove 2147483647 characters starting from char. #26", "Lorem ipsum dolor sit amet")]
+	[TestCase(neverForget, 0, 17, "remove 17 characters starting from char. #0", "never forget kindnesses")]
+	public void Test8(string input, int startIndex, int count, string description, string expected)
 	{
-		Assert.AreEqual(expected, new RemoveAction(new FixedIndexFinder(startIndex), count).Run(input));
-		Assert.Pass();
+		RemoveAction removeAction = new(new FixedIndexFinder(startIndex), count);
+		Assert.AreEqual(description, removeAction.Description);
+		Assert.AreEqual(expected, removeAction.Run(input));
 	}
 
 	[Test]
-	[TestCase(quickBrownFox, -2, "the quick brown fox jumps over the lazy do")]
-	[TestCase(quickBrownFox, -3, "the quick brown fox jumps over the lazy d")]
-	[TestCase(quickBrownFox, -5, "the quick brown fox jumps over the lazy")]
-	public void Test9(string input, int count, string expected)
+	[TestCase(quickBrownFox, -2, "remove the last 2 characters", "the quick brown fox jumps over the lazy do")]
+	[TestCase(quickBrownFox, -3, "remove the last 3 characters", "the quick brown fox jumps over the lazy d")]
+	[TestCase(quickBrownFox, -5, "remove the last 5 characters", "the quick brown fox jumps over the lazy")]
+	public void Test9(string input, int count, string description, string expected)
 	{
-		Assert.AreEqual(expected, new RemoveAction(new EndIndexFinder(), count).Run(input));
+		RemoveAction removeAction = new RemoveAction(new EndIndexFinder(), count);
+		Assert.AreEqual(description, removeAction.Description);
+		Assert.AreEqual(expected, removeAction.Run(input));
 		Assert.Pass();
 	}
 
