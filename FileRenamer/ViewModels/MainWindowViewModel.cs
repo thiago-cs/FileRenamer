@@ -4,6 +4,7 @@ using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
+
 namespace FileRenamer.ViewModels;
 
 public sealed class MainWindowViewModel : BindableBase
@@ -28,7 +29,7 @@ public sealed class MainWindowViewModel : BindableBase
 	private RenameActionBase _selectedAction;
 	public RenameActionBase SelectedAction { get => _selectedAction; set => SetProperty(ref _selectedAction, value); }
 
-	public int SelectedIndex { get; set; }
+	public int SelectedIndex { get; set; } = -1;
 
 
 	public MainWindowViewModel()
