@@ -2,6 +2,7 @@
 	x:Class="FileRenamer.MainWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:a="using:FileRenamer.Core.Actions"
 	xmlns:uc="using:FileRenamer.UserControls" >
 
 	<Grid Margin="{StaticResource SmallLeftTopRightBottomMargin}" >
@@ -45,9 +46,9 @@
 					  ItemsSource="{x:Bind ViewModel.Project.Actions, Mode=OneWay}" 
 					  SelectedItem="{x:Bind ViewModel.SelectedAction, Mode=TwoWay}" SelectedIndex="{x:Bind ViewModel.SelectedIndex, Mode=TwoWay}" >
 				<ItemsControl.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate x:DataType="a:RenameActionBase" >
 						<CheckBox Margin="{StaticResource XSmallLeftMargin}" FontSize="12" VerticalContentAlignment="Center"
-								  IsChecked="{Binding IsEnabled, Mode=TwoWay}" Content="{Binding Description}" />
+								  IsChecked="{x:Bind IsEnabled, Mode=TwoWay}" Content="{x:Bind Description}" />
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ListView>
