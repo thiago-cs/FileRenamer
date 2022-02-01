@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
-using FileRenamer.Core.Indices;
 
 
 namespace FileRenamer.UserControls.InputControls;
@@ -121,21 +120,6 @@ public sealed partial class IndexFinderEditor
 			IndexFinderType.Position => numberInputDataTemplate,
 			IndexFinderType.After or IndexFinderType.Before => textInputDataTemplate,
 			IndexFinderType.None or IndexFinderType.Beginning or IndexFinderType.End or IndexFinderType.FileExtension or _ => emptyDataTemplate,
-		};
-	}
-
-	public IIndexFinder GetIndexFinder()
-	{
-		return Data.IndexType switch
-		{
-			IndexFinderType.None => null,
-			IndexFinderType.Beginning => new BeginningIndexFinder(),
-			IndexFinderType.End => new EndIndexFinder(),
-			IndexFinderType.FileExtension => new FileExtensionIndexFinder(),
-			IndexFinderType.Position => new FixedIndexFinder(Data.IndexPosition),
-			IndexFinderType.Before => new SubstringIndexFinder(Data.Text, true, Data.IgnoreCase, Data.TextType == TextType.Regex),
-			IndexFinderType.After => new SubstringIndexFinder(Data.Text, true, Data.IgnoreCase, Data.TextType == TextType.Regex),
-			_ => throw new NotImplementedException(),
 		};
 	}
 }

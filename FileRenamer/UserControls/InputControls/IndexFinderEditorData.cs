@@ -1,4 +1,7 @@
-﻿namespace FileRenamer.UserControls.InputControls;
+﻿using FileRenamer.Core.Indices;
+
+
+namespace FileRenamer.UserControls.InputControls;
 
 public sealed class IndexFinderEditorData : System.ComponentModel.BindableBase
 {
@@ -67,6 +70,23 @@ public sealed class IndexFinderEditorData : System.ComponentModel.BindableBase
 		Validate();
 	}
 
+
+	public IIndexFinder GetIndexFinder()
+	{
+		return HasErrors
+			? null
+			: IndexType switch
+			{
+				IndexFinderType.None => null,
+				IndexFinderType.Beginning => new BeginningIndexFinder(),
+				IndexFinderType.End => new EndIndexFinder(),
+				IndexFinderType.FileExtension => new FileExtensionIndexFinder(),
+				IndexFinderType.Position => new FixedIndexFinder(IndexPosition),
+				IndexFinderType.Before => new SubstringIndexFinder(Text, true, IgnoreCase, TextType == TextType.Regex),
+				IndexFinderType.After => new SubstringIndexFinder(Text, true, IgnoreCase, TextType == TextType.Regex),
+				_ => throw new System.NotImplementedException($"Unknown {nameof(IIndexFinder)} type '{IndexType}'."),
+			};
+	}
 
 	#region Validation
 
