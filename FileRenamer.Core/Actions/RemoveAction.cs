@@ -20,8 +20,24 @@ public sealed class RemoveAction : RenameActionBase
 
 	public RemoveAction(IIndexFinder startIndexFinder, int count)
 	{
+		//
 		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));
-		this.count = count;
+		this.count = count != 0 ? count : throw new ArgumentOutOfRangeException(nameof(count), "The number of characters to remove may not be zero.");
+
+		//
+		string s = count switch
+		{
+			>= 2 => $"{count} characters",
+			1 => "a character",
+			-1 => "character",
+			_ => $"{-count} characters",
+		};
+
+		Description = 0 < count
+			? $"remove {s} starting from {startIndexFinder.Description.ToString(includePreposition: false)}"
+			: startIndexFinder is EndIndexFinder
+				? $"remove the last {s}"
+				: $"remove the {s} preceding the {startIndexFinder.Description.ToString(includePreposition: false)}";
 	}
 
 
@@ -50,8 +66,8 @@ public sealed class RemoveAction : RenameActionBase
 			}
 			else
 				endIndex = startIndex <= int.MaxValue - count
-					? startIndex + count
-					: int.MaxValue;
+							? startIndex + count
+							: int.MaxValue;
 		}
 		else
 		{
