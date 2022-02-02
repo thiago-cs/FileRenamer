@@ -101,6 +101,30 @@ public sealed class MainWindowViewModel : BindableBase
 
 	#endregion
 
+	#region CanExecute predicates
+
+	private bool CanExecuteWhenActionsIsNotEmpty()
+	{
+		return Project.Actions.Count != 0;
+	}
+
+	private bool CanExecuteWhenSelectedActionIsNotNull()
+	{
+		return Project.Actions.Count != 0 && SelectedAction != null;
+	}
+
+	private bool CanExecuteWhenSelectedActionIsNotFirst()
+	{
+		return Project.Actions.Count != 0 && SelectedAction != null && SelectedAction != Project.Actions[0];
+	}
+
+	private bool CanExecuteWhenSelectedActionIsNotLast()
+	{
+		return Project.Actions.Count != 0 && SelectedAction != null && SelectedAction != Project.Actions[^1];
+	}
+
+	#endregion
+
 
 	#region Test lab
 
