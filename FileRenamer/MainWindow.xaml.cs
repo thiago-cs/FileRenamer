@@ -21,7 +21,6 @@ public sealed partial class MainWindow
 		// 1. 
 		InitializeComponent();
 
-
 		#region 2. Commands
 
 		const VirtualKeyModifiers Control_Shift = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift;
@@ -32,12 +31,12 @@ public sealed partial class MainWindow
 		SaveProjectCommand = CreateCommand2("Save", "S", Symbol.Save, VirtualKeyModifiers.Control, VirtualKey.S, ExecuteSaveProject);
 
 		// 2.2. Manage existing actions commands
-		MoveUpActionCommand = CreateCommand2("Move up", "U", Symbol.Up, VirtualKeyModifiers.Menu, VirtualKey.Up, ExecuteMoveUpAction, CanExecuteWhenSelectedActionIsNotFirst);
-		MoveDownActionCommand = CreateCommand3("Move down", "D", (char)0xE74B, VirtualKeyModifiers.Menu, VirtualKey.Down, ExecuteMoveDownAction, CanExecuteWhenSelectedActionIsNotLast);
+		MoveUpActionCommand = CreateCommand2("Move up", "U", Symbol.Up, VirtualKeyModifiers.Menu, VirtualKey.Up, ViewModel.MoveSelectedActionUp, CanExecuteWhenSelectedActionIsNotFirst);
+		MoveDownActionCommand = CreateCommand3("Move down", "D", (char)0xE74B, VirtualKeyModifiers.Menu, VirtualKey.Down, ViewModel.MoveSelectedActionDown, CanExecuteWhenSelectedActionIsNotLast);
 		EditActionCommand = CreateCommand2("Edit", "T", Symbol.Edit, null, VirtualKey.F2, ExecuteEditAction, CanExecuteWhenSelectedActionIsNotNull);
-		DuplicateActionCommand = CreateCommand2("Duplicate", "V", Symbol.Copy, VirtualKeyModifiers.Control, VirtualKey.D, ExecuteDuplicateAction, CanExecuteWhenSelectedActionIsNotNull);
-		RemoveActionCommand = CreateCommand2("Remove", "Del", Symbol.Delete, null, VirtualKey.Delete, ExecuteRemoveAction, CanExecuteWhenSelectedActionIsNotNull);
-		RemoveAllActionCommand = CreateCommand2("Clear", "", Symbol.Clear, VirtualKeyModifiers.Control, VirtualKey.Delete, ExecuteRemoveAllAction);
+		DuplicateActionCommand = CreateCommand2("Duplicate", "V", Symbol.Copy, VirtualKeyModifiers.Control, VirtualKey.D, ViewModel.DuplicateSelectedAction, CanExecuteWhenSelectedActionIsNotNull);
+		RemoveActionCommand = CreateCommand2("Remove", "Del", Symbol.Delete, null, VirtualKey.Delete, ViewModel.RemoveSelectedAction, CanExecuteWhenSelectedActionIsNotNull);
+		RemoveAllActionCommand = CreateCommand2("Clear", "", Symbol.Clear, VirtualKeyModifiers.Control, VirtualKey.Delete, ViewModel.RemoveAllActions);
 
 		// 2.3. Add new actions commands
 		AddInsertActionCommand = CreateCommand2("Insert", "I", Symbol.Add, VirtualKeyModifiers.Control, VirtualKey.I, ExecuteAddInsertAction);
@@ -135,28 +134,9 @@ public sealed partial class MainWindow
 	public readonly UICommand RemoveAllActionCommand;
 
 
-	private void ExecuteMoveUpAction()
-	{
-	}
-
-	private void ExecuteMoveDownAction()
-	{
-	}
-
 	private void ExecuteEditAction()
 	{
-	}
 
-	private void ExecuteDuplicateAction()
-	{
-	}
-
-	private void ExecuteRemoveAction()
-	{
-	}
-
-	private void ExecuteRemoveAllAction()
-	{
 	}
 
 	#endregion

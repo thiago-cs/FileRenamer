@@ -38,6 +38,70 @@ public sealed class MainWindowViewModel : BindableBase
 	}
 
 
+	#region Managing existing actions
+
+	public void MoveSelectedActionUp()
+	{
+		if (SelectedIndex < 1)
+		{
+			// Oops!
+			return;
+		}
+
+		ActionCollection actions = Project.Actions;
+		int index = SelectedIndex;
+
+		RenameActionBase previousAction = actions[index - 1];
+		actions.RemoveAt(index - 1);
+		actions.Insert(index, previousAction);
+	}
+
+	public void MoveSelectedActionDown()
+	{
+		if (SelectedIndex == -1 || Project.Actions.Count - 2 < SelectedIndex)
+		{
+			// Oops!
+			return;
+		}
+
+		ActionCollection actions = Project.Actions;
+		int index = SelectedIndex;
+
+		RenameActionBase nextAction = actions[index + 1];
+		actions.RemoveAt(index + 1);
+		actions.Insert(index, nextAction);
+	}
+
+	public void DuplicateSelectedAction()
+	{
+		if (SelectedAction == null)
+		{
+			// Oops!
+			return;
+		}
+
+		Project.Actions.Insert(SelectedIndex + 1, SelectedAction.Clone());
+	}
+
+	public void RemoveSelectedAction()
+	{
+		if (SelectedAction == null)
+		{
+			// Oops!
+			return;
+		}
+
+		Project.Actions.RemoveAt(SelectedIndex);
+	}
+
+	public void RemoveAllActions()
+	{
+		Project.Actions.Clear();
+	}
+
+	#endregion
+
+
 	#region Test lab
 
 	private string _testInput;
@@ -101,5 +165,4 @@ public sealed class MainWindowViewModel : BindableBase
 	{
 		UpdateTestOutput();
 	}
-
 }
