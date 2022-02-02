@@ -103,22 +103,22 @@ public sealed class MainWindowViewModel : BindableBase
 
 	#region CanExecute predicates
 
-	private bool CanExecuteWhenActionsIsNotEmpty()
+	public bool CanExecuteWhenActionsIsNotEmpty()
 	{
 		return Project.Actions.Count != 0;
 	}
 
-	private bool CanExecuteWhenSelectedActionIsNotNull()
+	public bool CanExecuteWhenSelectedActionIsNotNull()
 	{
 		return Project.Actions.Count != 0 && SelectedAction != null;
 	}
 
-	private bool CanExecuteWhenSelectedActionIsNotFirst()
+	public bool CanExecuteWhenSelectedActionIsNotFirst()
 	{
 		return Project.Actions.Count != 0 && SelectedAction != null && SelectedAction != Project.Actions[0];
 	}
 
-	private bool CanExecuteWhenSelectedActionIsNotLast()
+	public bool CanExecuteWhenSelectedActionIsNotLast()
 	{
 		return Project.Actions.Count != 0 && SelectedAction != null && SelectedAction != Project.Actions[^1];
 	}

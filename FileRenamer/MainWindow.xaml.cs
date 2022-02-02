@@ -35,17 +35,17 @@ public sealed partial class MainWindow
 
 		// 2.2. Manage existing actions commands
 		MoveUpActionCommand = CreateCommand2("Move up", "U", "Move the selected action up",
-											Symbol.Up, VirtualKeyModifiers.Menu, VirtualKey.Up, ViewModel.MoveSelectedActionUp, CanExecuteWhenSelectedActionIsNotFirst);
+											Symbol.Up, VirtualKeyModifiers.Menu, VirtualKey.Up, ViewModel.MoveSelectedActionUp, ViewModel.CanExecuteWhenSelectedActionIsNotFirst);
 		MoveDownActionCommand = CreateCommand3("Move down", "D", "Move the selected action down",
-											(char)0xE74B, VirtualKeyModifiers.Menu, VirtualKey.Down, ViewModel.MoveSelectedActionDown, CanExecuteWhenSelectedActionIsNotLast);
+											(char)0xE74B, VirtualKeyModifiers.Menu, VirtualKey.Down, ViewModel.MoveSelectedActionDown, ViewModel.CanExecuteWhenSelectedActionIsNotLast);
 		EditActionCommand = CreateCommand2("Edit", "T", "Edit the selected action",
-											Symbol.Edit, null, VirtualKey.F2, ExecuteEditAction, CanExecuteWhenSelectedActionIsNotNull);
+											Symbol.Edit, null, VirtualKey.F2, ExecuteEditAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
 		DuplicateActionCommand = CreateCommand2("Duplicate", "V", "Duplicate the selected action",
-											Symbol.Copy, VirtualKeyModifiers.Control, VirtualKey.D, ViewModel.DuplicateSelectedAction, CanExecuteWhenSelectedActionIsNotNull);
+											Symbol.Copy, VirtualKeyModifiers.Control, VirtualKey.D, ViewModel.DuplicateSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
 		RemoveActionCommand = CreateCommand2("Remove", "Del", "Remove the selected action",
-											Symbol.Delete, null, VirtualKey.Delete, ViewModel.RemoveSelectedAction, CanExecuteWhenSelectedActionIsNotNull);
+											Symbol.Delete, null, VirtualKey.Delete, ViewModel.RemoveSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
 		RemoveAllActionCommand = CreateCommand2("Clear", "", "Remove all actions",
-											Symbol.Clear, VirtualKeyModifiers.Control, VirtualKey.Delete, ViewModel.RemoveAllActions);
+											Symbol.Clear, VirtualKeyModifiers.Control, VirtualKey.Delete, ViewModel.RemoveAllActions, ViewModel.CanExecuteWhenActionsIsNotEmpty);
 
 		// 2.3. Add new actions commands
 		AddInsertActionCommand = CreateCommand2("Insert", "I", "Add an action that inserts a text",
@@ -194,21 +194,9 @@ public sealed partial class MainWindow
 
 	#endregion
 
-	#region CanExecute predicates
 
-	private bool CanExecuteWhenSelectedActionIsNotNull()
-	{
-		return ViewModel.SelectedAction != null;
-	}
 
-	private bool CanExecuteWhenSelectedActionIsNotFirst()
-	{
-		return ViewModel.SelectedAction != null && ViewModel.SelectedAction != ViewModel.Project.Actions[0];
-	}
 
-	private bool CanExecuteWhenSelectedActionIsNotLast()
-	{
-		return ViewModel.SelectedAction != null && ViewModel.SelectedAction != ViewModel.Project.Actions[^1];
 	}
 
 	private void UpdateCommandStates()
@@ -218,9 +206,8 @@ public sealed partial class MainWindow
 		EditActionCommand.NotifyCanExecuteChanged();
 		DuplicateActionCommand.NotifyCanExecuteChanged();
 		RemoveActionCommand.NotifyCanExecuteChanged();
+		RemoveAllActionCommand.NotifyCanExecuteChanged();
 	}
-
-	#endregion
 
 	#endregion
 }
