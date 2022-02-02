@@ -62,5 +62,9 @@
 
 		</Grid>
 
+		<ContentDialog Name="dialog" Content="{Binding}" Padding="{StaticResource SmallBottomMargin}" 
+					   PrimaryButtonText="add" IsPrimaryButtonEnabled="{Binding IsValid, Mode=OneWay}" 
+					   CloseButtonText="cancel" DefaultButton="Primary" />
+
 	</Grid>
 </Window>
