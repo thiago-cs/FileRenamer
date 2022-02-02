@@ -63,6 +63,7 @@ public sealed partial class MainWindow
 
 		// 3.
 		ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+		ViewModel.Project.Actions.CollectionChanged += Actions_CollectionChanged;
 
 
 
@@ -111,6 +112,11 @@ public sealed partial class MainWindow
 				UpdateCommandStates();
 				break;
 		}
+	}
+
+	private void Actions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		UpdateCommandStates();
 	}
 
 
