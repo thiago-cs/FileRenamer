@@ -66,4 +66,10 @@ public sealed class ToCaseAction : RenameActionBase
 		// 3. 
 		return s1 + s2 + s3;
 	}
+
+	/// <inheritdoc cref="RenameActionBase.Clone" />
+	public override RenameActionBase Clone()
+	{
+		return new ToCaseAction(startIndexFinder, endIndexFinder, textCase);
+	}
 }

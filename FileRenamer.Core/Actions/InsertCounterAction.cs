@@ -44,6 +44,12 @@ public sealed class InsertCounterAction : RenameActionBase
 		return input.Insert(insertIndex, value);
 	}
 
+	/// <inheritdoc cref="RenameActionBase.Clone" />
+	public override RenameActionBase Clone()
+	{
+		return new InsertCounterAction(insertIndexFinder, startValue, minWidth);
+	}
+
 	public void Reset()
 	{
 		counter = startValue;

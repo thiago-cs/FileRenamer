@@ -1,6 +1,6 @@
 ﻿namespace FileRenamer.Core.Actions;
 
-public abstract class RenameActionBase : Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObject
+public abstract class RenameActionBase : Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObject, ICloneable<RenameActionBase>
 {
 	private bool _isEnabled = true;
 	public bool IsEnabled { get => _isEnabled; set => SetProperty(ref _isEnabled, value); }
@@ -10,4 +10,10 @@ public abstract class RenameActionBase : Microsoft.Toolkit.Mvvm.ComponentModel.O
 
 
 	public abstract string Run(string input);
+
+	/// <summary>
+	/// Creates a new object that is a shallow copy of the current instance.
+	/// </summary>
+	/// <returns>A new RenameActionBase that is a copy of this instance.</returns>
+	public abstract RenameActionBase Clone();
 }

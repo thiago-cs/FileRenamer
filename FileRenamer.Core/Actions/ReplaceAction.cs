@@ -96,6 +96,14 @@ public sealed class ReplaceAction : RenameActionBase
 		return input[..startIndex] + Run_Core(input[startIndex..endIndex]) + input[endIndex..];
 	}
 
+	/// <inheritdoc cref="RenameActionBase.Clone" />
+	public override RenameActionBase Clone()
+	{
+		return startIndexFinder != null && endIndexFinder != null
+				? new ReplaceAction(startIndexFinder, endIndexFinder, oldString, newString, ignoreCase, useRegex)
+				: new ReplaceAction(oldString, newString, ignoreCase, useRegex);
+	}
+
 	private string Run_Core(string input)
 	{
 		if (useRegex)

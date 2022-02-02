@@ -35,4 +35,10 @@ public sealed class InsertAction : RenameActionBase
 		// 2. 
 		return input.Insert(insertIndex, value);
 	}
+
+	/// <inheritdoc cref="RenameActionBase.Clone" />
+	public override RenameActionBase Clone()
+	{
+		return new InsertAction(insertIndexFinder, value);
+	}
 }

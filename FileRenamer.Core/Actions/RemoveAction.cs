@@ -85,4 +85,12 @@ public sealed class RemoveAction : RenameActionBase
 				? result + input[endIndex..]
 				: result;
 	}
+
+	/// <inheritdoc cref="RenameActionBase.Clone" />
+	public override RenameActionBase Clone()
+	{
+		return endIndexFinder != null
+				? new RemoveAction(startIndexFinder, endIndexFinder)
+				: new RemoveAction(startIndexFinder, count);
+	}
 }
