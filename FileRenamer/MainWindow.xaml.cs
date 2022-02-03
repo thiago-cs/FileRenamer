@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.System;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using FileRenamer.Models;
 using FileRenamer.ViewModels;
@@ -171,9 +171,6 @@ public sealed partial class MainWindow
 
 	private void ExecuteAddInsertAction()
 	{
-		Core.Actions.InsertAction item = new(new Core.Indices.BeginningIndexFinder(), "test #" + ViewModel.Project.Actions.Count);
-		ViewModel.Project.Actions.Add(item);
-		ViewModel.SelectedAction = item;
 	}
 
 	private void ExecuteAddInsertCounterAction()
@@ -192,12 +189,31 @@ public sealed partial class MainWindow
 	{
 	}
 
-	#endregion
 
+	private async Task ShowActionEditorDialog(object title, UserControls.InputControls.IActionEditor actionEditor)
+	{
+		dialog.Title = title;
+		dialog.DataContext = actionEditor;
 
+		ContentDialogResult result = await dialog.ShowAsync();
 
+		if (result != ContentDialogResult.Primary)
+			return;
 
+		if (!actionEditor.IsValid)
+		{
+			// Oops!
+			return;
+		}
+
+		if (actionEditor.GetRenameAction() is Core.Actions.RenameActionBase newAction)
+		{
+			ViewModel.Project.Actions.Add(newAction);
+			ViewModel.SelectedAction = newAction;
+		}
 	}
+
+	#endregion
 
 	private void UpdateCommandStates()
 	{
