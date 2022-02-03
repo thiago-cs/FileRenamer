@@ -11,6 +11,9 @@
     <UseWinUI>true</UseWinUI>
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -57,9 +60,14 @@
     <Page Update="UserControls\ToolbarButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="UserControls\InputControls\IndexFinderEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UserControls\InputControls\IndexFinderEditor.xaml">
+    <Page Update="UserControls\InputControls\SearchTextEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

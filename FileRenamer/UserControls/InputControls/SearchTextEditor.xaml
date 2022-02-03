@@ -1,0 +1,34 @@
+﻿<UserControl
+	x:Class="FileRenamer.UserControls.InputControls.SearchTextEditor"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:uic="using:FileRenamer.UserControls.InputControls" >
+
+	<Grid ColumnSpacing="{StaticResource SmallSpacing}" RowSpacing="{StaticResource SmallSpacing}" >
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<ComboBox Grid.Row="0" Grid.Column="0" MinWidth="100" SelectedIndex="0" PlaceholderText="chose..."
+				  ItemsSource="{x:Bind uic:SearchTextData.TextTypes}" SelectedItem="{x:Bind Data.TextType, Mode=TwoWay}" >
+			<ItemsControl.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+				</DataTemplate>
+			</ItemsControl.ItemTemplate>
+		</ComboBox>
+
+		<CheckBox Grid.Row="0" Grid.Column="1" Content="ignore case" IsChecked="{x:Bind Data.IgnoreCase, Mode=TwoWay}" />
+
+		<StackPanel Grid.Row="1" Grid.ColumnSpan="2" >
+			<TextBox HorizontalAlignment="Stretch" MinWidth="120" Text="{x:Bind Data.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					 IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" />
+			<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind Data.TextError, Mode=OneWay}" />
+		</StackPanel>
+	</Grid>
+</UserControl>
