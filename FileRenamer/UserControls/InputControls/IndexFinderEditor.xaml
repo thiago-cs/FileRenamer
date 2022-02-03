@@ -15,33 +15,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="TextInputDataTemplate" x:DataType="uic:IndexFinderEditorData" >
-			<Grid ColumnSpacing="{StaticResource SmallSpacing}" RowSpacing="{StaticResource SmallSpacing}" >
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-
-				<ComboBox Grid.Row="0" Grid.Column="0" MinWidth="100" SelectedIndex="0" PlaceholderText="chose..."
-						  ItemsSource="{x:Bind uic:IndexFinderEditor.TextTypes}" SelectedItem="{x:Bind TextType, Mode=TwoWay}" >
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ComboBox>
-
-				<CheckBox Grid.Row="0" Grid.Column="1" Content="ignore case" IsChecked="{x:Bind IgnoreCase, Mode=TwoWay}" />
-
-				<StackPanel Grid.Row="1" Grid.ColumnSpan="2" >
-					<TextBox HorizontalAlignment="Stretch" MinWidth="120" Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-							 IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" />
-					<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind TextError, Mode=OneWay}" />
-				</StackPanel>
-			</Grid>
+			<uic:SearchTextEditor Data="{x:Bind SearchTextData}" />
 		</DataTemplate>
 
 	</UserControl.Resources>
