@@ -1,4 +1,4 @@
-﻿namespace FileRenamer.Core;
+﻿namespace FileRenamer.Core.Models;
 
 public interface ICloneable<T>
 {
