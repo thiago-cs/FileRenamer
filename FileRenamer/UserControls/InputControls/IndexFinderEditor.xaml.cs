@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 
 
 namespace FileRenamer.UserControls.InputControls;
@@ -17,8 +16,6 @@ public sealed partial class IndexFinderEditor
 		new(IndexFinderType.Before, null, "before"),
 		new(IndexFinderType.After, null, "after"),
 	};
-
-	internal static readonly TextType[] TextTypes = Enum.GetValues<TextType>();
 
 	private readonly DataTemplate emptyDataTemplate = new();
 
