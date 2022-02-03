@@ -76,6 +76,17 @@
 
 	<!--#region Action editors -->
 
+	<Style x:Key="HeaderStyle" TargetType="TextBlock" >
+		<Setter Property="Margin" Value="0 6 0 0" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+	</Style>
+
+	<Style x:Key="SectionHeaderStyle" BasedOn="{StaticResource HeaderStyle}" TargetType="TextBlock" >
+		<Setter Property="Width" Value="60" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="Opacity" Value="0.9" />
+	</Style>
+
 	<Style x:Key="ErrorMessageTextBlockStyle" TargetType="TextBlock" >
 		<Setter Property="Foreground" Value="Crimson" />
 		<Setter Property="FontSize" Value="12" />
