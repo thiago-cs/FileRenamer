@@ -92,6 +92,14 @@
 		<Setter Property="FontSize" Value="12" />
 	</Style>
 
+	<Style x:Key="StackPanelCardStyle" TargetType="StackPanel" >
+		<Setter Property="BorderBrush" Value="#BBBBBD" />
+		<Setter Property="BorderThickness" Value="0 1 0 0" />
+		<Setter Property="Orientation" Value="Horizontal" />
+		<Setter Property="Padding" Value="{StaticResource SmallTopMargin}" />
+		<Setter Property="Spacing" Value="{StaticResource SmallSpacing}" />
+	</Style>
+
 	<!--#endregion-->
 
 </ResourceDictionary>
