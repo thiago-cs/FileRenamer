@@ -24,19 +24,20 @@ public sealed class ReplaceAction : RenameActionBase
 		this.useRegex = useRegex;
 
 		// 2.
-		System.Text.StringBuilder sb = new("replace ");
+		System.Text.StringBuilder sb = new();
+		bool empty = string.IsNullOrEmpty(this.newString);
+
+		sb.Append(empty ? "remove all occurrencies of " : "replace ");
 
 		if (this.useRegex)
 			sb.Append("the expression ");
 
 		sb.Append('"')
 		  .Append(this.oldString)
-		  .Append(@""" with """);
+		  .Append('"');
 
-		if (this.newString != null)
-			sb.Append(this.newString);
-
-		sb.Append('"');
+		if (!empty)
+			sb.Append(@" with """).Append(this.newString).Append('"');
 
 		Description = sb.ToString();
 	}
