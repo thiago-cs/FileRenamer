@@ -63,6 +63,9 @@
     <Page Update="UserControls\InputControls\IndexFinderEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Update="UserControls\InputControls\RemoveActionEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="UserControls\InputControls\SearchTextEditor.xaml">
