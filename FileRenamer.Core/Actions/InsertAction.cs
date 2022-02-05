@@ -3,6 +3,9 @@
 
 namespace FileRenamer.Core.Actions;
 
+#if DEBUG
+[System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
+#endif
 public sealed class InsertAction : RenameActionBase
 {
 	private readonly IIndexFinder insertIndexFinder;

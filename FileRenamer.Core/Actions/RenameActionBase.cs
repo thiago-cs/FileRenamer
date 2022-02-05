@@ -16,4 +16,12 @@ public abstract class RenameActionBase : Microsoft.Toolkit.Mvvm.ComponentModel.O
 	/// </summary>
 	/// <returns>A new RenameActionBase that is a copy of this instance.</returns>
 	public abstract RenameActionBase Clone();
+
+
+#if DEBUG
+	protected string GetDebuggerDisplay()
+	{
+		return Description;
+	}
+#endif
 }

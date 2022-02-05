@@ -4,6 +4,9 @@ using FileRenamer.Core.Indices;
 
 namespace FileRenamer.Core.Actions;
 
+#if DEBUG
+[System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")] 
+#endif
 public sealed class ToCaseAction : RenameActionBase
 {
 	private readonly IIndexFinder startIndexFinder;
