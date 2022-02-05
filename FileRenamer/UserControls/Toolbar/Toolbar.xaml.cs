@@ -1,4 +1,4 @@
-﻿namespace FileRenamer.UserControls;
+﻿namespace FileRenamer.UserControls.Toolbar;
 
 [Microsoft.UI.Xaml.Markup.ContentProperty(Name = nameof(Groups))]
 public sealed partial class Toolbar

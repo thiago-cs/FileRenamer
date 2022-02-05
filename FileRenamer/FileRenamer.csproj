@@ -58,15 +58,6 @@
     <Page Update="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="UserControls\Toolbar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="UserControls\ToolbarGroup.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Update="UserControls\ToolbarButton.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Update="UserControls\InputControls\IndexEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>

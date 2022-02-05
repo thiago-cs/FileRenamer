@@ -1,4 +1,4 @@
-﻿namespace FileRenamer.UserControls;
+﻿namespace FileRenamer.UserControls.Toolbar;
 
 public enum ToolbarItemSize
 {

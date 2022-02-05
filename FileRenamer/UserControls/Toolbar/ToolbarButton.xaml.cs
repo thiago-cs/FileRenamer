@@ -3,7 +3,7 @@ using Microsoft.UI.Xaml.Controls;
 using FileRenamer.Models;
 
 
-namespace FileRenamer.UserControls;
+namespace FileRenamer.UserControls.Toolbar;
 
 public sealed partial class ToolbarButton : UserControl
 {

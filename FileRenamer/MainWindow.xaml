@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:a="using:FileRenamer.Core.Actions"
-	xmlns:uc="using:FileRenamer.UserControls" >
+	xmlns:ut="using:FileRenamer.UserControls.Toolbar" >
 
 	<Grid Margin="{StaticResource SmallLeftTopRightBottomMargin}" >
 		<Grid.ColumnDefinitions>
@@ -18,28 +18,28 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<uc:Toolbar Grid.Row="0" >
-				<uc:ToolbarGroup Header="Project" >
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind NewProjectCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind LoadProjectCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind SaveProjectCommand}" />
-				</uc:ToolbarGroup>
-				<uc:ToolbarGroup Header="Management" >
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveUpActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveDownActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind EditActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind DuplicateActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveAllActionCommand}" />
-				</uc:ToolbarGroup>
-				<uc:ToolbarGroup Header="Actions" >
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddRemoveActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertCounterActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddReplaceActionCommand}" />
-					<uc:ToolbarButton ItemSize="Medium" Command="{x:Bind AddConvertCaseActionCommand}" />
-				</uc:ToolbarGroup>
-			</uc:Toolbar>
+			<ut:Toolbar Grid.Row="0" >
+				<ut:ToolbarGroup Header="Project" >
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind NewProjectCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind LoadProjectCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind SaveProjectCommand}" />
+				</ut:ToolbarGroup>
+				<ut:ToolbarGroup Header="Management" >
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveUpActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveDownActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind EditActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind DuplicateActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveAllActionCommand}" />
+				</ut:ToolbarGroup>
+				<ut:ToolbarGroup Header="Actions" >
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddRemoveActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertCounterActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddReplaceActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddConvertCaseActionCommand}" />
+				</ut:ToolbarGroup>
+			</ut:Toolbar>
 
 			<!-- Action list view -->
 			<ListView Grid.Row="1" CornerRadius="4" Background="#3888" CanReorderItems="True" SelectionMode="Single" AllowDrop="True"

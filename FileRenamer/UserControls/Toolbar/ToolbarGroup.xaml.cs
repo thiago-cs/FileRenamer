@@ -1,10 +1,10 @@
-﻿using Microsoft.UI.Xaml;
+﻿using System.Collections.Generic;
+using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using System.Collections.Generic;
 using Windows.Foundation.Collections;
 
 
-namespace FileRenamer.UserControls;
+namespace FileRenamer.UserControls.Toolbar;
 
 [Microsoft.UI.Xaml.Markup.ContentProperty(Name = nameof(Items))]
 public sealed partial class ToolbarGroup
