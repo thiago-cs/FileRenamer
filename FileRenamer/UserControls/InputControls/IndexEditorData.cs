@@ -10,8 +10,8 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 	private bool _hasErrors;
 	public new bool HasErrors { get => _hasErrors; private set => SetProperty(ref _hasErrors, value); }
 
-	private IndexFinderType _indexType;
-	public IndexFinderType IndexType
+	private IndexType _indexType;
+	public IndexType IndexType
 	{
 		get => _indexType;
 		set
@@ -53,13 +53,13 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 			? null
 			: IndexType switch
 			{
-				IndexFinderType.None => null,
-				IndexFinderType.Beginning => new BeginningIndexFinder(),
-				IndexFinderType.End => new EndIndexFinder(),
-				IndexFinderType.FileExtension => new FileExtensionIndexFinder(),
-				IndexFinderType.Position => new FixedIndexFinder(IndexPosition),
-				IndexFinderType.Before => new SubstringIndexFinder(SearchTextData.Text, before: true, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
-				IndexFinderType.After => new SubstringIndexFinder(SearchTextData.Text, before: false, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
+				IndexType.None => null,
+				IndexType.Beginning => new BeginningIndexFinder(),
+				IndexType.End => new EndIndexFinder(),
+				IndexType.FileExtension => new FileExtensionIndexFinder(),
+				IndexType.Position => new FixedIndexFinder(IndexPosition),
+				IndexType.Before => new SubstringIndexFinder(SearchTextData.Text, before: true, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
+				IndexType.After => new SubstringIndexFinder(SearchTextData.Text, before: false, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
 				_ => throw new System.NotImplementedException($"Unknown {nameof(IIndexFinder)} type '{IndexType}'."),
 			};
 	}
@@ -71,7 +71,7 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 		// 1. 
 		string indexTypeError = null;
 
-		if (IndexType == IndexFinderType.None)
+		if (IndexType == IndexType.None)
 			indexTypeError = "Select an index type.";
 
 		// 2. 
@@ -81,7 +81,7 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 
 	private void UpdateHasErrors()
 	{
-		HasErrors = IndexTypeError != null || (IndexType is IndexFinderType.Before or IndexFinderType.After && SearchTextData.HasErrors);
+		HasErrors = IndexTypeError != null || (IndexType is IndexType.Before or IndexType.After && SearchTextData.HasErrors);
 	}
 
 	private static bool IsRegexPatternValid(string pattern)

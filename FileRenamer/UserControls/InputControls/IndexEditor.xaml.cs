@@ -9,12 +9,12 @@ public sealed partial class IndexEditor
 
 	internal static readonly IndexFinderTypeEntry[] IndexFinderTypes = new IndexFinderTypeEntry[]
 	{
-		new(IndexFinderType.Beginning, "at", "the beginning"),
-		new(IndexFinderType.End, "at", "the end"),
-		new(IndexFinderType.FileExtension, null, "before extension"),
-		new(IndexFinderType.Position, "at", "position"),
-		new(IndexFinderType.Before, null, "before"),
-		new(IndexFinderType.After, null, "after"),
+		new(IndexType.Beginning, "at", "the beginning"),
+		new(IndexType.End, "at", "the end"),
+		new(IndexType.FileExtension, null, "before extension"),
+		new(IndexType.Position, "at", "position"),
+		new(IndexType.Before, null, "before"),
+		new(IndexType.After, null, "after"),
 	};
 
 	private readonly DataTemplate emptyDataTemplate = new();
@@ -112,9 +112,9 @@ public sealed partial class IndexEditor
 	{
 		ExtraDataTemplate = Data.IndexType switch
 		{
-			IndexFinderType.Position => numberInputDataTemplate,
-			IndexFinderType.After or IndexFinderType.Before => textInputDataTemplate,
-			IndexFinderType.None or IndexFinderType.Beginning or IndexFinderType.End or IndexFinderType.FileExtension or _ => emptyDataTemplate,
+			IndexType.Position => numberInputDataTemplate,
+			IndexType.After or IndexType.Before => textInputDataTemplate,
+			IndexType.None or IndexType.Beginning or IndexType.End or IndexType.FileExtension or _ => emptyDataTemplate,
 		};
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace FileRenamer.UserControls.InputControls;
 
-public enum IndexFinderType
+public enum IndexType
 {
 	None,
 	Beginning,

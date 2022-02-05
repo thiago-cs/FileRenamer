@@ -63,25 +63,25 @@ public sealed class RemoveActionData : System.ComponentModel.BindableBase
 			case RemovalType.FixedLength:
 				switch (StartIndexData.IndexType)
 				{
-					case IndexFinderType.Beginning:
+					case IndexType.Beginning:
 						if (Length <= 0)
 							lengthError = "Enter a positive number.";
 						break;
 
-					case IndexFinderType.End:
+					case IndexType.End:
 						if (0 <= Length)
 							lengthError = "Enter a negative number.";
 						break;
 
-					case IndexFinderType.Position:
+					case IndexType.Position:
 						if (Length + StartIndexData.IndexPosition < 0)
 							lengthError = $"Enter a number greater than {-StartIndexData.IndexPosition}.";
 						break;
 
-					case IndexFinderType.FileExtension:
-					case IndexFinderType.Before:
-					case IndexFinderType.After:
-					case IndexFinderType.None:
+					case IndexType.FileExtension:
+					case IndexType.Before:
+					case IndexType.After:
+					case IndexType.None:
 						break;
 					default:
 						break;
@@ -95,10 +95,10 @@ public sealed class RemoveActionData : System.ComponentModel.BindableBase
 			case RemovalType.EndIndex:
 				endIndexError = (StartIndexData.IndexType, EndIndexData.IndexType) switch
 				{
-					(_, IndexFinderType.Beginning) or
-					(IndexFinderType.End, _) or
-					(IndexFinderType.FileExtension, IndexFinderType.FileExtension) => "Enter valid index types.",
-					(IndexFinderType.Position, IndexFinderType.Position) => EndIndexData.IndexPosition <= StartIndexData.IndexPosition ? "Enter valid index positions." : null,
+					(_, IndexType.Beginning) or
+					(IndexType.End, _) or
+					(IndexType.FileExtension, IndexType.FileExtension) => "Enter valid index types.",
+					(IndexType.Position, IndexType.Position) => EndIndexData.IndexPosition <= StartIndexData.IndexPosition ? "Enter valid index positions." : null,
 					_ => null,
 				};
 				break;
