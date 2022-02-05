@@ -40,10 +40,10 @@
 				</Grid.ColumnDefinitions>
 
 				<TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="From" />
-				<uic:IndexFinderEditor Grid.Row="0" Grid.Column="1" Data="{x:Bind Data.StartIndexData}" IncludePreposionInDescriptions="False" />
+				<uic:IndexEditor Grid.Row="0" Grid.Column="1" Data="{x:Bind Data.StartIndexData}" IncludePreposionInDescriptions="False" />
 
 				<TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="To" />
-				<uic:IndexFinderEditor Grid.Row="1" Grid.Column="1" Data="{x:Bind Data.EndIndexData}" IncludePreposionInDescriptions="False" />
+				<uic:IndexEditor Grid.Row="1" Grid.Column="1" Data="{x:Bind Data.EndIndexData}" IncludePreposionInDescriptions="False" />
 			</Grid>
 		</StackPanel>
 	</StackPanel>

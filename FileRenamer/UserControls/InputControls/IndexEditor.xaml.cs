@@ -3,7 +3,7 @@
 
 namespace FileRenamer.UserControls.InputControls;
 
-public sealed partial class IndexFinderEditor
+public sealed partial class IndexEditor
 {
 	#region Fields
 
@@ -48,17 +48,16 @@ public sealed partial class IndexFinderEditor
 		set => SetValue(DataProperty, value);
 	}
 
-	// Using a DependencyProperty as the backing store for Data.  This enables animation, styling, binding, etc...
 	public static readonly DependencyProperty DataProperty =
 		DependencyProperty.Register(
 			nameof(Data),
 			typeof(IndexEditorData),
-			typeof(IndexFinderEditor),
+			typeof(IndexEditor),
 			new PropertyMetadata(null, OnDataChanged));
 
 	private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
-		if (d is not IndexFinderEditor @this)
+		if (d is not IndexEditor @this)
 			return;
 
 		if (e.OldValue is IndexEditorData oldData)
@@ -76,19 +75,18 @@ public sealed partial class IndexFinderEditor
 		set => SetValue(ExtraDataTemplateProperty, value);
 	}
 
-	// Using a DependencyProperty as the backing store for ExtraDataTemplate.  This enables animation, styling, binding, etc...
 	public static readonly DependencyProperty ExtraDataTemplateProperty =
 		DependencyProperty.Register(
 			nameof(ExtraDataTemplate),
 			typeof(DataTemplate),
-			typeof(IndexFinderEditor),
+			typeof(IndexEditor),
 			new PropertyMetadata(null));
 	#endregion ExtraDataTemplate DependencyProperty
 
 	#endregion
 
 
-	public IndexFinderEditor()
+	public IndexEditor()
 	{
 		//
 		InitializeComponent();

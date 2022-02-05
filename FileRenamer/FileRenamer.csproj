@@ -67,7 +67,7 @@
     <Page Update="UserControls\ToolbarButton.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="UserControls\InputControls\IndexFinderEditor.xaml">
+    <Page Update="UserControls\InputControls\IndexEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Update="UserControls\InputControls\RemoveActionEditor.xaml">

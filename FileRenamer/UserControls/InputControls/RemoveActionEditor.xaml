@@ -18,7 +18,7 @@
 		</DataTemplate>
 
 		<DataTemplate x:Key="EndIndexInputDataTemplate" x:DataType="uic:RemoveActionData" >
-			<uic:IndexFinderEditor Data="{x:Bind EndIndexData}" IncludePreposionInDescriptions="False" />
+			<uic:IndexEditor Data="{x:Bind EndIndexData}" IncludePreposionInDescriptions="False" />
 		</DataTemplate>
 
 	</UserControl.Resources>
@@ -28,7 +28,7 @@
 		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Width="{StaticResource SectionHeaderWidth}" Text="starting" />
 
-			<uic:IndexFinderEditor Data="{x:Bind Data.StartIndexData}" IncludePreposionInDescriptions="True" />
+			<uic:IndexEditor Data="{x:Bind Data.StartIndexData}" IncludePreposionInDescriptions="True" />
 		</StackPanel>
 
 		<StackPanel Style="{StaticResource StackPanelCardStyle}" >

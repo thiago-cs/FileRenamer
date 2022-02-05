@@ -37,7 +37,7 @@ public sealed partial class InsertActionEditor : IActionEditor
 		DependencyProperty.Register(
 			nameof(ExtraDataTemplate),
 			typeof(DataTemplate),
-			typeof(IndexFinderEditor),
+			typeof(IndexEditor),
 			new PropertyMetadata(null));
 	#endregion ExtraDataTemplate DependencyProperty
 

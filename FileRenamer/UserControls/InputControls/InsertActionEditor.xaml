@@ -68,7 +68,7 @@
 		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="where" />
 
-			<uic:IndexFinderEditor Data="{x:Bind Data.IndexData}" />
+			<uic:IndexEditor Data="{x:Bind Data.IndexData}" />
 		</StackPanel>
 	</StackPanel>
 </UserControl>
