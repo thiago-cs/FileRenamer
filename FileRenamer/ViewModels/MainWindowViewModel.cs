@@ -9,6 +9,16 @@ namespace FileRenamer.ViewModels;
 
 public sealed class MainWindowViewModel : BindableBase
 {
+	#region Fields
+
+	private readonly Helpers.DelayedAction delayedUpdateTestOutput;
+	private const int testOutputUpdateDelay = 400; // ms
+
+	#endregion
+
+
+	#region Properties
+
 	private Project _project;
 	public Project Project
 	{
@@ -31,9 +41,12 @@ public sealed class MainWindowViewModel : BindableBase
 
 	public int SelectedIndex { get; set; } = -1;
 
+	#endregion
+
 
 	public MainWindowViewModel()
 	{
+		delayedUpdateTestOutput = new(UpdateTestOutput);
 		Project = new();
 	}
 
@@ -135,7 +148,7 @@ public sealed class MainWindowViewModel : BindableBase
 		set
 		{
 			if (SetProperty(ref _testInput, value))
-				UpdateTestOutput();
+				_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
 		}
 	}
 
@@ -154,7 +167,7 @@ public sealed class MainWindowViewModel : BindableBase
 	private void Actions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
 		// 1.
-		UpdateTestOutput();
+		_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
 
 		// 2. 
 		switch (e.Action)
