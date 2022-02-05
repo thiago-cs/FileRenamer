@@ -7,7 +7,7 @@ public sealed partial class IndexEditor
 {
 	#region Fields
 
-	internal static readonly IndexFinderTypeEntry[] IndexFinderTypes = new IndexFinderTypeEntry[]
+	internal static readonly IndexTypeEntry[] IndexFinderTypes = new IndexTypeEntry[]
 	{
 		new(IndexType.Beginning, "at", "the beginning"),
 		new(IndexType.End, "at", "the end"),
@@ -37,7 +37,7 @@ public sealed partial class IndexEditor
 		set
 		{
 			_includePreposionInDescriptions = value;
-			IndexTypeSelector.DisplayMemberPath = value ? nameof(IndexFinderTypeEntry.DescriptionWithPreposition) : nameof(IndexFinderTypeEntry.DescriptionWithoutPreposition);
+			IndexTypeSelector.DisplayMemberPath = value ? nameof(IndexTypeEntry.DescriptionWithPreposition) : nameof(IndexTypeEntry.DescriptionWithoutPreposition);
 		}
 	}
 

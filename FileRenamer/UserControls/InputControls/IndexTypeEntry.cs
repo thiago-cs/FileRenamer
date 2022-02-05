@@ -1,6 +1,6 @@
 ﻿namespace FileRenamer.UserControls.InputControls;
 
-internal class IndexFinderTypeEntry
+internal class IndexTypeEntry
 {
 	public IndexType Type { get; }
 	public string Preposition { get; }
@@ -8,7 +8,7 @@ internal class IndexFinderTypeEntry
 	public string DescriptionWithoutPreposition { get; }
 
 
-	public IndexFinderTypeEntry(IndexType type, string preposition, string descriptionWithoutPreposition)
+	public IndexTypeEntry(IndexType type, string preposition, string descriptionWithoutPreposition)
 	{
 		Type = type;
 		Preposition = preposition;
