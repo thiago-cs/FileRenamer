@@ -8,9 +8,6 @@ using FileRenamer.ViewModels;
 
 namespace FileRenamer;
 
-/// <summary>
-/// An empty window that can be used on its own or navigated to within a Frame.
-/// </summary>
 public sealed partial class MainWindow
 {
 	internal MainWindowViewModel ViewModel { get; } = new();
@@ -155,7 +152,12 @@ public sealed partial class MainWindow
 
 	private void ExecuteEditAction()
 	{
-
+		if (ViewModel.SelectedAction == null)
+		{
+			// Oops!
+			return;
+		}
+		// ToDo: implement action editing.
 	}
 
 	#endregion
@@ -171,22 +173,30 @@ public sealed partial class MainWindow
 
 	private void ExecuteAddInsertAction()
 	{
+		_ = ShowActionEditorDialog("Insert", new UserControls.InputControls.InsertActionEditor());
 	}
 
 	private void ExecuteAddInsertCounterAction()
 	{
+		UserControls.InputControls.InsertActionEditor actionEditor = new();
+		actionEditor.Data.StringType = UserControls.InputControls.StringSourceType.Counter;
+
+		_ = ShowActionEditorDialog("Insert", actionEditor);
 	}
 
 	private void ExecuteAddRemoveAction()
 	{
+		_ = ShowActionEditorDialog("Remove", new UserControls.InputControls.RemoveActionEditor());
 	}
 
 	private void ExecuteAddReplaceAction()
 	{
+		_ = ShowActionEditorDialog("Replace", new UserControls.InputControls.ReplaceActionEditor());
 	}
 
 	private void ExecuteAddConvertCaseAction()
 	{
+		_ = ShowActionEditorDialog("Change case", new UserControls.InputControls.ChangeCaseActionEditor());
 	}
 
 
