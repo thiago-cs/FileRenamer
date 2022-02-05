@@ -12,6 +12,7 @@
     <EnablePreviewMsixTooling>true</EnablePreviewMsixTooling>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UserControls\InputControls\ChangeCaseActionEditor.xaml" />
     <None Remove="UserControls\InputControls\ReplaceActionEditor.xaml" />
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
   </ItemGroup>
@@ -40,6 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileRenamer.Core\FileRenamer.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UserControls\InputControls\ChangeCaseActionEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Styles\_Colors.xaml">
