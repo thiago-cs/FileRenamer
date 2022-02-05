@@ -16,9 +16,9 @@ public sealed class RemoveActionData : System.ComponentModel.BindableBase
 		}
 	}
 
-	public IndexFinderEditorData StartIndexData { get; } = new();
+	public IndexEditorData StartIndexData { get; } = new();
 
-	public IndexFinderEditorData EndIndexData { get; } = new();
+	public IndexEditorData EndIndexData { get; } = new();
 
 	private string _endIndexError;
 	public string EndIndexError
@@ -123,12 +123,12 @@ public sealed class RemoveActionData : System.ComponentModel.BindableBase
 	{
 		switch (e.PropertyName)
 		{
-			case nameof(IndexFinderEditorData.IndexType):
-			case nameof(IndexFinderEditorData.IndexPosition):
+			case nameof(IndexEditorData.IndexType):
+			case nameof(IndexEditorData.IndexPosition):
 				Validate();
 				break;
 
-			case nameof(IndexFinderEditorData.HasErrors):
+			case nameof(IndexEditorData.HasErrors):
 				UpdateHasErrors();
 				break;
 		}

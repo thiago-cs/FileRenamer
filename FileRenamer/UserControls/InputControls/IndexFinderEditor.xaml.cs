@@ -42,9 +42,9 @@ public sealed partial class IndexFinderEditor
 	}
 
 	#region Data DependencyProperty
-	public IndexFinderEditorData Data
+	public IndexEditorData Data
 	{
-		get => (IndexFinderEditorData)GetValue(DataProperty);
+		get => (IndexEditorData)GetValue(DataProperty);
 		set => SetValue(DataProperty, value);
 	}
 
@@ -52,7 +52,7 @@ public sealed partial class IndexFinderEditor
 	public static readonly DependencyProperty DataProperty =
 		DependencyProperty.Register(
 			nameof(Data),
-			typeof(IndexFinderEditorData),
+			typeof(IndexEditorData),
 			typeof(IndexFinderEditor),
 			new PropertyMetadata(null, OnDataChanged));
 
@@ -61,10 +61,10 @@ public sealed partial class IndexFinderEditor
 		if (d is not IndexFinderEditor @this)
 			return;
 
-		if (e.OldValue is IndexFinderEditorData oldData)
+		if (e.OldValue is IndexEditorData oldData)
 			oldData.PropertyChanged -= @this.Data_PropertyChanged;
 
-		if (e.NewValue is IndexFinderEditorData newData)
+		if (e.NewValue is IndexEditorData newData)
 			newData.PropertyChanged += @this.Data_PropertyChanged;
 	}
 	#endregion Data DependencyProperty

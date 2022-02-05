@@ -21,7 +21,7 @@ public sealed class InsertActionData : System.ComponentModel.BindableBase
 	private string _stringTypeError;
 	public string StringTypeError { get => _stringTypeError; private set => SetProperty(ref _stringTypeError, value); }
 
-	public IndexFinderEditorData IndexData { get; } = new();
+	public IndexEditorData IndexData { get; } = new();
 
 	private static System.Collections.Generic.HashSet<char> _invalidPathChars;
 	private static System.Collections.Generic.HashSet<char> InvalidPathChars => _invalidPathChars ??= new(System.IO.Path.GetInvalidFileNameChars());
@@ -125,7 +125,7 @@ public sealed class InsertActionData : System.ComponentModel.BindableBase
 
 	private void IndexData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName == nameof(IndexFinderEditorData.HasErrors))
+		if (e.PropertyName == nameof(IndexEditorData.HasErrors))
 			UpdateHasErrors();
 	}
 }

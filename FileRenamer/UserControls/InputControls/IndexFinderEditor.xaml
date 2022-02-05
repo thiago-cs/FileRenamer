@@ -6,12 +6,12 @@
 
 	<UserControl.Resources>
 
-		<DataTemplate x:Key="NumberInputDataTemplate" x:DataType="uic:IndexFinderEditorData" >
+		<DataTemplate x:Key="NumberInputDataTemplate" x:DataType="uic:IndexEditorData" >
 			<NumberBox HorizontalAlignment="Left" Width="160" HorizontalContentAlignment="Right" 
 					   Minimum="0" Maximum="1000" Value="{x:Bind IndexPosition, Mode=TwoWay}" SpinButtonPlacementMode="Inline" />
 		</DataTemplate>
 
-		<DataTemplate x:Key="TextInputDataTemplate" x:DataType="uic:IndexFinderEditorData" >
+		<DataTemplate x:Key="TextInputDataTemplate" x:DataType="uic:IndexEditorData" >
 			<uic:SearchTextEditor Data="{x:Bind SearchTextData}" />
 		</DataTemplate>
 

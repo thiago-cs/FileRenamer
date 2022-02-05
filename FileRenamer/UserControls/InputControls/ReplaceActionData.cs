@@ -27,9 +27,9 @@ public sealed class ReplaceActionData : BindableBase
 		}
 	}
 
-	public IndexFinderEditorData StartIndexData { get; } = new();
+	public IndexEditorData StartIndexData { get; } = new();
 
-	public IndexFinderEditorData EndIndexData { get; } = new();
+	public IndexEditorData EndIndexData { get; } = new();
 
 	private string _endIndexError;
 	public string EndIndexError
@@ -84,8 +84,8 @@ public sealed class ReplaceActionData : BindableBase
 				UpdateHasErrors();
 				break;
 
-			case nameof(IndexFinderEditorData.IndexType):
-			case nameof(IndexFinderEditorData.IndexPosition):
+			case nameof(IndexEditorData.IndexType):
+			case nameof(IndexEditorData.IndexPosition):
 				Validate();
 				break;
 		}

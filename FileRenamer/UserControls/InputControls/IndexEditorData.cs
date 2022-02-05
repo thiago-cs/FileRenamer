@@ -3,7 +3,7 @@
 
 namespace FileRenamer.UserControls.InputControls;
 
-public sealed class IndexFinderEditorData : System.ComponentModel.BindableBase
+public sealed class IndexEditorData : System.ComponentModel.BindableBase
 {
 	#region Basic
 
@@ -40,7 +40,7 @@ public sealed class IndexFinderEditorData : System.ComponentModel.BindableBase
 	#endregion
 
 
-	public IndexFinderEditorData()
+	public IndexEditorData()
 	{
 		Validate();
 		SearchTextData.PropertyChanged += SearchTextData_PropertyChanged;
