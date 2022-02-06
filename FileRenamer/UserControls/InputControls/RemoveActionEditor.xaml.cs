@@ -82,8 +82,8 @@ public sealed partial class RemoveActionEditor : IActionEditor
 	{
 		return Data.ActionType switch
 		{
-			RemovalType.FixedLength => new RemoveAction(Data.StartIndexData.GetIndexFinder(), Data.Length),
-			RemovalType.EndIndex => new RemoveAction(Data.StartIndexData.GetIndexFinder(), Data.EndIndexData.GetIndexFinder()),
+			RemovalType.FixedLength => new RemoveAction(Data.StartIndexData.GetIIndex(), Data.Length),
+			RemovalType.EndIndex => new RemoveAction(Data.StartIndexData.GetIIndex(), Data.EndIndexData.GetIIndex()),
 			_ => throw new NotImplementedException(),
 		};
 	}

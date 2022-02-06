@@ -86,15 +86,15 @@ public sealed partial class InsertActionEditor : IActionEditor
 			return null;
 		}
 
-		Core.Indices.IIndex indexFinder = Data.IndexData.GetIndexFinder();
+		Core.Indices.IIndex index = Data.IndexData.GetIIndex();
 
 		switch (Data.StringType)
 		{
 			case StringSourceType.Text:
-				return new InsertAction(indexFinder, Data.Text);
+				return new InsertAction(index, Data.Text);
 
 			case StringSourceType.Counter:
-				return new InsertCounterAction(indexFinder, Data.InitialValue, Data.PaddedLength/*, Data.PaddingChar[0]*/);
+				return new InsertCounterAction(index, Data.InitialValue, Data.PaddedLength/*, Data.PaddingChar[0]*/);
 
 			default:
 				// Oops!

@@ -71,7 +71,7 @@ public sealed class ChangeCaseActionData : BindableBase
 		//// 1. 
 		//string indexTypeError = null;
 
-		//if (IndexType == IndexFinderType.None)
+		//if (IndexType == IndexType.None)
 		//	indexTypeError = "Select an index type.";
 
 		//// 2. 

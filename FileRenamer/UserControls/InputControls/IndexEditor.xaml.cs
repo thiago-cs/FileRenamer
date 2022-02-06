@@ -7,7 +7,7 @@ public sealed partial class IndexEditor
 {
 	#region Fields
 
-	internal static readonly IndexTypeEntry[] IndexFinderTypes = new IndexTypeEntry[]
+	internal static readonly IndexTypeEntry[] IndexTypes = new IndexTypeEntry[]
 	{
 		new(IndexType.Beginning, "at", "the beginning"),
 		new(IndexType.End, "at", "the end"),

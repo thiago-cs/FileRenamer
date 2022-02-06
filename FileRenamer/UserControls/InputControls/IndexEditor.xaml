@@ -20,7 +20,7 @@
 	<StackPanel Orientation="Horizontal" Spacing="{StaticResource SmallSpacing}" >
 		<StackPanel>
 			<ComboBox Grid.Column="0" Name="IndexTypeSelector" Width="160" PlaceholderText="chose"
-					  ItemsSource="{x:Bind uic:IndexEditor.IndexFinderTypes}" SelectedValue="{x:Bind Data.IndexType, Mode=TwoWay}" 
+					  ItemsSource="{x:Bind uic:IndexEditor.IndexTypes}" SelectedValue="{x:Bind Data.IndexType, Mode=TwoWay}" 
 					  DisplayMemberPath="DescriptionWithPreposition" SelectedValuePath="Type" />
 			<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind Data.IndexTypeError, Mode=OneWay}" />
 		</StackPanel>

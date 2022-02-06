@@ -71,7 +71,7 @@ public sealed partial class ReplaceActionEditor : IActionEditor
 		return Data.ExecutionScope switch
 		{
 			ExecutionScope.WholeInput => new ReplaceAction(Data.OldString.Text, Data.NewString, Data.OldString.IgnoreCase, Data.OldString.TextType == TextType.Regex),
-			ExecutionScope.Range => new ReplaceAction(Data.StartIndexData.GetIndexFinder(), Data.EndIndexData.GetIndexFinder(), Data.OldString.Text, Data.NewString, Data.OldString.IgnoreCase, Data.OldString.TextType == TextType.Regex),
+			ExecutionScope.Range => new ReplaceAction(Data.StartIndexData.GetIIndex(), Data.EndIndexData.GetIIndex(), Data.OldString.Text, Data.NewString, Data.OldString.IgnoreCase, Data.OldString.TextType == TextType.Regex),
 			_ => null,
 		};
 	}

@@ -9,8 +9,8 @@ namespace FileRenamer.Core.Actions;
 #endif
 public sealed class ReplaceAction : RenameActionBase
 {
-	private readonly IIndex? startIndexFinder;
-	private readonly IIndex? endIndexFinder;
+	private readonly IIndex? startIndex;
+	private readonly IIndex? endIndex;
 	private readonly string oldString;
 	private readonly string? newString;
 	private readonly bool ignoreCase;
@@ -45,11 +45,11 @@ public sealed class ReplaceAction : RenameActionBase
 		Description = sb.ToString();
 	}
 
-	public ReplaceAction(IIndex startIndexFinder, IIndex endIndexFinder, string oldString, string? newString, bool ignoreCase, bool useRegex)
+	public ReplaceAction(IIndex startIndex, IIndex endIndex, string oldString, string? newString, bool ignoreCase, bool useRegex)
 	{
 		// 1. 
-		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));
-		this.endIndexFinder = endIndexFinder ?? throw new ArgumentNullException(nameof(endIndexFinder));
+		this.startIndex = startIndex ?? throw new ArgumentNullException(nameof(startIndex));
+		this.endIndex = endIndex ?? throw new ArgumentNullException(nameof(endIndex));
 		this.oldString = oldString ?? throw new ArgumentNullException(nameof(oldString));
 		this.newString = newString;
 		this.ignoreCase = ignoreCase;
@@ -64,7 +64,7 @@ public sealed class ReplaceAction : RenameActionBase
 		sb.Append('"')
 		  .Append(this.oldString)
 		  .Append(@""" within ")
-		  .Append(Helpers.DescriptionHelper.GetRangeFriendlyName(this.startIndexFinder, this.endIndexFinder))
+		  .Append(Helpers.DescriptionHelper.GetRangeFriendlyName(this.startIndex, this.endIndex))
 		  .Append(@" with """);
 
 		if (this.newString != null)
@@ -79,16 +79,16 @@ public sealed class ReplaceAction : RenameActionBase
 	public override string Run(string input)
 	{
 		// 
-		if (startIndexFinder == null || endIndexFinder == null)
+		if (this.startIndex == null || this.endIndex == null)
 			return Run_Core(input);
 
 		//
-		int startIndex = startIndexFinder.FindIn(input);
+		int startIndex = this.startIndex.FindIn(input);
 
 		if (startIndex == -1)
 			return input;
 
-		int endIndex = endIndexFinder.FindIn(input);
+		int endIndex = this.endIndex.FindIn(input);
 
 		if (endIndex == -1)
 			return input;
@@ -103,8 +103,8 @@ public sealed class ReplaceAction : RenameActionBase
 	/// <inheritdoc cref="RenameActionBase.Clone" />
 	public override RenameActionBase Clone()
 	{
-		return startIndexFinder != null && endIndexFinder != null
-				? new ReplaceAction(startIndexFinder, endIndexFinder, oldString, newString, ignoreCase, useRegex)
+		return startIndex != null && endIndex != null
+				? new ReplaceAction(startIndex, endIndex, oldString, newString, ignoreCase, useRegex)
 				: new ReplaceAction(oldString, newString, ignoreCase, useRegex);
 	}
 

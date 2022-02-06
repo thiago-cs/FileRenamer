@@ -9,23 +9,23 @@ namespace FileRenamer.Core.Actions;
 #endif
 public sealed class ToCaseAction : RenameActionBase
 {
-	private readonly IIndex startIndexFinder;
-	private readonly IIndex endIndexFinder;
+	private readonly IIndex startIndex;
+	private readonly IIndex endIndex;
 	private readonly TextCasing textCase;
 
 
-	public ToCaseAction(IIndex startIndexFinder, IIndex endIndexFinder, TextCasing textCase)
+	public ToCaseAction(IIndex startIndex, IIndex endIndex, TextCasing textCase)
 	{
-		this.startIndexFinder = startIndexFinder;
-		this.endIndexFinder = endIndexFinder;
+		this.startIndex = startIndex;
+		this.endIndex = endIndex;
 		this.textCase = textCase;
 
-		string range = (this.startIndexFinder, this.endIndexFinder) switch
+		string range = (this.startIndex, this.endIndex) switch
 		{
-			(BeginningIndexFinder, EndIndexFinder) => $"all characters",
-			(BeginningIndexFinder, FileExtensionIndexFinder) => $"file name",
-			(FileExtensionIndexFinder, EndIndexFinder) => $"file extension",
-			_ => $"characters from {this.startIndexFinder.Description.ToString(includePreposition: false)} to {this.endIndexFinder.Description.ToString(includePreposition: false)}",
+			(BeginningIndex, EndIndex) => $"all characters",
+			(BeginningIndex, FileExtensionIndex) => $"file name",
+			(FileExtensionIndex, EndIndex) => $"file extension",
+			_ => $"characters from {this.startIndex.Description.ToString(includePreposition: false)} to {this.endIndex.Description.ToString(includePreposition: false)}",
 		};
 
 		string @case = this.textCase switch
@@ -50,13 +50,13 @@ public sealed class ToCaseAction : RenameActionBase
 			return input;
 
 		// 1.2. 
-		int startIndex = startIndexFinder.FindIn(input);
+		int startIndex = this.startIndex.FindIn(input);
 
 		if (startIndex < 0 || input.Length <= startIndex)
 			return input;
 
 		// 1.3. 
-		int endIndex = endIndexFinder.FindIn(input);
+		int endIndex = this.endIndex.FindIn(input);
 
 		if (endIndex < startIndex)
 			return input;
@@ -73,6 +73,6 @@ public sealed class ToCaseAction : RenameActionBase
 	/// <inheritdoc cref="RenameActionBase.Clone" />
 	public override RenameActionBase Clone()
 	{
-		return new ToCaseAction(startIndexFinder, endIndexFinder, textCase);
+		return new ToCaseAction(startIndex, endIndex, textCase);
 	}
 }

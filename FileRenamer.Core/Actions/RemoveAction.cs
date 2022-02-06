@@ -8,23 +8,23 @@ namespace FileRenamer.Core.Actions;
 #endif
 public sealed class RemoveAction : RenameActionBase
 {
-	private readonly IIndex startIndexFinder;
-	private readonly IIndex? endIndexFinder;
+	private readonly IIndex startIndex;
+	private readonly IIndex? endIndex;
 	private readonly int count;
 
 
-	public RemoveAction(IIndex startIndexFinder, IIndex endIndexFinder)
+	public RemoveAction(IIndex startIndex, IIndex endIndex)
 	{
-		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));
-		this.endIndexFinder = endIndexFinder ?? throw new ArgumentNullException(nameof(endIndexFinder));
+		this.startIndex = startIndex ?? throw new ArgumentNullException(nameof(startIndex));
+		this.endIndex = endIndex ?? throw new ArgumentNullException(nameof(endIndex));
 
-		Description = $"remove {Helpers.DescriptionHelper.GetRangeFriendlyName(this.startIndexFinder, this.endIndexFinder)}";
+		Description = $"remove {Helpers.DescriptionHelper.GetRangeFriendlyName(this.startIndex, this.endIndex)}";
 	}
 
-	public RemoveAction(IIndex startIndexFinder, int count)
+	public RemoveAction(IIndex startIndex, int count)
 	{
 		//
-		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));
+		this.startIndex = startIndex ?? throw new ArgumentNullException(nameof(startIndex));
 		this.count = count != 0 ? count : throw new ArgumentOutOfRangeException(nameof(count), "The number of characters to remove may not be zero.");
 
 		//
@@ -37,10 +37,10 @@ public sealed class RemoveAction : RenameActionBase
 		};
 
 		Description = 0 < count
-			? $"remove {s} starting from {startIndexFinder.Description.ToString(includePreposition: false)}"
-			: startIndexFinder is EndIndexFinder
+			? $"remove {s} starting from {startIndex.Description.ToString(includePreposition: false)}"
+			: startIndex is EndIndex
 				? $"remove the last {s}"
-				: $"remove the {s} preceding the {startIndexFinder.Description.ToString(includePreposition: false)}";
+				: $"remove the {s} preceding the {startIndex.Description.ToString(includePreposition: false)}";
 	}
 
 
@@ -52,7 +52,7 @@ public sealed class RemoveAction : RenameActionBase
 			return input;
 
 		// 1.2. 
-		int startIndex = startIndexFinder.FindIn(input);
+		int startIndex = this.startIndex.FindIn(input);
 
 		if (startIndex < 0 || input.Length < startIndex)
 			return input;
@@ -60,7 +60,7 @@ public sealed class RemoveAction : RenameActionBase
 		// 1.3. 
 		int endIndex;
 
-		if (endIndexFinder == null)
+		if (this.endIndex == null)
 		{
 			if (count < 0)
 			{
@@ -74,7 +74,7 @@ public sealed class RemoveAction : RenameActionBase
 		}
 		else
 		{
-			endIndex = endIndexFinder.FindIn(input);
+			endIndex = this.endIndex.FindIn(input);
 
 			if (endIndex < startIndex)
 				return input;
@@ -92,8 +92,8 @@ public sealed class RemoveAction : RenameActionBase
 	/// <inheritdoc cref="RenameActionBase.Clone" />
 	public override RenameActionBase Clone()
 	{
-		return endIndexFinder != null
-				? new RemoveAction(startIndexFinder, endIndexFinder)
-				: new RemoveAction(startIndexFinder, count);
+		return endIndex != null
+				? new RemoveAction(startIndex, endIndex)
+				: new RemoveAction(startIndex, count);
 	}
 }

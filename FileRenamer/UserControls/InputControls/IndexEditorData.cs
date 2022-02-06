@@ -47,7 +47,7 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 	}
 
 
-	public IIndex GetIndexFinder()
+	public IIndex GetIIndex()
 	{
 		return HasErrors
 			? null
