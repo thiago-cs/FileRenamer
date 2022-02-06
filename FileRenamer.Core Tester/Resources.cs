@@ -42,12 +42,12 @@ public static class Resources
 
 	public static readonly IIndex[] finders =
 	{
-		new BeginningIndexFinder(),
-		new FixedIndexFinder(3),
-		new SubstringIndexFinder("sunset", true, false, false),
-		new SubstringIndexFinder("dark", false, false, false),
-		new SubstringIndexFinder("(Hi|Hello) kitty", false, false, true),
-		new FileExtensionIndexFinder(),
-		new EndIndexFinder(),
+		new BeginningIndex(),
+		new FixedIndex(3),
+		new SubstringIndex("sunset", true, false, false),
+		new SubstringIndex("dark", false, false, false),
+		new SubstringIndex("(Hi|Hello) kitty", false, false, true),
+		new FileExtensionIndex(),
+		new EndIndex(),
 	};
 }
