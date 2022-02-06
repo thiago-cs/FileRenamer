@@ -1,11 +1,11 @@
 ﻿namespace FileRenamer.Core.Indices;
 
-public sealed class FileExtensionIndexFinder : IIndex
+public sealed class FileExtensionIndex : IIndex
 {
-	public IndexFinderDescription Description { get; private set; }
+	public IndexDescription Description { get; private set; }
 
 
-	public FileExtensionIndexFinder()
+	public FileExtensionIndex()
 	{
 		Description = new("before", "file's extension");
 	}

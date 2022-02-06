@@ -3,7 +3,7 @@
 
 namespace FileRenamer.Core.Indices;
 
-public sealed class SubstringIndexFinder : IIndex
+public sealed class SubstringIndex : IIndex
 {
 	private readonly string value;
 	private readonly bool before;
@@ -12,10 +12,10 @@ public sealed class SubstringIndexFinder : IIndex
 	private Regex? regex;
 
 
-	public IndexFinderDescription Description { get; private set; }
+	public IndexDescription Description { get; private set; }
 
 
-	public SubstringIndexFinder(string value, bool before, bool ignoreCase, bool useRegex)
+	public SubstringIndex(string value, bool before, bool ignoreCase, bool useRegex)
 	{
 		this.value = value;
 		this.before = before;

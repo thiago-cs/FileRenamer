@@ -8,7 +8,7 @@ public interface IIndex
 	/// <summary>
 	/// Gets this objects description to be used to compose a <see cref="Actions.RenameActionBase"/>'s own description.
 	/// </summary>
-	public IndexFinderDescription Description { get; }
+	public IndexDescription Description { get; }
 
 
 	/// <summary>

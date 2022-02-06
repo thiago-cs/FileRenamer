@@ -1,11 +1,11 @@
 ﻿namespace FileRenamer.Core.Indices;
 
-public sealed class EndIndexFinder : IIndex
+public sealed class EndIndex : IIndex
 {
-	public IndexFinderDescription Description { get; private set; }
+	public IndexDescription Description { get; private set; }
 
 
-	public EndIndexFinder()
+	public EndIndex()
 	{
 		Description = new("at the", "end");
 	}

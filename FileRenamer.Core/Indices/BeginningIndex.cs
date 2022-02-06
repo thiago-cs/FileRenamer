@@ -1,11 +1,11 @@
 ﻿namespace FileRenamer.Core.Indices;
 
-public sealed class BeginningIndexFinder : IIndex
+public sealed class BeginningIndex : IIndex
 {
-	public IndexFinderDescription Description { get; private set; }
+	public IndexDescription Description { get; private set; }
 
 
-	public BeginningIndexFinder()
+	public BeginningIndex()
 	{
 		Description = new("at the", "beginning");
 	}

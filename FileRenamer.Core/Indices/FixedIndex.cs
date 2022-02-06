@@ -1,20 +1,20 @@
 ﻿namespace FileRenamer.Core.Indices;
 
-public sealed class FixedIndexFinder : IIndex
+public sealed class FixedIndex : IIndex
 {
 	private readonly int index;
 
 
-	public IndexFinderDescription Description { get; private set; }
+	public IndexDescription Description { get; private set; }
 
 
-	public FixedIndexFinder(int value)
+	public FixedIndex(int value)
 	{
 		index = value;
 		Description = new("after", $"char. #{value}");
 	}
 
-	public static implicit operator FixedIndexFinder(int value) => new(value);
+	public static implicit operator FixedIndex(int value) => new(value);
 
 
 	public int FindIn(string input)
