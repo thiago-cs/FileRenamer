@@ -85,7 +85,7 @@ public sealed class Test_FindIndex
 	[TestCase(loremIpsum,  /* language=regex */ "[thiago]{3,}", true, true, true, 58)]
 	public void SubstringIndexFinderTest(string input, string reference, bool isBefore, bool ignoreCase, bool useRegex, int expected)
 	{
-		Assert.AreEqual(expected, new SubstringIndexFinder(reference, isBefore, ignoreCase, useRegex).FindIn(input));
+		Assert.AreEqual(expected, new SubstringIndex(reference, isBefore, ignoreCase, useRegex).FindIn(input));
 		Assert.Pass();
 	}
 
