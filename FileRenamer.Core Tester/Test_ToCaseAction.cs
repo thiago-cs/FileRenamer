@@ -18,7 +18,7 @@ public sealed class Test_ToCaseAction
 	{
 		IIndex startIndexFinder;
 		IIndex endIndexFinder;
-		FileExtensionIndexFinder extensionIndexFinder = new();
+		FileExtensionIndex extensionIndexFinder = new();
 
 		if (convertName)
 		{

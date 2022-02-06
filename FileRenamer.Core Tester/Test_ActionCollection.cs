@@ -21,7 +21,7 @@ public static class Test_ActionCollection
 			new RemoveAction(new BeginningIndex(), new SubstringIndexFinder(" - ", false, false, false)),
 			new InsertAction(new SubstringIndexFinder("vs", false, false, false), "."),
 			new ReplaceAction(@"_\d*p", " - Brian Lagunas", false, true),
-			new ToCaseAction(new FileExtensionIndexFinder(), new EndIndex(), TextCasing.LowerCase),
+			new ToCaseAction(new FileExtensionIndex(), new EndIndex(), TextCasing.LowerCase),
 		};
 
 		Assert.AreEqual(expected, actions.Run(input));

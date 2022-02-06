@@ -97,7 +97,7 @@ public sealed class Test_FindIndex
 	[TestCase("using .NET_right-now", 6)]
 	public void FileExtensionIndexFinderTest1(string fileName, int expected)
 	{
-		Assert.AreEqual(expected, new FileExtensionIndexFinder().FindIn(fileName));
+		Assert.AreEqual(expected, new FileExtensionIndex().FindIn(fileName));
 		Assert.Pass();
 	}
 }
