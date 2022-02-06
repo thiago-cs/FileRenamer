@@ -18,7 +18,7 @@ public static class Test_ActionCollection
 
 		ActionCollection actions = new()
 		{
-			new RemoveAction(new BeginningIndexFinder(), new SubstringIndexFinder(" - ", false, false, false)),
+			new RemoveAction(new BeginningIndex(), new SubstringIndexFinder(" - ", false, false, false)),
 			new InsertAction(new SubstringIndexFinder("vs", false, false, false), "."),
 			new ReplaceAction(@"_\d*p", " - Brian Lagunas", false, true),
 			new ToCaseAction(new FileExtensionIndexFinder(), new EndIndexFinder(), TextCasing.LowerCase),

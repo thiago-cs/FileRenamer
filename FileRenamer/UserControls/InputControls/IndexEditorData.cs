@@ -54,7 +54,7 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 			: IndexType switch
 			{
 				IndexType.None => null,
-				IndexType.Beginning => new BeginningIndexFinder(),
+				IndexType.Beginning => new BeginningIndex(),
 				IndexType.End => new EndIndexFinder(),
 				IndexType.FileExtension => new FileExtensionIndexFinder(),
 				IndexType.Position => new FixedIndexFinder(IndexPosition),

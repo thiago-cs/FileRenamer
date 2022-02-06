@@ -9,9 +9,9 @@ public static class DescriptionHelper
 	{
 		return (startIndexFinder, endIndexFinder) switch
 		{
-			(BeginningIndexFinder, FileExtensionIndexFinder) => $"file name",
+			(BeginningIndex, FileExtensionIndexFinder) => $"file name",
 			(FileExtensionIndexFinder, EndIndexFinder) => $"file extension",
-			(BeginningIndexFinder, EndIndexFinder) => $"all characters",
+			(BeginningIndex, EndIndexFinder) => $"all characters",
 			_ => $"characters from {startIndexFinder.Description.ToString(includePreposition: false)} to {endIndexFinder.Description.ToString(includePreposition: false)}",
 		};
 	}

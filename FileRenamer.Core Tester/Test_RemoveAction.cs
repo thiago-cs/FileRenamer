@@ -12,7 +12,7 @@ public sealed class Test_RemoveAction
 	[Test]
 	public void Test1()
 	{
-		Test("", quickBrownFox, new BeginningIndexFinder(), new EndIndexFinder());
+		Test("", quickBrownFox, new BeginningIndex(), new EndIndexFinder());
 		Assert.Pass();
 	}
 
@@ -36,7 +36,7 @@ public sealed class Test_RemoveAction
 	[Test]
 	public void Test4()
 	{
-		Test("never forget kindnesses", neverForget, new BeginningIndexFinder(), new SubstringIndexFinder(", ", false, false, false));
+		Test("never forget kindnesses", neverForget, new BeginningIndex(), new SubstringIndexFinder(", ", false, false, false));
 		Assert.Pass();
 	}
 

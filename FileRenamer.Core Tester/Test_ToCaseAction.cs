@@ -22,7 +22,7 @@ public sealed class Test_ToCaseAction
 
 		if (convertName)
 		{
-			startIndexFinder = new BeginningIndexFinder();
+			startIndexFinder = new BeginningIndex();
 			endIndexFinder = extensionIndexFinder;
 		}
 		else

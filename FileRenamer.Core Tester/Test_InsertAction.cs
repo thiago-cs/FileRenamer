@@ -16,7 +16,7 @@ public sealed class Test_InsertAction
 	[TestCase("", "Empty")]
 	public void AddToBeginning(string input, string addend)
 	{
-		Assert.AreEqual(addend + input, new InsertAction(new BeginningIndexFinder(), addend).Run(input));
+		Assert.AreEqual(addend + input, new InsertAction(new BeginningIndex(), addend).Run(input));
 		Assert.Pass();
 	}
 

@@ -82,7 +82,7 @@ public sealed partial class ChangeCaseActionEditor : UserControl, IActionEditor
 	{
 		return Data.ExecutionScope switch
 		{
-			ExecutionScope.WholeInput => new ToCaseAction(new BeginningIndexFinder(), new EndIndexFinder(), Data.TextCase),
+			ExecutionScope.WholeInput => new ToCaseAction(new BeginningIndex(), new EndIndexFinder(), Data.TextCase),
 			ExecutionScope.Range => new ToCaseAction(Data.StartIndexData.GetIndexFinder(), Data.EndIndexData.GetIndexFinder(), Data.TextCase),
 			ExecutionScope.Occurrences => throw new NotImplementedException(),
 			_ => throw new NotImplementedException(),
