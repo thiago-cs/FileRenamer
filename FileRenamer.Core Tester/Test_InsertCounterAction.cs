@@ -14,7 +14,7 @@ public sealed class Test_InsertCounterAction
 	[TestCase("big file.part", 13, 0, 3, new string[] { "big file.part000", "big file.part001", "big file.part002", "big file.part003", })]
 	public void Test(string input, int insertPosition, int startValue, int width, string[] expected)
 	{
-		InsertCounterAction insertCounterAction = new(new FixedIndexFinder(insertPosition), startValue, width);
+		InsertCounterAction insertCounterAction = new(new FixedIndex(insertPosition), startValue, width);
 
 		for (int i = 0; i < expected.Length; i++)
 			Assert.AreEqual(expected[i], insertCounterAction.Run(input));

@@ -57,7 +57,7 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 				IndexType.Beginning => new BeginningIndex(),
 				IndexType.End => new EndIndex(),
 				IndexType.FileExtension => new FileExtensionIndex(),
-				IndexType.Position => new FixedIndexFinder(IndexPosition),
+				IndexType.Position => new FixedIndex(IndexPosition),
 				IndexType.Before => new SubstringIndexFinder(SearchTextData.Text, before: true, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
 				IndexType.After => new SubstringIndexFinder(SearchTextData.Text, before: false, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
 				_ => throw new System.NotImplementedException($"Unknown {nameof(IIndex)} type '{IndexType}'."),

@@ -68,7 +68,7 @@ public sealed class Test_RemoveAction
 	[TestCase(neverForget, 0, 17, "remove 17 characters starting from char. #0", "never forget kindnesses")]
 	public void Test8(string input, int startIndex, int count, string description, string expected)
 	{
-		RemoveAction removeAction = new(new FixedIndexFinder(startIndex), count);
+		RemoveAction removeAction = new(new FixedIndex(startIndex), count);
 		Assert.AreEqual(description, removeAction.Description);
 		Assert.AreEqual(expected, removeAction.Run(input));
 	}

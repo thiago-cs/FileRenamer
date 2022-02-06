@@ -56,7 +56,7 @@ public sealed class Test_FindIndex
 		for (int i = 0; i < testStrings.Length; i++)
 		{
 			int r = random.Next(100);
-			Assert.AreEqual(r, new FixedIndexFinder(r).FindIn(testStrings[i]));
+			Assert.AreEqual(r, new FixedIndex(r).FindIn(testStrings[i]));
 		}
 
 		Assert.Pass();

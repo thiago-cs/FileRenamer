@@ -30,7 +30,7 @@ public sealed class Test_ReplaceAction
 	[TestCase("sun of a beach", 10, 12, /*language=regex*/ @"\w", "*", false, true, "sun of a b**ch")]
 	public void TestWithBounds(string input, int start, int end, string oldString, string newString, bool ignoreCase, bool useRegex, string expected)
 	{
-		Assert.AreEqual(expected, new ReplaceAction(new FixedIndexFinder(start), new FixedIndexFinder(end), oldString, newString, ignoreCase, useRegex).Run(input));
+		Assert.AreEqual(expected, new ReplaceAction(new FixedIndex(start), new FixedIndex(end), oldString, newString, ignoreCase, useRegex).Run(input));
 	}
 
 
