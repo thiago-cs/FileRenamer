@@ -8,13 +8,13 @@ namespace FileRenamer.Core.Actions;
 #endif
 public sealed class InsertCounterAction : RenameActionBase
 {
-	private readonly IIndexFinder insertIndexFinder;
+	private readonly IIndex insertIndexFinder;
 	private readonly int startValue;
 	private readonly int minWidth;
 	private int counter;
 
 
-	public InsertCounterAction(IIndexFinder insertIndexFinder, int startValue, int minWidth)
+	public InsertCounterAction(IIndex insertIndexFinder, int startValue, int minWidth)
 	{
 		this.insertIndexFinder = insertIndexFinder ?? throw new ArgumentNullException(nameof(insertIndexFinder));
 		this.startValue = startValue;

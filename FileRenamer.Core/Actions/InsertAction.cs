@@ -8,11 +8,11 @@ namespace FileRenamer.Core.Actions;
 #endif
 public sealed class InsertAction : RenameActionBase
 {
-	private readonly IIndexFinder insertIndexFinder;
+	private readonly IIndex insertIndexFinder;
 	private readonly string value;
 
 
-	public InsertAction(IIndexFinder insertIndexFinder, string value)
+	public InsertAction(IIndex insertIndexFinder, string value)
 	{
 		this.insertIndexFinder = insertIndexFinder ?? throw new ArgumentNullException(nameof(insertIndexFinder));
 		this.value = value ?? throw new ArgumentNullException(nameof(value));

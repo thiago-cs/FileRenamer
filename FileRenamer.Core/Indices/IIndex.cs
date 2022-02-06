@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents an object that provides methods for finding an index within a <see cref="string"/>.
 /// </summary>
-public interface IIndexFinder
+public interface IIndex
 {
 	/// <summary>
 	/// Gets this objects description to be used to compose a <see cref="Actions.RenameActionBase"/>'s own description.

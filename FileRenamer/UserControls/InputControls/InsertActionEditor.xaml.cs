@@ -86,7 +86,7 @@ public sealed partial class InsertActionEditor : IActionEditor
 			return null;
 		}
 
-		Core.Indices.IIndexFinder indexFinder = Data.IndexData.GetIndexFinder();
+		Core.Indices.IIndex indexFinder = Data.IndexData.GetIndexFinder();
 
 		switch (Data.StringType)
 		{

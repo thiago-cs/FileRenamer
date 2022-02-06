@@ -8,12 +8,12 @@ namespace FileRenamer.Core.Actions;
 #endif
 public sealed class RemoveAction : RenameActionBase
 {
-	private readonly IIndexFinder startIndexFinder;
-	private readonly IIndexFinder? endIndexFinder;
+	private readonly IIndex startIndexFinder;
+	private readonly IIndex? endIndexFinder;
 	private readonly int count;
 
 
-	public RemoveAction(IIndexFinder startIndexFinder, IIndexFinder endIndexFinder)
+	public RemoveAction(IIndex startIndexFinder, IIndex endIndexFinder)
 	{
 		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));
 		this.endIndexFinder = endIndexFinder ?? throw new ArgumentNullException(nameof(endIndexFinder));
@@ -21,7 +21,7 @@ public sealed class RemoveAction : RenameActionBase
 		Description = $"remove {Helpers.DescriptionHelper.GetRangeFriendlyName(this.startIndexFinder, this.endIndexFinder)}";
 	}
 
-	public RemoveAction(IIndexFinder startIndexFinder, int count)
+	public RemoveAction(IIndex startIndexFinder, int count)
 	{
 		//
 		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));

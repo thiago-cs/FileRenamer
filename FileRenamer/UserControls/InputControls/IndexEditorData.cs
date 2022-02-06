@@ -47,7 +47,7 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 	}
 
 
-	public IIndexFinder GetIndexFinder()
+	public IIndex GetIndexFinder()
 	{
 		return HasErrors
 			? null
@@ -60,7 +60,7 @@ public sealed class IndexEditorData : System.ComponentModel.BindableBase
 				IndexType.Position => new FixedIndexFinder(IndexPosition),
 				IndexType.Before => new SubstringIndexFinder(SearchTextData.Text, before: true, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
 				IndexType.After => new SubstringIndexFinder(SearchTextData.Text, before: false, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
-				_ => throw new System.NotImplementedException($"Unknown {nameof(IIndexFinder)} type '{IndexType}'."),
+				_ => throw new System.NotImplementedException($"Unknown {nameof(IIndex)} type '{IndexType}'."),
 			};
 	}
 

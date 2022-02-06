@@ -1,6 +1,6 @@
 ﻿namespace FileRenamer.Core.Indices;
 
-public sealed class FileExtensionIndexFinder : IIndexFinder
+public sealed class FileExtensionIndexFinder : IIndex
 {
 	public IndexFinderDescription Description { get; private set; }
 

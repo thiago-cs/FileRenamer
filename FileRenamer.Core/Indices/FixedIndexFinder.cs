@@ -1,6 +1,6 @@
 ﻿namespace FileRenamer.Core.Indices;
 
-public sealed class FixedIndexFinder : IIndexFinder
+public sealed class FixedIndexFinder : IIndex
 {
 	private readonly int index;
 

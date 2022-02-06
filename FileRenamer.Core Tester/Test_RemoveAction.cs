@@ -86,7 +86,7 @@ public sealed class Test_RemoveAction
 	}
 
 
-	private static void Test(string expected, string input, IIndexFinder startIndexFinder, IIndexFinder endIndexFinder)
+	private static void Test(string expected, string input, IIndex startIndexFinder, IIndex endIndexFinder)
 	{
 		Assert.AreEqual(expected, new RemoveAction(startIndexFinder, endIndexFinder).Run(input));
 	}

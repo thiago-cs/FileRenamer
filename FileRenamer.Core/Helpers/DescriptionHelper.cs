@@ -5,7 +5,7 @@ namespace FileRenamer.Core.Helpers;
 
 public static class DescriptionHelper
 {
-	public static string GetRangeFriendlyName(IIndexFinder startIndexFinder, IIndexFinder endIndexFinder)
+	public static string GetRangeFriendlyName(IIndex startIndexFinder, IIndex endIndexFinder)
 	{
 		return (startIndexFinder, endIndexFinder) switch
 		{

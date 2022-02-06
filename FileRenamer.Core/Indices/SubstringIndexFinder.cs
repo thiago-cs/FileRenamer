@@ -3,7 +3,7 @@
 
 namespace FileRenamer.Core.Indices;
 
-public sealed class SubstringIndexFinder : IIndexFinder
+public sealed class SubstringIndexFinder : IIndex
 {
 	private readonly string value;
 	private readonly bool before;

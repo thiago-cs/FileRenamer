@@ -40,7 +40,7 @@ public static class Resources
 	public const string regex1 = @",[^\.]*(?=,)";
 
 
-	public static readonly IIndexFinder[] finders =
+	public static readonly IIndex[] finders =
 	{
 		new BeginningIndexFinder(),
 		new FixedIndexFinder(3),

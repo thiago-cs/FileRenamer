@@ -16,8 +16,8 @@ public sealed class Test_ToCaseAction
 	[TestCase(1, true, TextCasing.LowerCase, "area.effect")]
 	public void FileNameTest(int fileNameIndex, bool convertName, TextCasing casing, string expected)
 	{
-		IIndexFinder startIndexFinder;
-		IIndexFinder endIndexFinder;
+		IIndex startIndexFinder;
+		IIndex endIndexFinder;
 		FileExtensionIndexFinder extensionIndexFinder = new();
 
 		if (convertName)

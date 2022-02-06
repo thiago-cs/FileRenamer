@@ -9,8 +9,8 @@ namespace FileRenamer.Core.Actions;
 #endif
 public sealed class ReplaceAction : RenameActionBase
 {
-	private readonly IIndexFinder? startIndexFinder;
-	private readonly IIndexFinder? endIndexFinder;
+	private readonly IIndex? startIndexFinder;
+	private readonly IIndex? endIndexFinder;
 	private readonly string oldString;
 	private readonly string? newString;
 	private readonly bool ignoreCase;
@@ -45,7 +45,7 @@ public sealed class ReplaceAction : RenameActionBase
 		Description = sb.ToString();
 	}
 
-	public ReplaceAction(IIndexFinder startIndexFinder, IIndexFinder endIndexFinder, string oldString, string? newString, bool ignoreCase, bool useRegex)
+	public ReplaceAction(IIndex startIndexFinder, IIndex endIndexFinder, string oldString, string? newString, bool ignoreCase, bool useRegex)
 	{
 		// 1. 
 		this.startIndexFinder = startIndexFinder ?? throw new ArgumentNullException(nameof(startIndexFinder));

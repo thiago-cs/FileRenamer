@@ -9,12 +9,12 @@ namespace FileRenamer.Core.Actions;
 #endif
 public sealed class ToCaseAction : RenameActionBase
 {
-	private readonly IIndexFinder startIndexFinder;
-	private readonly IIndexFinder endIndexFinder;
+	private readonly IIndex startIndexFinder;
+	private readonly IIndex endIndexFinder;
 	private readonly TextCasing textCase;
 
 
-	public ToCaseAction(IIndexFinder startIndexFinder, IIndexFinder endIndexFinder, TextCasing textCase)
+	public ToCaseAction(IIndex startIndexFinder, IIndex endIndexFinder, TextCasing textCase)
 	{
 		this.startIndexFinder = startIndexFinder;
 		this.endIndexFinder = endIndexFinder;
