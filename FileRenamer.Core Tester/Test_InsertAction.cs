@@ -24,7 +24,7 @@ public sealed class Test_InsertAction
 	[TestCase(neverForget, ".")]
 	public void AddToEnd(string input, string addend)
 	{
-		Assert.AreEqual(input + addend, new InsertAction(new EndIndexFinder(), addend).Run(input));
+		Assert.AreEqual(input + addend, new InsertAction(new EndIndex(), addend).Run(input));
 		Assert.Pass();
 	}
 

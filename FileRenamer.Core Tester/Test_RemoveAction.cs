@@ -12,14 +12,14 @@ public sealed class Test_RemoveAction
 	[Test]
 	public void Test1()
 	{
-		Test("", quickBrownFox, new BeginningIndex(), new EndIndexFinder());
+		Test("", quickBrownFox, new BeginningIndex(), new EndIndex());
 		Assert.Pass();
 	}
 
 	[Test]
 	public void Test2()
 	{
-		Test("The five boxing wizards", fiveBoxingWizards, new SubstringIndexFinder("wizards", false, false, false), new EndIndexFinder());
+		Test("The five boxing wizards", fiveBoxingWizards, new SubstringIndexFinder("wizards", false, false, false), new EndIndex());
 		Assert.Pass();
 	}
 
@@ -79,7 +79,7 @@ public sealed class Test_RemoveAction
 	[TestCase(quickBrownFox, -5, "remove the last 5 characters", "the quick brown fox jumps over the lazy")]
 	public void Test9(string input, int count, string description, string expected)
 	{
-		RemoveAction removeAction = new RemoveAction(new EndIndexFinder(), count);
+		RemoveAction removeAction = new RemoveAction(new EndIndex(), count);
 		Assert.AreEqual(description, removeAction.Description);
 		Assert.AreEqual(expected, removeAction.Run(input));
 		Assert.Pass();

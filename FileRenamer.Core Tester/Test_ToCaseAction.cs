@@ -28,7 +28,7 @@ public sealed class Test_ToCaseAction
 		else
 		{
 			startIndexFinder = extensionIndexFinder;
-			endIndexFinder  = new EndIndexFinder();
+			endIndexFinder  = new EndIndex();
 		}
 
 		Assert.AreEqual(expected, new ToCaseAction(startIndexFinder, endIndexFinder, casing).Run(fileNames[fileNameIndex]));

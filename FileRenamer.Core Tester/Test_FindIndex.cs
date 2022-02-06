@@ -34,7 +34,7 @@ public sealed class Test_FindIndex
 			return;
 		}
 
-		EndIndexFinder indexFinder = new();
+		EndIndex indexFinder = new();
 
 		for (int i = 0; i < testStrings.Length; i++)
 			Assert.AreEqual(testStrings[i].Length, indexFinder.FindIn(testStrings[i]));
