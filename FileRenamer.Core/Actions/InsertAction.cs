@@ -17,7 +17,7 @@ public sealed class InsertAction : RenameActionBase
 		this.insertIndex = insertIndex ?? throw new ArgumentNullException(nameof(insertIndex));
 		this.value = value ?? throw new ArgumentNullException(nameof(value));
 
-		Description = @$"insert ""{this.value}"" {this.insertIndex.Description.ToString(includePreposition: true)}";
+		UpdateDescription();
 	}
 
 
@@ -37,6 +37,11 @@ public sealed class InsertAction : RenameActionBase
 
 		// 2. 
 		return input.Insert(index, value);
+	}
+
+	public override void UpdateDescription()
+	{
+		Description = @$"insert ""{value}"" {insertIndex.Description.ToString(includePreposition: true)}";
 	}
 
 	/// <inheritdoc cref="RenameActionBase.Clone" />

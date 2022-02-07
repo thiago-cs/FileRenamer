@@ -20,25 +20,7 @@ public sealed class ToCaseAction : RenameActionBase
 		this.endIndex = endIndex;
 		this.textCase = textCase;
 
-		string range = (this.startIndex, this.endIndex) switch
-		{
-			(BeginningIndex, EndIndex) => $"all characters",
-			(BeginningIndex, FileExtensionIndex) => $"file name",
-			(FileExtensionIndex, EndIndex) => $"file extension",
-			_ => $"characters from {this.startIndex.Description.ToString(includePreposition: false)} to {this.endIndex.Description.ToString(includePreposition: false)}",
-		};
-
-		string @case = this.textCase switch
-		{
-			TextCasing.LowerCase => "lowercase",
-			TextCasing.UpperCase => "uppercase",
-			TextCasing.SentenceCase => "sentence case",
-			TextCasing.TitleCase => "title case",
-			TextCasing.TitleCaseIgnoreCommonWords => "title case (ignore common words)",
-			_ => this.textCase.ToString(),
-		};
-
-		Description = $"convert {range} to {@case}";
+		UpdateDescription();
 	}
 
 
@@ -68,6 +50,29 @@ public sealed class ToCaseAction : RenameActionBase
 
 		// 3. 
 		return s1 + s2 + s3;
+	}
+
+	public override void UpdateDescription()
+	{
+		string range = (startIndex, endIndex) switch
+		{
+			(BeginningIndex, EndIndex) => $"all characters",
+			(BeginningIndex, FileExtensionIndex) => $"file name",
+			(FileExtensionIndex, EndIndex) => $"file extension",
+			_ => $"characters from {startIndex.Description.ToString(includePreposition: false)} to {endIndex.Description.ToString(includePreposition: false)}",
+		};
+
+		string @case = textCase switch
+		{
+			TextCasing.LowerCase => "lowercase",
+			TextCasing.UpperCase => "uppercase",
+			TextCasing.SentenceCase => "sentence case",
+			TextCasing.TitleCase => "title case",
+			TextCasing.TitleCaseIgnoreCommonWords => "title case (ignore common words)",
+			_ => textCase.ToString(),
+		};
+
+		Description = $"convert {range} to {@case}";
 	}
 
 	/// <inheritdoc cref="RenameActionBase.Clone" />

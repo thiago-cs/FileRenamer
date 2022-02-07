@@ -20,29 +20,12 @@ public sealed class ReplaceAction : RenameActionBase
 
 	public ReplaceAction(string oldString, string? newString, bool ignoreCase, bool useRegex)
 	{
-		// 1. 
 		this.oldString = oldString ?? throw new ArgumentNullException(nameof(oldString));
 		this.newString = newString;
 		this.ignoreCase = ignoreCase;
 		this.useRegex = useRegex;
 
-		// 2.
-		System.Text.StringBuilder sb = new();
-		bool empty = string.IsNullOrEmpty(this.newString);
-
-		sb.Append(empty ? "remove all occurrencies of " : "replace ");
-
-		if (this.useRegex)
-			sb.Append("the expression ");
-
-		sb.Append('"')
-		  .Append(this.oldString)
-		  .Append('"');
-
-		if (!empty)
-			sb.Append(@" with """).Append(this.newString).Append('"');
-
-		Description = sb.ToString();
+		UpdateDescription();
 	}
 
 	public ReplaceAction(IIndex startIndex, IIndex endIndex, string oldString, string? newString, bool ignoreCase, bool useRegex)
@@ -55,24 +38,7 @@ public sealed class ReplaceAction : RenameActionBase
 		this.ignoreCase = ignoreCase;
 		this.useRegex = useRegex;
 
-		// 2. 
-		System.Text.StringBuilder sb = new("replace ");
-
-		if (this.useRegex)
-			sb.Append("the expression ");
-
-		sb.Append('"')
-		  .Append(this.oldString)
-		  .Append(@""" within ")
-		  .Append(Helpers.DescriptionHelper.GetRangeFriendlyName(this.startIndex, this.endIndex))
-		  .Append(@" with """);
-
-		if (this.newString != null)
-			sb.Append(this.newString);
-
-		sb.Append('"');
-
-		Description = sb.ToString();
+		UpdateDescription();
 	}
 
 
@@ -98,6 +64,49 @@ public sealed class ReplaceAction : RenameActionBase
 
 		// 
 		return input[..startIndex] + Run_Core(input[startIndex..endIndex]) + input[endIndex..];
+	}
+
+	public override void UpdateDescription()
+	{
+		if (startIndex == null || endIndex == null)
+		{
+			System.Text.StringBuilder sb = new();
+			bool empty = string.IsNullOrEmpty(newString);
+
+			sb.Append(empty ? "remove all occurrencies of " : "replace ");
+
+			if (useRegex)
+				sb.Append("the expression ");
+
+			sb.Append('"')
+			  .Append(oldString)
+			  .Append('"');
+
+			if (!empty)
+				sb.Append(@" with """).Append(newString).Append('"');
+
+			Description = sb.ToString();
+		}
+		else
+		{
+			System.Text.StringBuilder sb = new("replace ");
+
+			if (useRegex)
+				sb.Append("the expression ");
+
+			sb.Append('"')
+			  .Append(oldString)
+			  .Append(@""" within ")
+			  .Append(Helpers.DescriptionHelper.GetRangeFriendlyName(startIndex, endIndex))
+			  .Append(@" with """);
+
+			if (newString != null)
+				sb.Append(newString);
+
+			sb.Append('"');
+
+			Description = sb.ToString();
+		}
 	}
 
 	/// <inheritdoc cref="RenameActionBase.Clone" />

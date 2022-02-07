@@ -18,29 +18,15 @@ public sealed class RemoveAction : RenameActionBase
 		this.startIndex = startIndex ?? throw new ArgumentNullException(nameof(startIndex));
 		this.endIndex = endIndex ?? throw new ArgumentNullException(nameof(endIndex));
 
-		Description = $"remove {Helpers.DescriptionHelper.GetRangeFriendlyName(this.startIndex, this.endIndex)}";
+		UpdateDescription();
 	}
 
 	public RemoveAction(IIndex startIndex, int count)
 	{
-		//
 		this.startIndex = startIndex ?? throw new ArgumentNullException(nameof(startIndex));
 		this.count = count != 0 ? count : throw new ArgumentOutOfRangeException(nameof(count), "The number of characters to remove may not be zero.");
 
-		//
-		string s = count switch
-		{
-			>= 2 => $"{count} characters",
-			1 => "a character",
-			-1 => "character",
-			_ => $"{-count} characters",
-		};
-
-		Description = 0 < count
-			? $"remove {s} starting from {startIndex.Description.ToString(includePreposition: false)}"
-			: startIndex is EndIndex
-				? $"remove the last {s}"
-				: $"remove the {s} preceding the {startIndex.Description.ToString(includePreposition: false)}";
+		UpdateDescription();
 	}
 
 
@@ -87,6 +73,30 @@ public sealed class RemoveAction : RenameActionBase
 		return endIndex < input.Length
 				? result + input[endIndex..]
 				: result;
+	}
+
+	public override void UpdateDescription()
+	{
+		if (endIndex != null)
+		{
+			Description = $"remove {Helpers.DescriptionHelper.GetRangeFriendlyName(startIndex, endIndex)}";
+		}
+		else
+		{
+			string s = count switch
+			{
+				>= 2 => $"{count} characters",
+				1 => "a character",
+				-1 => "character",
+				_ => $"{-count} characters",
+			};
+
+			Description = 0 < count
+				? $"remove {s} starting from {startIndex.Description.ToString(includePreposition: false)}"
+				: startIndex is EndIndex
+					? $"remove the last {s}"
+					: $"remove the {s} preceding the {startIndex.Description.ToString(includePreposition: false)}";
+		}
 	}
 
 	/// <inheritdoc cref="RenameActionBase.Clone" />

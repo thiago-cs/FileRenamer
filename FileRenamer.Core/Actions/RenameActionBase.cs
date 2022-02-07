@@ -11,6 +11,8 @@ public abstract class RenameActionBase : Microsoft.Toolkit.Mvvm.ComponentModel.O
 
 	public abstract string Run(string input);
 
+	public abstract void UpdateDescription();
+
 	/// <summary>
 	/// Creates a new object that is a shallow copy of the current instance.
 	/// </summary>

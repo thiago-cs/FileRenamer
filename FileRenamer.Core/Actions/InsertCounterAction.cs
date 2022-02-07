@@ -20,8 +20,7 @@ public sealed class InsertCounterAction : RenameActionBase
 		this.startValue = startValue;
 		this.minWidth = minWidth;
 
-		Description = $"insert a {this.minWidth}-char counter starting from {this.startValue} {this.insertIndex.Description.ToString(includePreposition: true)}";
-
+		UpdateDescription();
 		Reset();
 	}
 
@@ -45,6 +44,11 @@ public sealed class InsertCounterAction : RenameActionBase
 
 		// 2. 
 		return input.Insert(index, value);
+	}
+
+	public override void UpdateDescription()
+	{
+		Description = $"insert a {minWidth}-char counter starting from {startValue} {insertIndex.Description.ToString(includePreposition: true)}";
 	}
 
 	/// <inheritdoc cref="RenameActionBase.Clone" />
