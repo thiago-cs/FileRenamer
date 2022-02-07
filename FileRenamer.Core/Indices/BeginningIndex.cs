@@ -2,13 +2,10 @@
 
 public sealed class BeginningIndex : IIndex
 {
-	public IndexDescription Description { get; private set; }
+	public IndexDescription Description => new("at the", "beginning");
 
 
-	public BeginningIndex()
-	{
-		Description = new("at the", "beginning");
-	}
+	public BeginningIndex() { }
 
 
 	public int FindIn(string input)

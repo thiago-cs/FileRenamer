@@ -2,13 +2,10 @@
 
 public sealed class EndIndex : IIndex
 {
-	public IndexDescription Description { get; private set; }
+	public IndexDescription Description => new("at the", "end");
 
 
-	public EndIndex()
-	{
-		Description = new("at the", "end");
-	}
+	public EndIndex() { }
 
 
 	public int FindIn(string input)

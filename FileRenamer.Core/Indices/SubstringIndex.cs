@@ -12,7 +12,16 @@ public sealed class SubstringIndex : IIndex
 	private Regex? regex;
 
 
-	public IndexDescription Description { get; private set; }
+	public IndexDescription Description
+	{
+		get
+		{
+			string prepositon = before ? "before " : "after ";
+			string description = useRegex ? @$"the expression ""{value}""" : @$"""{value}""";
+			return new(null, prepositon + description);
+		}
+	}
+
 
 
 	public SubstringIndex(string value, bool before, bool ignoreCase, bool useRegex)
@@ -21,10 +30,6 @@ public sealed class SubstringIndex : IIndex
 		this.before = before;
 		this.ignoreCase = ignoreCase;
 		this.useRegex = useRegex;
-
-		string prepositon = before ? "before " : "after ";
-		string description = useRegex ? @$"the expression ""{value}""" : @$"""{value}""";
-		Description = new(null, prepositon + description);
 	}
 
 

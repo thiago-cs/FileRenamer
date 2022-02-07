@@ -2,13 +2,10 @@
 
 public sealed class FileExtensionIndex : IIndex
 {
-	public IndexDescription Description { get; private set; }
+	public IndexDescription Description => new("before", "file's extension");
 
 
-	public FileExtensionIndex()
-	{
-		Description = new("before", "file's extension");
-	}
+	public FileExtensionIndex() { }
 
 
 	public int FindIn(string input)
