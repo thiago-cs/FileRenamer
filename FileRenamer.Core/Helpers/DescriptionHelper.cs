@@ -9,9 +9,11 @@ public static class DescriptionHelper
 	{
 		return (startIndex, endIndex) switch
 		{
-			(BeginningIndex, FileExtensionIndex) => $"file name",
-			(FileExtensionIndex, EndIndex) => $"file extension",
-			(BeginningIndex, EndIndex) => $"all characters",
+			(BeginningIndex, FileExtensionIndex)
+			 or (FixedIndex, FileExtensionIndex) when startIndex.FindIn(string.Empty) == 0 => "file name",
+			(FileExtensionIndex, EndIndex) => "file extension",
+			(BeginningIndex, EndIndex)
+			 or (FixedIndex, EndIndex) when startIndex.FindIn(string.Empty) == 0 => "all characters",
 			_ => $"characters from {startIndex.Description.ToString(includePreposition: false)} to {endIndex.Description.ToString(includePreposition: false)}",
 		};
 	}
