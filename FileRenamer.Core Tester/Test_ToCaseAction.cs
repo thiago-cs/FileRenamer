@@ -40,7 +40,7 @@ public sealed class Test_ToCaseAction
 	[TestCase(0, 6, TextCasing.TitleCase, "convert all characters to title case")]
 	[TestCase(5, 6, TextCasing.UpperCase, "convert file extension to uppercase")]
 	[TestCase(2, 3, TextCasing.SentenceCase, @"convert characters from before ""sunset"" to after ""dark"" to sentence case")]
-	[TestCase(0, 1, TextCasing.TitleCaseIgnoreCommonWords, @"convert characters from beginning to the 3rd character to title case (ignore common words)")]
+	[TestCase(0, 1, TextCasing.TitleCaseIgnoreCommonWords, @"convert characters from beginning to 3rd character to title case (ignore common words)")]
 	public void TestDescription(int startIndexFinderIndex, int endIndexFinderIndex, TextCasing casing, string expected)
 	{
 		Assert.AreEqual(expected, new ToCaseAction(finders[startIndexFinderIndex], finders[endIndexFinderIndex], casing).Description);
