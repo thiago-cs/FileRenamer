@@ -1,11 +1,14 @@
-﻿namespace FileRenamer.Core.Indices;
+﻿using Humanizer;
+
+
+namespace FileRenamer.Core.Indices;
 
 public sealed class FixedIndex : IIndex
 {
 	private readonly int index;
 
 
-	public IndexDescription Description => new("after", $"char. #{index}");
+	public IndexDescription Description => new("after", $"the {index.Ordinalize(GrammaticalGender.Neuter)} character");
 
 
 	public FixedIndex(int value)
