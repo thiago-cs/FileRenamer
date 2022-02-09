@@ -8,7 +8,21 @@ public sealed class FixedIndex : IIndex
 	private readonly int index;
 
 
-	public IndexDescription Description => new("after", $"the {index.Ordinalize(GrammaticalGender.Neuter)} character");
+	public IndexDescription Description
+	{
+		get
+		{
+			const string startPrepositon = "before the";
+
+			return index switch
+			{
+				< -1 => new(startPrepositon, $"{(-index).Ordinalize(GrammaticalGender.Neuter)} to last character"),
+				-1 => new(startPrepositon, "last character"),
+				0 => new(startPrepositon, "first character"),
+				_ => new("after the", $"{index.Ordinalize(GrammaticalGender.Neuter)} character")
+			};
+		}
+	}
 
 
 	public FixedIndex(int value)
@@ -21,6 +35,6 @@ public sealed class FixedIndex : IIndex
 
 	public int FindIn(string input)
 	{
-		return index;
+		return index < 0 ? input.Length + index : index;
 	}
 }
