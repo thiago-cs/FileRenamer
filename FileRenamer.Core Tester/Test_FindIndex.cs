@@ -100,4 +100,17 @@ public sealed class Test_FindIndex
 		Assert.AreEqual(expected, new FileExtensionIndex().FindIn(fileName));
 		Assert.Pass();
 	}
+
+	[Test]
+	[TestCase(0, "at the beginning")]
+	[TestCase(1, "after char. #3")]
+	[TestCase(2, @"before ""sunset""")]
+	[TestCase(3, @"after ""dark""")]
+	[TestCase(4, @"after the expression ""(Hi|Hello) kitty""")]
+	[TestCase(5, "before file's extension")]
+	[TestCase(6, "at the end")]
+	public void DescriptionTest(int index, string expected)
+	{
+		Assert.AreEqual(expected, finders[index].Description.ToString(includePreposition: true));
+	}
 }
