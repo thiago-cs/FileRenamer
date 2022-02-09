@@ -103,7 +103,7 @@ public sealed class Test_FindIndex
 
 	[Test]
 	[TestCase(0, "at the beginning")]
-	[TestCase(1, "after char. #3")]
+	[TestCase(1, "after the 3rd character")]
 	[TestCase(2, @"before ""sunset""")]
 	[TestCase(3, @"after ""dark""")]
 	[TestCase(4, @"after the expression ""(Hi|Hello) kitty""")]

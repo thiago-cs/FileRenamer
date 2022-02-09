@@ -46,7 +46,7 @@ public sealed class Test_InsertAction
 	[Test]
 	[TestCase(0, "this", @"insert ""this"" at the beginning")]
 	[TestCase(6, "that", @"insert ""that"" at the end")]
-	[TestCase(1, "third", @"insert ""third"" after char. #3")]
+	[TestCase(1, "third", @"insert ""third"" after the 3rd character")]
 	[TestCase(2, "Jesse", @"insert ""Jesse"" before ""sunset""")]
 	[TestCase(3, "mint", @"insert ""mint"" after ""dark""")]
 	[TestCase(4, "!", @"insert ""!"" after the expression ""(Hi|Hello) kitty""")]
