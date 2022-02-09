@@ -1,4 +1,5 @@
-﻿using FileRenamer.Core.Indices;
+﻿using FileRenamer.Core.Actions;
+using FileRenamer.Core.Indices;
 
 
 namespace FileRenamer.Core_Tester;
@@ -49,5 +50,17 @@ public static class Resources
 		new SubstringIndex("(Hi|Hello) kitty", false, false, true),
 		new FileExtensionIndex(),
 		new EndIndex(),
+	};
+
+	internal static readonly RenameActionBase[] actions =
+	{
+		new InsertAction(new BeginningIndex(), "Once upon a time,"),
+		new InsertAction(new EndIndex(), "The End."),
+		new RemoveAction(new BeginningIndex(), new EndIndex()),
+		new RemoveAction(new FixedIndex(7), 2),
+		new InsertCounterAction(new SubstringIndex("episode", false, false, false),  1, 2),
+		new ReplaceAction("out with the old", "in with the new", false, true),
+		new ReplaceAction(new FixedIndex(3), new FileExtensionIndex(), "out with the old", "in with the new", false, true),
+		new ToCaseAction(new BeginningIndex(), new FileExtensionIndex(), Core.Extensions.TextCasing.TitleCaseIgnoreCommonWords),
 	};
 }
