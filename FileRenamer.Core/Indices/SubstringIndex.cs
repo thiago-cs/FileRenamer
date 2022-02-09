@@ -16,9 +16,21 @@ public sealed class SubstringIndex : IIndex
 	{
 		get
 		{
-			string prepositon = before ? "before " : "after ";
-			string description = useRegex ? @$"the expression ""{value}""" : @$"""{value}""";
-			return new(null, prepositon + description);
+			System.Text.StringBuilder sb = new();
+
+			sb.Append(before ? "before " : "after ");
+
+			if (useRegex)
+				sb.Append("the expression ");
+
+			sb.Append('"')
+			  .Append(value)
+			  .Append('"');
+
+			if (ignoreCase)
+				sb.Append("(ignore case)");
+
+			return new(null, sb.ToString());
 		}
 	}
 
