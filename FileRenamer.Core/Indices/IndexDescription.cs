@@ -12,7 +12,12 @@ public sealed class IndexDescription
 		this.description = description;
 	}
 
-	internal object ToString(bool includePreposition)
+	public override string ToString()
+	{
+		return ToString(true);
+	}
+
+	public string ToString(bool includePreposition)
 	{
 		return includePreposition && !string.IsNullOrWhiteSpace(startPrepositon)
 			? $"{startPrepositon} {description}"
