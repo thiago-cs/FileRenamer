@@ -7,8 +7,8 @@
 	<UserControl.Resources>
 
 		<DataTemplate x:Key="NumberInputDataTemplate" x:DataType="uic:IndexEditorData" >
-			<NumberBox HorizontalAlignment="Left" Width="160" HorizontalContentAlignment="Right" 
-					   Minimum="0" Maximum="1000" Value="{x:Bind IndexPosition, Mode=TwoWay}" SpinButtonPlacementMode="Inline" />
+			<NumberBox HorizontalAlignment="Left" Width="160" HorizontalContentAlignment="Right"
+					   Minimum="-1000" Maximum="1000" Value="{x:Bind IndexPosition, Mode=TwoWay}" SpinButtonPlacementMode="Inline" />
 		</DataTemplate>
 
 		<DataTemplate x:Key="TextInputDataTemplate" x:DataType="uic:IndexEditorData" >
