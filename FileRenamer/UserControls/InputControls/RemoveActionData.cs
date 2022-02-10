@@ -74,8 +74,17 @@ public sealed class RemoveActionData : System.ComponentModel.BindableBase
 						break;
 
 					case IndexType.Position:
-						if (Length + StartIndexData.IndexPosition < 0)
-							lengthError = $"Enter a number greater than {-StartIndexData.IndexPosition}.";
+						if (StartIndexData.IndexPosition < 0)
+						{
+							if (/*0 < Length &&*/ -StartIndexData.IndexPosition < Length)
+								lengthError = $"Enter a number less than or equal to {-StartIndexData.IndexPosition}.";
+						}
+						else
+						{
+							if (Length < -StartIndexData.IndexPosition)
+								lengthError = $"Enter a number greater than {-StartIndexData.IndexPosition}.";
+						}
+
 						break;
 
 					case IndexType.FileExtension:
@@ -115,7 +124,7 @@ public sealed class RemoveActionData : System.ComponentModel.BindableBase
 
 	private void UpdateHasErrors()
 	{
-		HasErrors = LengthError != null || EndIndexError != null || StartIndexData.HasErrors || EndIndexData.HasErrors;
+		HasErrors = StartIndexData.HasErrors || (ActionType == RemovalType.FixedLength ? LengthError != null : EndIndexError != null || EndIndexData.HasErrors);
 	}
 
 
