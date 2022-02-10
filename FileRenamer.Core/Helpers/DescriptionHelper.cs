@@ -1,4 +1,5 @@
-﻿using FileRenamer.Core.Indices;
+﻿using Humanizer;
+using FileRenamer.Core.Indices;
 
 
 namespace FileRenamer.Core.Helpers;
@@ -9,11 +10,17 @@ public static class DescriptionHelper
 	{
 		return (startIndex, endIndex) switch
 		{
-			(BeginningIndex, FileExtensionIndex)
-			 or (FixedIndex, FileExtensionIndex) when startIndex.FindIn(string.Empty) == 0 => "file name",
+			(BeginningIndex, FileExtensionIndex) => "file name",
+			(FixedIndex fix, FileExtensionIndex) when fix.index == 0 => "file name",
+
 			(FileExtensionIndex, EndIndex) => "file extension",
-			(BeginningIndex, EndIndex)
-			 or (FixedIndex, EndIndex) when startIndex.FindIn(string.Empty) == 0 => "all characters",
+
+			(BeginningIndex, EndIndex) => "all characters",
+			(FixedIndex fix, EndIndex) when fix.index == 0 => "all characters",
+
+			(FixedIndex fix, EndIndex) when fix.index == -1 => "the last character",
+			(FixedIndex fix, EndIndex) when fix.index < 0 => "the last " + "character".ToQuantity(-fix.index),
+
 			_ => $"characters from {startIndex.Description.ToString(includePreposition: false)} to {endIndex.Description.ToString(includePreposition: false)}",
 		};
 	}
