@@ -62,10 +62,10 @@ public sealed class Test_RemoveAction
 	}
 
 	[Test]
-	[TestCase(loremIpsum, 00, int.MaxValue, "remove 2147483647 characters starting from the first character", "")]
-	[TestCase(loremIpsum, 11, 107, "remove 107 characters starting from the 11th character", "Lorem ipsum")]
-	[TestCase(loremIpsum, 26, int.MaxValue, "remove 2147483647 characters starting from the 26th character", "Lorem ipsum dolor sit amet")]
-	[TestCase(neverForget, 0, 17, "remove 17 characters starting from the first character", "never forget kindnesses")]
+	[TestCase(loremIpsum, 00, int.MaxValue, "remove 2147483647 characters after the 1st character", "")]
+	[TestCase(loremIpsum, 11, 107, "remove 107 characters after the 11th character", "Lorem ipsum")]
+	[TestCase(loremIpsum, 26, int.MaxValue, "remove 2147483647 characters after the 26th character", "Lorem ipsum dolor sit amet")]
+	[TestCase(neverForget, 0, 17, "remove 17 characters after the 1st character", "never forget kindnesses")]
 	public void Test8(string input, int startIndex, int count, string description, string expected)
 	{
 		RemoveAction removeAction = new(new FixedIndex(startIndex), count);
@@ -99,6 +99,8 @@ public sealed class Test_RemoveAction
 	[TestCase(9, 6, "remove all characters")]
 	[TestCase(5, 6, "remove file extension")]
 	[TestCase(1, 3, @"remove characters from 3rd character to after ""dark""")]
+	[TestCase(8, 6, @"remove the last character")]
+	[TestCase(7, 6, @"remove the last 2 characters")]
 	public void TestDescription(int startIndexFinderIndex, int endIndexFinderIndex, string expected)
 	{
 		Assert.AreEqual(expected, new RemoveAction(finders[startIndexFinderIndex], finders[endIndexFinderIndex]).Description);
