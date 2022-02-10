@@ -92,7 +92,9 @@ public sealed class RemoveAction : RenameActionBase
 			};
 
 			Description = 0 < count
-				? $"remove {s} after the {startIndex.Description.ToString(includePreposition: false)}"
+				? startIndex is FixedIndex fix && -fix.index == count
+					? $"remove the last {s}".Replace(" a ", null) // a small hack to avoid more conditionals.
+					: $"remove {s} after the {startIndex.Description.ToString(includePreposition: false)}"
 				: startIndex is EndIndex
 					? $"remove the last {s}"
 					: $"remove the {s} preceding the {startIndex.Description.ToString(includePreposition: false)}";
