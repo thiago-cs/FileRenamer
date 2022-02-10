@@ -50,6 +50,10 @@ public static class Resources
 		new SubstringIndex("(Hi|Hello) kitty", false, false, true),
 		new FileExtensionIndex(),
 		new EndIndex(),
+		new FixedIndex(-2),
+		new FixedIndex(-1),
+		new FixedIndex(0),
+		new FixedIndex(1),
 	};
 
 	internal static readonly RenameActionBase[] actions =
