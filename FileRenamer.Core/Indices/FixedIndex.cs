@@ -5,7 +5,7 @@ namespace FileRenamer.Core.Indices;
 
 public sealed class FixedIndex : IIndex
 {
-	private readonly int index;
+	internal readonly int index;
 
 
 	public IndexDescription Description
@@ -18,7 +18,7 @@ public sealed class FixedIndex : IIndex
 			{
 				< -1 => new(startPrepositon, $"{(-index).Ordinalize(GrammaticalGender.Neuter)} to last character"),
 				-1 => new(startPrepositon, "last character"),
-				0 => new(startPrepositon, "first character"),
+				0 => new(startPrepositon, "1st character"),
 				_ => new("after the", $"{index.Ordinalize(GrammaticalGender.Neuter)} character")
 			};
 		}
