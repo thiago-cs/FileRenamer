@@ -11,14 +11,16 @@ public sealed class InsertCounterAction : RenameActionBase
 	private readonly IIndex insertIndex;
 	private readonly int startValue;
 	private readonly int minWidth;
+	private readonly int increment;
 	private int counter;
 
 
-	public InsertCounterAction(IIndex insertIndex, int startValue, int minWidth)
+	public InsertCounterAction(IIndex insertIndex, int startValue, int minWidth, int increment = 1)
 	{
 		this.insertIndex = insertIndex ?? throw new ArgumentNullException(nameof(insertIndex));
 		this.startValue = startValue;
 		this.minWidth = minWidth;
+		this.increment = increment;
 
 		UpdateDescription();
 		Reset();
@@ -39,7 +41,8 @@ public sealed class InsertCounterAction : RenameActionBase
 			return input;
 
 		// 1.3. 
-		string value = counter++.ToString().PadLeft(minWidth, '0');
+		string value = counter.ToString().PadLeft(minWidth, '0');
+		counter += increment;
 
 
 		// 2. 
@@ -48,7 +51,7 @@ public sealed class InsertCounterAction : RenameActionBase
 
 	public override void UpdateDescription()
 	{
-		Description = $"insert a {minWidth}-char counter starting from {startValue} {insertIndex.Description.ToString(includePreposition: true)}";
+		Description = $"insert a {minWidth}-char. counter starting from {startValue} {insertIndex.Description.ToString(includePreposition: true)} (step: {increment})";
 	}
 
 	/// <inheritdoc cref="RenameActionBase.Clone" />
