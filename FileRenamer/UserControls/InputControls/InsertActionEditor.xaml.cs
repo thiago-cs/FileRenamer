@@ -94,7 +94,7 @@ public sealed partial class InsertActionEditor : IActionEditor
 				return new InsertAction(index, Data.Text);
 
 			case StringSourceType.Counter:
-				return new InsertCounterAction(index, Data.InitialValue, Data.PaddedLength/*, Data.PaddingChar[0]*/);
+				return new InsertCounterAction(index, Data.InitialValue, Data.PaddedLength, increment: Data.Increment/*, Data.PaddingChar[0]*/);
 
 			default:
 				// Oops!
