@@ -1,93 +1,104 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
-public sealed class SearchTextData : BindableBase
+public sealed partial class SearchTextData : ObservableValidator
 {
-	private readonly Helpers.DelayedAction filteredValidation;
+	private const string ERROR_MESSAGE_TEXT_EMPTY = "Enter the pattern to search for.";
+	private const string ERROR_MESSAGE_INVALID_REGEX = "Enter a valid pattern.";
+	private readonly Helpers.DelayedAction delayedValidation;
+
+
+	#region TextType
 
 	internal static readonly TextType[] TextTypes = Enum.GetValues<TextType>();
 
-
-	private bool _hasErrors;
-	public new bool HasErrors { get => _hasErrors; private set => SetProperty(ref _hasErrors, value); }
-
+	[ObservableProperty]
 	private TextType _textType;
-	public TextType TextType
+
+	partial void OnTextTypeChanged(TextType value)
 	{
-		get => _textType;
-		set
-		{
-			if (SetProperty(ref _textType, value))
-				Validate();
-		}
+		_ = InvokeTextValidationAsync();
 	}
 
+	#endregion
+
+	#region Text and text error
+
+	[ObservableProperty]
+	//[NotifyDataErrorInfo]
+	[CustomValidation(typeof(SearchTextData), nameof(ValidateText))]
 	private string _text;
-	public string Text
+
+	partial void OnTextChanged(string value)
 	{
-		get => _text;
-		set
-		{
-			if (SetProperty(ref _text, value))
-			{
-				HasErrors = true;
-				_ = filteredValidation.InvokeAsync(TextType == TextType.Regex ? 1000 : 500);
-			}
-		}
+		_ = InvokeTextValidationAsync();
 	}
 
+	[ObservableProperty]
 	private string _textError;
-	public string TextError { get => _textError; private set => SetProperty(ref _textError, value); }
+
+	#endregion
+
+	private System.Text.RegularExpressions.Regex Regex;
 
 	public bool IgnoreCase { get; set; }
 
 
 	public SearchTextData()
 	{
-		filteredValidation = new(Validate);
-		Validate();
+		delayedValidation = new(() => ValidateProperty(Text, nameof(Text)));
+		ValidateAllProperties();
 	}
 
 
 	#region Validation
 
-	private void Validate()
+	private async Task InvokeTextValidationAsync()
+	{
+		await delayedValidation.InvokeAsync(TextType == TextType.Text ? 200 : 1000);
+	}
+
+	public static ValidationResult ValidateText(string text, ValidationContext context)
 	{
 		// 1. 
+		SearchTextData instance = context.ObjectInstance as SearchTextData;
 		string textError = null;
 
-		if (TextType == TextType.Text)
+		if (instance.TextType == TextType.Regex)
 		{
-			if (string.IsNullOrEmpty(Text))
-				textError = "Enter a text.";
+			if (!instance.IsRegexPatternValid())
+				textError = ERROR_MESSAGE_INVALID_REGEX;
 		}
-		else if (TextType == TextType.Regex)
+		else
 		{
-			if (string.IsNullOrEmpty(Text))
-				textError = "Enter a pattern.";
-			else if (!IsRegexPatternValid(Text))
-				textError = "Enter a valid pattern.";
+			if (string.IsNullOrEmpty(instance.Text))
+				textError = ERROR_MESSAGE_TEXT_EMPTY;
 		}
 
 		// 2. 
-		TextError = textError;
-		HasErrors = TextError != null;
+		instance.TextError = textError;
+		return textError == null ? ValidationResult.Success : new(textError);
 	}
 
-	private static bool IsRegexPatternValid(string pattern)
+	private bool IsRegexPatternValid()
 	{
+		Regex = null;
+
 		try
 		{
-			_ = new System.Text.RegularExpressions.Regex(pattern);
-			return true;
+			if (!string.IsNullOrEmpty(Text))
+				Regex = new System.Text.RegularExpressions.Regex(Text);
 		}
 		catch
-		{
-			return false;
-		}
+		{ }
+
+		return Regex != null;
 	}
 
 	#endregion

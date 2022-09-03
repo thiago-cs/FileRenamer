@@ -1,29 +1,45 @@
 ﻿using System;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
-public sealed class ChangeCaseActionData : BindableBase
+public sealed partial class ChangeCaseActionData : ObservableValidator
 {
-	public static readonly ExecutionScope[] executionScopeTypes = { ExecutionScope.WholeInput, ExecutionScope.Range, ExecutionScope.Occurrences };
+	#region Constants
+
+	public static readonly ExecutionScope[] executionScopeTypes = Enum.GetValues<ExecutionScope>();
+
 	public static readonly Core.Extensions.TextCasing[] textCases = Enum.GetValues<Core.Extensions.TextCasing>();
 
+	#endregion
 
-	#region Basic
 
-	private bool _hasErrors;
-	public new bool HasErrors { get => _hasErrors; private set => SetProperty(ref _hasErrors, value); }
+	#region Scope and Case
 
+	[ObservableProperty]
 	private ExecutionScope _executionScope = ExecutionScope.WholeInput;
-	public ExecutionScope ExecutionScope
+
+	partial void OnExecutionScopeChanged(ExecutionScope value)
 	{
-		get => _executionScope;
-		set
+		ClearErrors();
+
+		switch (ExecutionScope)
 		{
-			if (SetProperty(ref _executionScope, value))
-				Validate();
-		}
+			case ExecutionScope.WholeInput:
+				break;
+
+			case ExecutionScope.CustomRange:
+				ValidateProperty(RangeData, nameof(RangeData));
+				break;
+
+			case ExecutionScope.Occurrences:
+				ValidateProperty(SearchText, nameof(SearchText));
+				break;
+		};
 	}
 
 	public Core.Extensions.TextCasing TextCase { get; set; } = Core.Extensions.TextCasing.SentenceCase;
@@ -32,85 +48,66 @@ public sealed class ChangeCaseActionData : BindableBase
 
 	#region Range
 
-	public IndexEditorData StartIndexData { get; } = new();
+	[CustomValidation(typeof(ChangeCaseActionData), nameof(ValidateObservableValidator))]
+	public TextRangeData RangeData { get; }
 
-	public IndexEditorData EndIndexData { get; } = new();
-
-	private string _endIndexError;
-	public string EndIndexError
+	private void RangeData_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
-		get => _endIndexError;
-		set
-		{
-			if (SetProperty(ref _endIndexError, value))
-				Validate();
-		}
+		if (e.PropertyName == nameof(HasErrors))
+			ValidateProperty(RangeData, nameof(RangeData));
 	}
 
 	#endregion
 
 	#region Occurences of a text/pattern
 
+	[CustomValidation(typeof(ChangeCaseActionData), nameof(ValidateObservableValidator))]
 	public SearchTextData SearchText { get; } = new();
+
+	private void SearchText_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(HasErrors))
+			ValidateProperty(SearchText, nameof(SearchText));
+	}
 
 	#endregion
 
 
+	#region Constructors
+
 	public ChangeCaseActionData()
 	{
-		StartIndexData.PropertyChanged += IndexData_PropertyChanged;
-		EndIndexData.PropertyChanged += IndexData_PropertyChanged;
+		RangeData = new();
+
+		Initialize();
+	}
+
+	public ChangeCaseActionData(ToCaseAction action)
+	{
+		RangeData = new(action.StartIndex, action.EndIndex);
+		ExecutionScope = ReplaceActionData.GetScopeFromIndices(action.StartIndex, action.EndIndex);
+		TextCase = action.TextCase;
+
+		Initialize();
+	}
+
+	private void Initialize()
+	{
+		RangeData.PropertyChanged += RangeData_PropertyChanged;
 		SearchText.PropertyChanged += SearchText_PropertyChanged;
 	}
+
+	#endregion
 
 
 	#region Validation
 
-	private void Validate()
+	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _)
 	{
-		//// 1. 
-		//string indexTypeError = null;
-
-		//if (IndexType == IndexType.None)
-		//	indexTypeError = "Select an index type.";
-
-		//// 2. 
-		//IndexTypeError = indexTypeError;
-		UpdateHasErrors();
-	}
-
-	private void UpdateHasErrors()
-	{
-		HasErrors = ExecutionScope switch
-		{
-			ExecutionScope.WholeInput => false,
-			ExecutionScope.Range => StartIndexData.HasErrors || EndIndexData.HasErrors || EndIndexError != null,
-			ExecutionScope.Occurrences => SearchText.HasErrors,
-			_ => throw new NotImplementedException(),
-		};
+		return notifier.HasErrors
+			 ? new("This object has errors.")
+			 : ValidationResult.Success;
 	}
 
 	#endregion
-
-
-	private void IndexData_PropertyChanged(object sender, PropertyChangedEventArgs e)
-	{
-		switch (e.PropertyName)
-		{
-			case nameof(BindableBase.HasErrors):
-				UpdateHasErrors();
-				break;
-
-			case nameof(IndexEditorData.IndexType):
-			case nameof(IndexEditorData.IndexPosition):
-				Validate();
-				break;
-		}
-	}
-
-	private void SearchText_PropertyChanged(object sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName == nameof(BindableBase.HasErrors))
-			UpdateHasErrors();
-	}
 }

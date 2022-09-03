@@ -1,145 +1,215 @@
-﻿namespace FileRenamer.UserControls.InputControls;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Jobs.FileActions;
 
-public sealed class RemoveActionData : System.ComponentModel.BindableBase
+
+namespace FileRenamer.UserControls.InputControls;
+
+public sealed partial class RemoveActionData : ObservableValidator
 {
-	private bool _hasErrors;
-	public new bool HasErrors { get => _hasErrors; private set => SetProperty(ref _hasErrors, value); }
+	#region Constants
 
-	private RemovalType _actionType = RemovalType.FixedLength;
-	public RemovalType ActionType
+	private const string INVALID_INDEX_TYPE_ERROR_MESSAGE = "Enter valid index types.";
+	private const string INVALID_INDEX_POSITION_ERROR_MESSAGE = "Enter valid index positions.";
+
+	public static readonly TextRangeType[] RangeTypes = System.Enum.GetValues<TextRangeType>();
+
+	#endregion
+
+	#region RangeType
+
+	[ObservableProperty]
+	private TextRangeType _rangeType = TextRangeType.Count;
+
+	partial void OnRangeTypeChanged(TextRangeType value)
 	{
-		get => _actionType;
-		set
+		switch (value)
 		{
-			if (SetProperty(ref _actionType, value))
-				Validate();
-		}
-	}
-
-	public IndexEditorData StartIndexData { get; } = new();
-
-	public IndexEditorData EndIndexData { get; } = new();
-
-	private string _endIndexError;
-	public string EndIndexError
-	{
-		get => _endIndexError;
-		set
-		{
-			if (SetProperty(ref _endIndexError, value))
-				Validate();
-		}
-	}
-
-	private int _length;
-	public int Length
-	{
-		get => _length;
-		set
-		{
-			if (SetProperty(ref _length, value))
-				Validate();
-		}
-	}
-
-	private string _lengthError;
-	public string LengthError { get => _lengthError; set => SetProperty(ref _lengthError, value); }
-
-
-	public RemoveActionData()
-	{
-		StartIndexData.PropertyChanged += IndexData_PropertyChanged;
-		EndIndexData.PropertyChanged += IndexData_PropertyChanged;
-	}
-
-
-	private void Validate()
-	{
-		string lengthError = null;
-		string endIndexError = null;
-
-		switch (ActionType)
-		{
-			case RemovalType.FixedLength:
-				switch (StartIndexData.IndexType)
-				{
-					case IndexType.Beginning:
-						if (Length <= 0)
-							lengthError = "Enter a positive number.";
-						break;
-
-					case IndexType.End:
-						if (0 <= Length)
-							lengthError = "Enter a negative number.";
-						break;
-
-					case IndexType.Position:
-						if (StartIndexData.IndexPosition < 0)
-						{
-							if (/*0 < Length &&*/ -StartIndexData.IndexPosition < Length)
-								lengthError = $"Enter a number less than or equal to {-StartIndexData.IndexPosition}.";
-						}
-						else
-						{
-							if (Length < -StartIndexData.IndexPosition)
-								lengthError = $"Enter a number greater than {-StartIndexData.IndexPosition}.";
-						}
-
-						break;
-
-					case IndexType.FileExtension:
-					case IndexType.Before:
-					case IndexType.After:
-					case IndexType.None:
-						break;
-					default:
-						break;
-				}
-
-				if (lengthError == null && Length == 0)
-					lengthError = "Enter a number other than zero.";
-
+			case TextRangeType.Count:
+				ClearErrors(nameof(EndIndexData));
+				ValidateProperty(Count, nameof(Count));
 				break;
 
-			case RemovalType.EndIndex:
-				endIndexError = (StartIndexData.IndexType, EndIndexData.IndexType) switch
-				{
-					(_, IndexType.Beginning) or
-					(IndexType.End, _) or
-					(IndexType.FileExtension, IndexType.FileExtension) => "Enter valid index types.",
-					(IndexType.Position, IndexType.Position) => EndIndexData.IndexPosition <= StartIndexData.IndexPosition ? "Enter valid index positions." : null,
-					_ => null,
-				};
-				break;
-
-			default:
+			case TextRangeType.Range:
+				ClearErrors(nameof(Count));
+				ValidateProperty(EndIndexData, nameof(EndIndexData));
 				break;
 		}
-
-		//
-		LengthError = lengthError;
-		EndIndexError = endIndexError;
-		UpdateHasErrors();
 	}
 
-	private void UpdateHasErrors()
-	{
-		HasErrors = StartIndexData.HasErrors || (ActionType == RemovalType.FixedLength ? LengthError != null : EndIndexError != null || EndIndexData.HasErrors);
-	}
+	#endregion
 
+	#region StartIndex
 
-	private void IndexData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	[CustomValidation(typeof(RemoveActionData), nameof(ValidateObservableValidator))]
+	public IndexEditorData StartIndexData { get; }
+
+	private void StartIndexData_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
 		switch (e.PropertyName)
 		{
 			case nameof(IndexEditorData.IndexType):
 			case nameof(IndexEditorData.IndexPosition):
-				Validate();
+				ValidateProperty(EndIndexData, nameof(EndIndexData));
 				break;
 
 			case nameof(IndexEditorData.HasErrors):
-				UpdateHasErrors();
+				ValidateProperty(sender, nameof(StartIndexData));
 				break;
 		}
 	}
+
+	#endregion
+
+	#region EndIndex
+
+	[CustomValidation(typeof(RemoveActionData), nameof(ValidateObservableValidator))]
+	[CustomValidation(typeof(RemoveActionData), nameof(ValidateIndices))]
+	public IndexEditorData EndIndexData { get; }
+
+	[ObservableProperty]
+	private string _endIndexErrorMessage;
+
+	private void EndIndexData_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		switch (e.PropertyName)
+		{
+			case nameof(IndexEditorData.IndexType):
+			case nameof(IndexEditorData.IndexPosition):
+			case nameof(IndexEditorData.HasErrors):
+				ValidateProperty(EndIndexData, nameof(EndIndexData));
+				break;
+		}
+	}
+
+	#endregion
+
+	#region Count
+
+	[ObservableProperty]
+	[NotifyDataErrorInfo]
+	[CustomValidation(typeof(RemoveActionData), nameof(ValidateCount))]
+	private int _count = 1;
+
+	[ObservableProperty]
+	private string _countErrorMessage;
+
+	#endregion
+
+
+	#region Constructors
+
+	public RemoveActionData()
+	{
+		StartIndexData = new();
+		EndIndexData = new();
+		RangeType = TextRangeType.Count;
+		Initialize();
+	}
+
+	public RemoveActionData(RemoveAction action)
+	{
+		StartIndexData = new(action.StartIndex);
+		EndIndexData = new(action.EndIndex);
+		RangeType = action.EndIndex == null ? TextRangeType.Count : TextRangeType.Range;
+		Initialize();
+	}
+
+	private void Initialize()
+	{
+		StartIndexData.PropertyChanged += StartIndexData_PropertyChanged;
+		EndIndexData.PropertyChanged += EndIndexData_PropertyChanged;
+	}
+
+	#endregion
+
+
+	#region Validation
+
+	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _)
+	{
+		return notifier.HasErrors
+			 ? new("This object has errors.")
+			 : ValidationResult.Success;
+	}
+
+	public static ValidationResult ValidateIndices(IndexEditorData indexData, ValidationContext context)
+	{
+		RemoveActionData instance = context.ObjectInstance as RemoveActionData;
+
+		if (instance.RangeType != TextRangeType.Range)
+			return ValidationResult.Success;
+
+		/*
+		string errorMessage = (instance.StartIndexData.IndexType.Type, instance.EndIndexData.IndexType.Type) switch
+		{
+			(_, IndexType.Beginning) or
+			(IndexType.End, _) or
+			(IndexType.FileExtension, IndexType.FileExtension) => INVALID_INDEX_TYPE_ERROR_MESSAGE,
+			(IndexType.Position, IndexType.Position) when instance.EndIndexData.IndexPosition <= instance.StartIndexData.IndexPosition => INVALID_INDEX_POSITION_ERROR_MESSAGE,
+			_ => null,
+		};
+		/*/
+		string errorMessage = IndexEditorData.ValidateIndicesRange(instance.StartIndexData, instance.EndIndexData) switch
+		{
+			Core.Indices.RangeValidationResult.Ok => null,
+			Core.Indices.RangeValidationResult.InvalidIndexType => INVALID_INDEX_TYPE_ERROR_MESSAGE,
+			Core.Indices.RangeValidationResult.InvalidIndexPosition => INVALID_INDEX_POSITION_ERROR_MESSAGE,
+			_ => throw new System.NotImplementedException(),
+		};
+		//*/
+
+		instance.EndIndexErrorMessage = errorMessage;
+
+		return errorMessage == null ? ValidationResult.Success : new(errorMessage);
+	}
+
+	public static ValidationResult ValidateCount(int count, ValidationContext context)
+	{
+		RemoveActionData instance = context.ObjectInstance as RemoveActionData;
+		string errorMessage = null;
+
+		if (count == 0)
+			errorMessage = "Enter a number other than zero.";
+
+		switch (instance.StartIndexData.IndexType.Type)
+		{
+			case IndexType.Beginning:
+				if (count <= 0)
+					errorMessage = "Enter a positive number.";
+				break;
+
+			case IndexType.End:
+				if (0 <= count)
+					errorMessage = "Enter a negative number.";
+				break;
+
+			case IndexType.Position:
+				if (instance.StartIndexData.IndexPosition < 0)
+				{
+					if (/*0 < Length &&*/ -instance.StartIndexData.IndexPosition < count)
+						errorMessage = $"Enter a number less than or equal to {-instance.StartIndexData.IndexPosition}.";
+				}
+				else
+				{
+					if (count < -instance.StartIndexData.IndexPosition)
+						errorMessage = $"Enter a number greater than {-instance.StartIndexData.IndexPosition}.";
+				}
+
+				break;
+
+			case IndexType.FileExtension:
+			case IndexType.Before:
+			case IndexType.After:
+			default:
+				break;
+		}
+
+		instance.CountErrorMessage = errorMessage;
+
+		return errorMessage == null ? ValidationResult.Success : new(errorMessage);
+	}
+
+	#endregion
 }

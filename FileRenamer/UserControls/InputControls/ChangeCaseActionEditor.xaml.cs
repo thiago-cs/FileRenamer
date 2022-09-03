@@ -1,117 +1,71 @@
 ﻿using System;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using FileRenamer.Core.Actions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Indices;
+using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
+[INotifyPropertyChanged]
 public sealed partial class ChangeCaseActionEditor : UserControl, IActionEditor
 {
-	#region Fields
-
-	private readonly DataTemplate emptyDataTemplate = new();
-
-	private const string convertRangeTemplateKey = "ConvertRangeTemplate";
-	private readonly DataTemplate convertRangeTemplate;
-
-	private const string convertOccurencesDataTemplateKey = "ConvertOccurencesDataTemplate";
-	private readonly DataTemplate convertOccurencesDataTemplate;
-
-	#endregion
-
-
 	#region Properties
 
-	public ChangeCaseActionData Data { get; } = new();
+	public string DialogTitle => "Change case";
 
-	#region ExtraDataTemplate DependencyProperty
-	public DataTemplate ExtraDataTemplate
+	[ObservableProperty]
+	private bool _isValid = true;
+
+	public ChangeCaseActionData Data { get; }
+
+	private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
 	{
-		get => (DataTemplate)GetValue(ExtraDataTemplateProperty);
-		set => SetValue(ExtraDataTemplateProperty, value);
+		if (e.PropertyName == nameof(Data.HasErrors))
+			IsValid = !Data.HasErrors;
 	}
-
-	public static readonly DependencyProperty ExtraDataTemplateProperty =
-		DependencyProperty.Register(
-			nameof(ExtraDataTemplate),
-			typeof(DataTemplate),
-			typeof(ChangeCaseActionData),
-			new PropertyMetadata(null));
-	#endregion ExtraDataTemplate DependencyProperty
-
-	#region IsValid DependencyProperty
-	public bool IsValid
-	{
-		get => (bool)GetValue(IsValidProperty);
-		set => SetValue(IsValidProperty, value);
-	}
-
-	public static readonly DependencyProperty IsValidProperty =
-		DependencyProperty.Register(
-			nameof(IsValid),
-			typeof(bool),
-			typeof(ChangeCaseActionEditor),
-			new PropertyMetadata(true));
-	#endregion IsValid DependencyProperty
 
 	#endregion
 
+
+	#region Contructors
 
 	public ChangeCaseActionEditor()
 	{
-		//
+		Data = new();
+
 		InitializeComponent();
+		Initialize();
+	}
 
-		//
-		if (Resources.TryGetValue(convertRangeTemplateKey, out object o))
-			convertRangeTemplate = o as DataTemplate;
+	public ChangeCaseActionEditor(ToCaseAction action)
+	{
+		Data = new(action);
 
-		if (Resources.TryGetValue(convertOccurencesDataTemplateKey, out o))
-			convertOccurencesDataTemplate = o as DataTemplate;
+		InitializeComponent();
+		Initialize();
+	}
 
-		UpdateExtraDataTemplate();
-
-		//
+	private void Initialize()
+	{
 		Data.PropertyChanged += Data_PropertyChanged;
 	}
+
+	#endregion
 
 
 	public RenameActionBase GetRenameAction()
 	{
 		return Data.ExecutionScope switch
 		{
+			ExecutionScope.FileName => new ToCaseAction(new BeginningIndex(), new FileExtensionIndex(), Data.TextCase),
+			ExecutionScope.FileExtension => new ToCaseAction(new FileExtensionIndex(), new EndIndex(), Data.TextCase),
 			ExecutionScope.WholeInput => new ToCaseAction(new BeginningIndex(), new EndIndex(), Data.TextCase),
-			ExecutionScope.Range => new ToCaseAction(Data.StartIndexData.GetIIndex(), Data.EndIndexData.GetIIndex(), Data.TextCase),
-			ExecutionScope.Occurrences => throw new NotImplementedException(),
+			ExecutionScope.CustomRange => new ToCaseAction(Data.RangeData.StartIndexData.GetIIndex(), Data.RangeData.EndIndexData.GetIIndex(), Data.TextCase),
+			// TODO: come back here once ChangeStringCaseAction is implemented.
+			//ExecutionScope.Occurrences => new ChangeStringCaseAction(Data.SearchText.Text, Data.SearchText.TextType == TextType.Regex, Data.SearchText.IgnoreCase, Data.TextCase),
 			_ => throw new NotImplementedException(),
 		};
-	}
-
-	private void UpdateExtraDataTemplate()
-	{
-		ExtraDataTemplate = Data.ExecutionScope switch
-		{
-			ExecutionScope.WholeInput => emptyDataTemplate,
-			ExecutionScope.Range => convertRangeTemplate,
-			ExecutionScope.Occurrences => convertOccurencesDataTemplate,
-			_ => emptyDataTemplate,
-		};
-	}
-
-
-	private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-	{
-		switch (e.PropertyName)
-		{
-			case nameof(Data.HasErrors):
-				IsValid = !Data.HasErrors;
-				break;
-
-			case nameof(Data.ExecutionScope):
-				UpdateExtraDataTemplate();
-				break;
-		}
 	}
 }

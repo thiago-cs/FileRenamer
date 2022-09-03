@@ -1,26 +1,18 @@
-﻿using Microsoft.UI.Xaml;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.UI.Xaml.Controls;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
+[INotifyPropertyChanged]
 public sealed partial class SearchTextEditor : UserControl
 {
-	#region Data DependencyProperty
-	public SearchTextData Data
-	{
-		get => (SearchTextData)GetValue(DataProperty);
-		set => SetValue(DataProperty, value);
-	}
+	#region Data
 
-	// Using a DependencyProperty as the backing store for Data.  This enables animation, styling, binding, etc...
-	public static readonly DependencyProperty DataProperty =
-		DependencyProperty.Register(
-			nameof(Data),
-			typeof(SearchTextData),
-			typeof(SearchTextEditor),
-			new PropertyMetadata(null));
-	#endregion Data DependencyProperty
+	[ObservableProperty]
+	private SearchTextData _data;
+
+	#endregion Data
 
 
 	public SearchTextEditor()

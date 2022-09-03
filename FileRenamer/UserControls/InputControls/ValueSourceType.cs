@@ -3,13 +3,19 @@
 
 namespace FileRenamer.UserControls.InputControls;
 
-public enum StringSourceType
+public enum ValueSourceType
 {
-	[Description("text")]
-	Text,
+	[Description("a text")]
+	FixedText,
+
+	[Description("a random text")]
+	RandomText,
 
 	[Description("a counter")]
 	Counter,
+
+	//[Description("folder info")]
+	//FolderInfo,
 
 	//[Description("MP3 tag")]
 	//Mp3Tag,

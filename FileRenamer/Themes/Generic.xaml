@@ -1,7 +1,22 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:sys="using:System" >
 
+	<!--#region ComboBox -->
+
+	<Style x:Key="EnumComboBoxStyle" TargetType="ComboBox" >
+		<Setter Property="ItemTemplate" >
+			<Setter.Value>
+				<!-- x:DataType="sys:Enum" -->
+				<DataTemplate>
+					<TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" TextTrimming="CharacterEllipsis" />
+				</DataTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<!--#endregion-->
 
 	<!--#region Toolbar resources -->
 
@@ -49,7 +64,7 @@
 
 	<DataTemplate x:Key="MediumToolbarButtonDataTemplate" >
 		<!-- x:DataType="UICommand" -->
-		<Button Style="{StaticResource ButtonStyle1}" Command="{Binding}" AccessKey="{Binding AccessKey}" ToolTipService.ToolTip="{Binding Description}" >
+		<Button Style="{StaticResource ButtonStyle1}" Command="{Binding Command}" AccessKey="{Binding AccessKey}" ToolTipService.ToolTip="{Binding Description}" >
 			<StackPanel Orientation="Horizontal" >
 				<Viewbox Margin="{StaticResource XSmallRightMargin}" Width="{StaticResource MediumToolbarIconSize}" Height="{StaticResource MediumToolbarIconSize}" >
 					<IconSourceElement IconSource="{Binding IconSource}" />
@@ -85,6 +100,7 @@
 		<Setter Property="Width" Value="60" />
 		<Setter Property="FontWeight" Value="SemiBold" />
 		<Setter Property="Opacity" Value="0.9" />
+		<Setter Property="TextWrapping" Value="WrapWholeWords" />
 	</Style>
 
 	<Style x:Key="ErrorMessageTextBlockStyle" TargetType="TextBlock" >
@@ -93,7 +109,7 @@
 	</Style>
 
 	<Style x:Key="StackPanelCardStyle" TargetType="StackPanel" >
-		<Setter Property="BorderBrush" Value="#BBBBBD" />
+		<Setter Property="BorderBrush" Value="#66666D" />
 		<Setter Property="BorderThickness" Value="0 1 0 0" />
 		<Setter Property="Orientation" Value="Horizontal" />
 		<Setter Property="Padding" Value="{StaticResource SmallTopMargin}" />

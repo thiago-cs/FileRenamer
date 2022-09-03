@@ -1,6 +1,9 @@
 using NUnit.Framework;
+using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Indices;
-using FileRenamer.Core.Actions;
+using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.Core.ValueSources;
 using static FileRenamer.Core_Tester.Resources;
 
 
@@ -16,16 +19,22 @@ public sealed class Test_InsertAction
 	[TestCase("", "Empty")]
 	public void AddToBeginning(string input, string addend)
 	{
-		Assert.AreEqual(addend + input, new InsertAction(new BeginningIndex(), addend).Run(input));
-		Assert.Pass();
+		JobTarget target = new(new FileMock(input), 0);
+		IFileAction action = new InsertAction(new BeginningIndex(), (StringValueSource)addend);
+		action.Run(target, NoContext);
+
+		Assert.AreEqual(addend + input, target.NewFileName);
 	}
 
 	[Test]
 	[TestCase(neverForget, ".")]
 	public void AddToEnd(string input, string addend)
 	{
-		Assert.AreEqual(input + addend, new InsertAction(new EndIndex(), addend).Run(input));
-		Assert.Pass();
+		JobTarget target = new(new FileMock(input), 0);
+		IFileAction action = new InsertAction(new EndIndex(), (StringValueSource)addend);
+		action.Run(target, NoContext);
+
+		Assert.AreEqual(input + addend, target.NewFileName);
 	}
 
 	[Test]
@@ -34,8 +43,11 @@ public sealed class Test_InsertAction
 	[TestCase(quickBrownFox, "dog", true, "old ", "the quick brown fox jumps over the lazy old dog.")]
 	public void InsertInTheMiddle(string input, string reference, bool isBefore, string addend, string expected)
 	{
-		Assert.AreEqual(expected, new InsertAction(new SubstringIndex(reference, isBefore, false, false), addend).Run(input));
-		Assert.Pass();
+		JobTarget target = new(new FileMock(input), 0);
+		IFileAction action = new InsertAction(new SubstringIndex(reference, isBefore, false, false), (StringValueSource)addend);
+		action.Run(target, NoContext);
+
+		Assert.AreEqual(expected, target.NewFileName);
 	}
 
 	#endregion
@@ -53,7 +65,7 @@ public sealed class Test_InsertAction
 	[TestCase(5, ".part", @"insert "".part"" before file's extension")]
 	public void TestDescriptionBeginning(int indexFinderIndex, string value, string expected)
 	{
-		Assert.AreEqual(expected, new InsertAction(finders[indexFinderIndex], value).Description);
+		Assert.AreEqual(expected, new InsertAction(finders[indexFinderIndex], (StringValueSource)value).Description);
 	}
 
 	#endregion

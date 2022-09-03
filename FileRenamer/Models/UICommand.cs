@@ -1,96 +1,56 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Input;
+using CommunityToolkit.Mvvm.Input;
 
 
 namespace FileRenamer.Models;
 
-/// <summary>
-/// A command whose sole purpose is to relay its functionality to other objects by invoking delegates.
-/// </summary>
-/// <remarks>
-/// The default return value for the CanExecute method is 'true'.<br/>
-/// <see cref="NotifyCanExecuteChanged"/> needs to be called whenever <see cref="CanExecute"/> is expected to return a different value.
-/// </remarks>
-public sealed class UICommand : System.Windows.Input.ICommand
+public sealed class UICommand : UICommandBase
 {
-	#region Fields
+	public RelayCommand Command { get; }
+	public KeyboardAccelerator KeyboardAccelerator { get; internal init; }
 
-	private readonly Action _execute;
-	private readonly Func<bool> _canExecute;
-
-	#endregion
-
-
-	#region Propeties
 
 	/// <summary>
-	/// Gets or sets the label for this command.
-	/// </summary>
-	public string Label { get; set; }
-
-	/// <summary>
-	/// Gets or sets a description for this command.
-	/// </summary>
-	public string Description { get; set; }
-
-	/// <summary>
-	/// Gets or sets a glyph for this command.
-	/// </summary>
-	public Microsoft.UI.Xaml.Controls.IconSource IconSource { get; set; }
-
-	/// <summary>
-	/// Gets or sets the access key (mnemonic) for this command.
-	/// </summary>
-	public string AccessKey { get; set; }
-
-	#endregion
-
-
-	#region Constructors
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UICommand"/> class that can always be executed.
-	/// </summary>
-	/// <param name="execute">The method to be called when the command is invoked.</param>
-	public UICommand(Action execute)
-		: this(execute, null)
-	{ }
-
-	/// <summary>
-	/// Initializes a new instance of the <see cref="UICommand"/> class.
+	/// Initializes a new instance of the <see cref="SyncUICommand"/> class.
 	/// </summary>
 	/// <param name="execute">The method to be called when the command is invoked.</param>
 	/// <param name="canExecute">The method that determines whether the command can execute in its current state.</param>
-	public UICommand(Action execute, Func<bool> canExecute)
+	public UICommand(Action execute, Func<bool> canExecute = null)
 	{
-		_execute = execute ?? throw new ArgumentNullException(nameof(execute));
-		_canExecute = canExecute;
+		Command = canExecute == null
+					? new(execute)
+					: new(execute, canExecute);
 	}
 
-	#endregion
 
-
-	#region ICommand implementation
-
-	public event EventHandler CanExecuteChanged;
-
-	public bool CanExecute(object parameter)
+	public override void NotifyCanExecuteChanged()
 	{
-		return _canExecute == null || _canExecute();
+		Command.NotifyCanExecuteChanged();
 	}
+}
 
-	public void Execute(object parameter)
-	{
-		_execute();
-	}
-
-	#endregion
+public sealed class AsyncUICommand : UICommandBase
+{
+	public AsyncRelayCommand Command { get; }
 
 
 	/// <summary>
-	/// Notifies the system that the command state has changed.
+	/// Initializes a new instance of the <see cref="AsyncUICommand"/> class.
 	/// </summary>
-	public void NotifyCanExecuteChanged()
+	/// <param name="execute">The method to be called when the command is invoked.</param>
+	/// <param name="canExecute">The method that determines whether the command can execute in its current state.</param>
+	public AsyncUICommand(Func<Task> execute, Func<bool> canExecute = null)
 	{
-		CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+		Command = canExecute == null
+					? new(execute)
+					: new(execute, canExecute);
+	}
+
+
+	public override void NotifyCanExecuteChanged()
+	{
+		Command.NotifyCanExecuteChanged();
 	}
 }

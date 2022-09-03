@@ -1,115 +1,65 @@
 ﻿using System;
-using Microsoft.UI.Xaml;
-using FileRenamer.Core.Actions;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
+[ObservableObject]
 public sealed partial class RemoveActionEditor : IActionEditor
 {
-	#region Fields
+	public string DialogTitle => "Remove";
 
-	public static readonly RemovalType[] actionTypes = Enum.GetValues<RemovalType>();
+	[ObservableProperty]
+	public bool _isValid = true;
 
-	private readonly DataTemplate emptyDataTemplate = new();
+	#region Data
 
-	private const string lengthInputDataTemplateKey = "LengthInputDataTemplate";
-	private readonly DataTemplate lengthInputDataTemplate;
+	public RemoveActionData Data { get; }
 
-	private const string endIndexInputDataTemplateKey = "EndIndexInputDataTemplate";
-	private readonly DataTemplate endIndexInputDataTemplate;
+	private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(Data.HasErrors))
+			Validate();
+	}
+
 
 	#endregion
 
 
-	#region Properties
-
-	public RemoveActionData Data { get; } = new();
-
-	#region ExtraDataTemplate DependencyProperty
-	public DataTemplate ExtraDataTemplate
-	{
-		get => (DataTemplate)GetValue(ExtraDataTemplateProperty);
-		set => SetValue(ExtraDataTemplateProperty, value);
-	}
-
-	public static readonly DependencyProperty ExtraDataTemplateProperty =
-		DependencyProperty.Register(
-			nameof(ExtraDataTemplate),
-			typeof(DataTemplate),
-			typeof(RemoveActionEditor),
-			new PropertyMetadata(null));
-	#endregion ExtraDataTemplate DependencyProperty
-
-	#region IsValid DependencyProperty
-	public bool IsValid
-	{
-		get => (bool)GetValue(IsValidProperty);
-		set => SetValue(IsValidProperty, value);
-	}
-
-	public static readonly DependencyProperty IsValidProperty =
-		DependencyProperty.Register(
-			nameof(IsValid),
-			typeof(bool),
-			typeof(RemoveActionEditor),
-			new PropertyMetadata(false));
-	#endregion IsValid DependencyProperty
-
-	#endregion
-
+	#region Constructors
 
 	public RemoveActionEditor()
 	{
-		//
+		Data = new();
 		InitializeComponent();
-
-		//
-		if (Resources.TryGetValue(lengthInputDataTemplateKey, out object o))
-			lengthInputDataTemplate = o as DataTemplate;
-
-		if (Resources.TryGetValue(endIndexInputDataTemplateKey, out o))
-			endIndexInputDataTemplate = o as DataTemplate;
-
-		UpdateExtraDataTemplate();
-
-		//
+		Validate();
 		Data.PropertyChanged += Data_PropertyChanged;
 	}
+
+	public RemoveActionEditor(RemoveAction action)
+	{
+		Data = new(action);
+		InitializeComponent();
+		Validate();
+		Data.PropertyChanged += Data_PropertyChanged;
+	}
+
+	#endregion
 
 
 	public RenameActionBase GetRenameAction()
 	{
-		return Data.ActionType switch
+		return Data.RangeType switch
 		{
-			RemovalType.FixedLength => new RemoveAction(Data.StartIndexData.GetIIndex(), Data.Length),
-			RemovalType.EndIndex => new RemoveAction(Data.StartIndexData.GetIIndex(), Data.EndIndexData.GetIIndex()),
+			TextRangeType.Count => new RemoveAction(Data.StartIndexData.GetIIndex(), Data.Count),
+			TextRangeType.Range => new RemoveAction(Data.StartIndexData.GetIIndex(), Data.EndIndexData.GetIIndex()),
 			_ => throw new NotImplementedException(),
 		};
 	}
 
-	private void UpdateExtraDataTemplate()
+	private void Validate()
 	{
-		ExtraDataTemplate = Data.ActionType switch
-		{
-			RemovalType.FixedLength => lengthInputDataTemplate,
-			RemovalType.EndIndex => endIndexInputDataTemplate,
-			_ => emptyDataTemplate,
-		};
-	}
-
-
-	private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-	{
-		switch (e.PropertyName)
-		{
-			case nameof(Data.ActionType):
-				UpdateExtraDataTemplate();
-				break;
-
-			case nameof(Data.HasErrors):
-				IsValid = !Data.HasErrors;
-				break;
-		}
+		IsValid = !Data.HasErrors;
 	}
 }

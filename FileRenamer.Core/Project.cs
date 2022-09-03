@@ -1,33 +1,33 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FileRenamer.Core.Actions;
-using FileRenamer.Core.FileSystem;
+﻿using FileRenamer.Core.FileSystem;
+using FileRenamer.Core.Jobs;
 
 
 namespace FileRenamer.Core;
 
 public sealed class Project : System.ComponentModel.BindableBase
 {
-	public ActionCollection Actions { get; } = new();
+	public JobCollection Jobs { get; } = new();
 
+	private IFolder? _folder;
 	/// <summary>
 	/// Gets or sets the current working directory on which file operations are run.
 	/// </summary>
 	public IFolder? Folder { get => _folder; set => SetProperty(ref _folder, value); }
-	private IFolder? _folder;
 
+	private double _progress;
 	/// <summary>
 	/// Gets a value between 0 and 100 representing the progress of the ongoing operation.
 	/// </summary>
 	public double Progress { get => _progress; private set => SetProperty(ref _progress, value); }
-	private double _progress;
+
+	private JobScope _scope;
+	/// <summary>
+	/// Gets or sets a value that indicates whether files, folders, or both should be manipulated.
+	/// </summary>
+	public JobScope Scope { get => _scope; set => SetProperty(ref _scope, value); }
 
 
-	public async Task Run(CancellationToken cancellationToken, bool parallel = false)
+	public async Task RunAsync(CancellationToken cancellationToken)
 	{
 		// 0. 
 		if (Folder == null)
@@ -37,28 +37,28 @@ public sealed class Project : System.ComponentModel.BindableBase
 		}
 
 		// 1. 
-		string[] fileNames = await Folder.GetFileNamesAsync();
-		int counter = 0;
+		// 1.1. 
+		IFile[] files = await Folder.GetFilesAsync();
+		JobTarget[] targets = files.Select((file, i) => new JobTarget(file, i)).ToArray();
+		JobContext context = new(Jobs, targets);
 
-		if (parallel)
-			await Parallel.ForEachAsync(fileNames, cancellationToken, RenameFile);
-		else
-			foreach (string fileName in fileNames)
-			{
-				if (cancellationToken.IsCancellationRequested)
-					break;
-
-				await Folder.RenameFileAsync(fileName, Actions.Run(fileName)).ConfigureAwait(true);
-				counter++;
-			}
-
-
-
-		async ValueTask RenameFile(string fileName, CancellationToken _cancellationToken)
+		// 1.2. 
+		for (int i = 0; i < files.Length; i++)
 		{
-			await Folder!.RenameFileAsync(fileName, Actions.Run(fileName)).ConfigureAwait(true);
-			Interlocked.Add(ref counter, 1);
-			Progress = counter;
+			//
+			if (cancellationToken.IsCancellationRequested)
+				break;
+
+			//
+			IFile file = files[i];
+			JobTarget target = targets[i];
+
+			//
+			Jobs.Run(target, context);
+			await file.RenameAsync(target.NewFileName).ConfigureAwait(true);
+
+			//
+			Progress = i;
 		}
 	}
 }

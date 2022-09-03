@@ -106,4 +106,11 @@ public static class StringExtensions
 			_ => throw new NotImplementedException($"Case for {textCase} is not implemented."),
 		};
 	}
+
+	public static string Reverse(this string s)
+	{
+		char[] charArray = s.ToCharArray();
+		Array.Reverse(charArray);
+		return new string(charArray);
+	}
 }

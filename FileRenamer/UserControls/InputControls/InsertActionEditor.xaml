@@ -2,73 +2,180 @@
 	x:Class="FileRenamer.UserControls.InputControls.InsertActionEditor"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:uic="using:FileRenamer.UserControls.InputControls" >
+	xmlns:vsvm="using:FileRenamer.ViewModels.ValueSources"
+	xmlns:uic="using:FileRenamer.UserControls.InputControls"
+	xmlns:converters="using:FileRenamer.Converters"
+	xmlns:numberformatters="using:FileRenamer.Core.ValueSources.NumberFormatters" >
 
 	<UserControl.Resources>
 
-		<DataTemplate x:Key="TextInputDataTemplate" x:DataType="uic:InsertActionData" >
-			<StackPanel HorizontalAlignment="Stretch" MinWidth="160" MaxWidth="240" >
-				<TextBox HorizontalAlignment="Stretch" Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="type here" />
-				<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind TextError, Mode=OneWay}" />
+		<DataTemplate x:Key="EnumDescriptionDataTemplate">
+			<TextBlock Text="{Binding Converter={StaticResource EnumToDescriptionConverter}}" />
+		</DataTemplate>
+
+		<StaticResource x:Key="RowSpacing" ResourceKey="XSmallSpacing" />
+		<x:Double x:Key="InputBoxWidth" >160</x:Double>
+
+		<!--#region Value Sources -->
+
+		<Style x:Key="InputLabelStyle" TargetType="TextBlock" >
+			<Setter Property="VerticalAlignment" Value="Center" />
+			<Setter Property="Margin" Value="{StaticResource SmallRightMargin}" />
+		</Style>
+
+		<DataTemplate x:Key="StringValueSourceDataTemplate" x:DataType="vsvm:StringValueSourceViewModel" >
+			<StackPanel>
+				<TextBox Width="{StaticResource InputBoxWidth}" Text="{x:Bind Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="type here" />
+				<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind TextErrorMessage, Mode=OneWay}" />
 			</StackPanel>
 		</DataTemplate>
 
-		<DataTemplate x:Key="CounterInputDataTemplate" x:DataType="uic:InsertActionData" >
-			<Grid ColumnSpacing="{StaticResource XSmallSpacing}" RowSpacing="{StaticResource SmallSpacing}" >
+		<DataTemplate x:Key="RandomStringValueSourceDataTemplate" x:DataType="vsvm:RandomStringValueSourceViewModel" >
+			<StackPanel MinWidth="160" Spacing="{StaticResource RowSpacing}" >
+				<StackPanel Orientation="Horizontal" >
+					<TextBlock Style="{StaticResource InputLabelStyle}" Text="Text length" />
+					<NumberBox Width="{StaticResource InputBoxWidth}" SpinButtonPlacementMode="Inline" Minimum="1" Maximum="100" Value="{x:Bind Length, Mode=TwoWay}" />
+				</StackPanel>
+				<TextBlock Text="Using:" />
+				<StackPanel Margin="{StaticResource MediumLeftMargin}" >
+					<CheckBox Content="Uppercase letters" IsChecked="{x:Bind IncludeUppercase, Mode=TwoWay}" />
+					<CheckBox Content="Lowercase letters" IsChecked="{x:Bind IncludeLowercase, Mode=TwoWay}" />
+					<CheckBox Content="Numbers" IsChecked="{x:Bind IncludeNumbers, Mode=TwoWay}" />
+					<CheckBox IsChecked="{x:Bind IncludeSymbols, Mode=TwoWay}" >
+						<StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" >
+							<TextBlock Style="{StaticResource InputLabelStyle}" Text="Symbols" />
+							<TextBox Width="{StaticResource InputBoxWidth}" Text="{x:Bind Symbols, Mode=TwoWay}" PlaceholderText="type here..." CharacterSpacing="250" />
+						</StackPanel>
+					</CheckBox>
+				</StackPanel>
+			</StackPanel>
+		</DataTemplate>
+
+		<DataTemplate x:Key="CounterValueSourceDataTemplate" x:DataType="vsvm:CounterValueSourceViewModel" >
+			<Grid RowSpacing="{StaticResource RowSpacing}" ColumnSpacing="{StaticResource XSmallSpacing}" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="starting at" />
+				<NumberBox Grid.Row="0" Grid.Column="1" Value="{x:Bind InitialValue, Mode=TwoWay}" Minimum="0" HorizontalContentAlignment="Right" SpinButtonPlacementMode="Inline" />
+
+				<!--
+				<TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="increment" />
+				<NumberBox Grid.Row="1" Grid.Column="1" Value="{x:Bind Increment, Mode=TwoWay}" SpinButtonPlacementMode="Inline" />
+				-->
+
+				<TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="formatted as" />
+				<ComboBox Grid.Row="1" Grid.Column="1" Width="{StaticResource InputBoxWidth}" PlaceholderText="choose..."
+						  ItemsSource="{x:Bind vsvm:CounterValueSourceViewModel.ValueSourceTypes}"
+						  ItemTemplate="{StaticResource EnumDescriptionDataTemplate}"
+						  SelectedItem="{x:Bind NumberFormatterType, Mode=TwoWay}" SelectedIndex="-1" />
+
+				<ContentControl Grid.Row="2" Grid.ColumnSpan="2" HorizontalContentAlignment="Stretch"
+								Content="{x:Bind Formatter, Mode=TwoWay}" ContentTemplateSelector="{StaticResource NumberFormatterTemplateSelector}" />
+			</Grid>
+		</DataTemplate>
+
+		<converters:ValueSourceTemplateSelector x:Key="ValueSourceTemplateSelector"
+												StringTemplate="{StaticResource StringValueSourceDataTemplate}"
+												RandomStringTemplate="{StaticResource RandomStringValueSourceDataTemplate}"
+												CounterTemplate="{StaticResource CounterValueSourceDataTemplate}" />
+
+		<!--#endregion-->
+
+		<!--#region Number Formatters -->
+
+		<converters:CharToStringConverter x:Key="CharToStringConverter" />
+
+		<DataTemplate x:Key="PaddedNumberFormatterDataTemplate" x:DataType="numberformatters:PaddedNumberFormatter" >
+			<Grid RowSpacing="{StaticResource RowSpacing}" ColumnSpacing="{StaticResource XSmallSpacing}" >
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="160" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="starting at" />
-				<NumberBox Grid.Row="0" Grid.Column="1" Value="{x:Bind InitialValue, Mode=TwoWay}" Minimum="0" SpinButtonPlacementMode="Inline" />
+				<TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="padded to length" />
+				<NumberBox Grid.Row="0" Grid.Column="1" Value="{x:Bind MinWidth, Mode=TwoWay}" Minimum="1" Maximum="6" SpinButtonPlacementMode="Inline" />
 
-				<TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="increment" />
-				<NumberBox Grid.Row="1" Grid.Column="1" Value="{x:Bind Increment, Mode=TwoWay}" SpinButtonPlacementMode="Inline" />
-
-				<TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="pad to length" />
-				<NumberBox Grid.Row="2" Grid.Column="1" Value="{x:Bind PaddedLength, Mode=TwoWay}" Minimum="1" Maximum="6" SpinButtonPlacementMode="Inline" />
-
-				<TextBlock  Grid.Row="3" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="pad with" />
-				<StackPanel Grid.Row="3" Grid.Column="1" >
-					<TextBox Margin="0 0 80 0" Text="{x:Bind PaddingChar, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" MaxLength="1" TextWrapping="Wrap" />
-					<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind PaddingCharError, Mode=OneWay}" />
+				<TextBlock  Grid.Row="1" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="padded with" />
+				<StackPanel Grid.Row="1" Grid.Column="1" >
+					<TextBox Text="{x:Bind PaddingChar, Mode=TwoWay, Converter={StaticResource CharToStringConverter}}" MaxLength="1" />
+					<!--<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind PaddingCharError, Mode=OneWay}" />-->
 				</StackPanel>
 			</Grid>
 		</DataTemplate>
 
+		<DataTemplate x:Key="RomanNumberFormatterDataTemplate" x:DataType="numberformatters:RomanNumberFormatter" >
+			<CheckBox Content="Use uppercase letters." IsChecked="{x:Bind UseUppercase, Mode=TwoWay}" />
+		</DataTemplate>
+
+		<DataTemplate x:Key="NumberToWordsFormatterDataTemplate" x:DataType="numberformatters:NumberToWordsFormatter" >
+			<Grid RowSpacing="{StaticResource RowSpacing}" ColumnSpacing="{StaticResource XSmallSpacing}" >
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<!--<RowDefinition />-->
+				</Grid.RowDefinitions>
+
+				<!--
+				<TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource InputLabelStyle}" Text="gender" />
+				<ComboBox Grid.Row="0" Grid.Column="1" Width="{StaticResource InputBoxWidth}"
+						  ItemsSource="{x:Bind uic:InsertActionData.Genders}" DisplayMemberPath="Description" SelectedValuePath="Value" 
+						  SelectedItem="{x:Bind Gender, Mode=TwoWay}" />
+				-->
+				<CheckBox Grid.Row="0" Grid.ColumnSpan="2" Content="Use uppercase letters." IsChecked="{x:Bind UseUppercase, Mode=TwoWay}" />
+			</Grid>
+		</DataTemplate>
+
+		<converters:NumberFormatterTemplateSelector x:Key="NumberFormatterTemplateSelector"
+													NumberToWordsFormatter="{StaticResource NumberToWordsFormatterDataTemplate}"
+													PaddedNumberFormatter="{StaticResource PaddedNumberFormatterDataTemplate}"
+													RomanNumberFormatter="{StaticResource RomanNumberFormatterDataTemplate}" />
+
+		<!--#endregion-->
+
 	</UserControl.Resources>
 
 
-	<StackPanel Spacing="{StaticResource MediumSpacing}" >
-		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
-			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="what" />
+	<ScrollViewer Padding="{StaticResource SmallRightMargin}" >
+		<StackPanel Spacing="{StaticResource MediumSpacing}" >
 
-			<StackPanel Width="120" >
-				<ComboBox PlaceholderText="chose..." 
-						  ItemsSource="{x:Bind uic:InsertActionEditor.stringSourceTypes}" SelectedItem="{x:Bind Data.StringType, Mode=TwoWay}" >
-					<ItemsControl.ItemTemplate>
-						<DataTemplate x:DataType="uic:StringSourceType" >
-							<TextBlock Text="{x:Bind Converter={StaticResource EnumToDescriptionConverter}}" />
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ComboBox>
-				<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind Data.StringTypeError, Mode=OneWay}" />
+			<!-- What -->
+			<StackPanel Style="{StaticResource StackPanelCardStyle}" >
+				<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="what" />
+
+				<StackPanel Spacing="{StaticResource RowSpacing}" >
+					<ComboBox Width="{StaticResource InputBoxWidth}" PlaceholderText="choose..." 
+							  ItemsSource="{x:Bind uic:InsertActionData.ValueSourceTypes}"
+							  ItemTemplate="{StaticResource EnumDescriptionDataTemplate}"
+							  SelectedItem="{x:Bind Data.ValueSourceType, Mode=TwoWay}" />
+
+					<ContentControl Content="{x:Bind Data.ValueSourceViewModel, Mode=OneWay}"
+									ContentTemplateSelector="{StaticResource ValueSourceTemplateSelector}" />
+				</StackPanel>
 			</StackPanel>
 
-			<ContentControl Content="{x:Bind Data}" ContentTemplate="{x:Bind ExtraDataTemplate, Mode=TwoWay}" HorizontalContentAlignment="Stretch" />
-		</StackPanel>
+			<!-- Where -->
+			<StackPanel Style="{StaticResource StackPanelCardStyle}" >
+				<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="where" />
 
-		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
-			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="where" />
+				<uic:IndexEditor Data="{x:Bind Data.IndexData}" />
+			</StackPanel>
 
-			<uic:IndexEditor Data="{x:Bind Data.IndexData}" />
 		</StackPanel>
-	</StackPanel>
+	</ScrollViewer>
 </UserControl>

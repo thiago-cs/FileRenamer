@@ -1,108 +1,143 @@
-﻿using FileRenamer.Core.Indices;
+﻿using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Indices;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
-public sealed class IndexEditorData : System.ComponentModel.BindableBase
+public sealed partial class IndexEditorData : ObservableValidator
 {
-	#region Basic
+	#region Index Type
 
-	private bool _hasErrors;
-	public new bool HasErrors { get => _hasErrors; private set => SetProperty(ref _hasErrors, value); }
+	[ObservableProperty]
+	private IndexTypeEntry _indexType;
 
-	private IndexType _indexType;
-	public IndexType IndexType
+	partial void OnIndexTypeChanged(IndexTypeEntry value)
 	{
-		get => _indexType;
-		set
-		{
-			if (SetProperty(ref _indexType, value))
-				Validate();
-		}
+		ValidateProperty(SearchTextData, nameof(SearchTextData));
 	}
-
-	private string _indexTypeError;
-	public string IndexTypeError { get => _indexTypeError; private set => SetProperty(ref _indexTypeError, value); }
 
 	#endregion
 
-	#region Position
+	#region Fixed index
 
+	[ObservableProperty]
 	private int _indexPosition;
-	public int IndexPosition { get => _indexPosition; set => SetProperty(ref _indexPosition, value); }
 
 	#endregion
 
 	#region After | Before
 
-	public SearchTextData SearchTextData { get; } = new();
+	[CustomValidation(typeof(IndexEditorData), nameof(ValidateSearchTextData))]
+	public SearchTextData SearchTextData { get; }
+
+	private void SearchTextData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		ValidateProperty(SearchTextData, nameof(SearchTextData));
+	}
 
 	#endregion
 
 
+	#region Constructors
+
 	public IndexEditorData()
 	{
-		Validate();
+		SearchTextData = new();
+		IndexType = IndexTypeEntry.FromIndexType(InputControls.IndexType.Beginning);
+
+		Initialize();
+	}
+
+	public IndexEditorData(IIndex index)
+	{
+		SearchTextData = new();
+
+		switch (index)
+		{
+			case BeginningIndex:
+				IndexType = IndexTypeEntry.FromIndexType(InputControls.IndexType.Beginning);
+				break;
+
+			case EndIndex:
+				IndexType = IndexTypeEntry.FromIndexType(InputControls.IndexType.End);
+				break;
+
+			case FileExtensionIndex:
+				IndexType = IndexTypeEntry.FromIndexType(InputControls.IndexType.FileExtension);
+				break;
+
+			case FixedIndex index1:
+				IndexType = IndexTypeEntry.FromIndexType(InputControls.IndexType.Position);
+				IndexPosition = index1.Index;
+				break;
+
+			case SubstringIndex index1:
+				IndexType = index1.Before ? IndexTypeEntry.FromIndexType(InputControls.IndexType.Before) : IndexTypeEntry.FromIndexType(InputControls.IndexType.After);
+				SearchTextData.IgnoreCase = index1.IgnoreCase;
+				SearchTextData.Text = index1.Value;
+				SearchTextData.TextType = index1.UseRegex ? TextType.Regex : TextType.Text;
+				break;
+
+			case null:
+				break;
+
+			default:
+				throw new System.NotImplementedException();
+		};
+
+		Initialize();
+	}
+
+	private void Initialize()
+	{
+		//Validate();
+
 		SearchTextData.PropertyChanged += SearchTextData_PropertyChanged;
 	}
+
+	#endregion
 
 
 	public IIndex GetIIndex()
 	{
 		return HasErrors
 			? null
-			: IndexType switch
+			: IndexType.Type switch
 			{
-				IndexType.None => null,
-				IndexType.Beginning => new BeginningIndex(),
-				IndexType.End => new EndIndex(),
-				IndexType.FileExtension => new FileExtensionIndex(),
-				IndexType.Position => new FixedIndex(IndexPosition),
-				IndexType.Before => new SubstringIndex(SearchTextData.Text, before: true, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
-				IndexType.After => new SubstringIndex(SearchTextData.Text, before: false, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
-				_ => throw new System.NotImplementedException($"Unknown {nameof(IIndex)} type '{IndexType}'."),
+				InputControls.IndexType.Beginning => new BeginningIndex(),
+				InputControls.IndexType.End => new EndIndex(),
+				InputControls.IndexType.FileExtension => new FileExtensionIndex(),
+				InputControls.IndexType.Position => new FixedIndex(IndexPosition),
+				InputControls.IndexType.Before => new SubstringIndex(SearchTextData.Text, before: true, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
+				InputControls.IndexType.After => new SubstringIndex(SearchTextData.Text, before: false, SearchTextData.IgnoreCase, SearchTextData.TextType == TextType.Regex),
+				_ => throw new System.NotImplementedException($"Unknown {nameof(Core.Indices.IIndex)} type '{IndexType}'."),
 			};
 	}
 
+
 	#region Validation
 
-	private void Validate()
+	public static ValidationResult ValidateSearchTextData(SearchTextData searchTextData, ValidationContext context)
 	{
-		// 1. 
-		string indexTypeError = null;
+		IndexEditorData instance = context.ObjectInstance as IndexEditorData;
 
-		if (IndexType == IndexType.None)
-			indexTypeError = "Select an index type.";
-
-		// 2. 
-		IndexTypeError = indexTypeError;
-		UpdateHasErrors();
-	}
-
-	private void UpdateHasErrors()
-	{
-		HasErrors = IndexTypeError != null || (IndexType is IndexType.Before or IndexType.After && SearchTextData.HasErrors);
-	}
-
-	private static bool IsRegexPatternValid(string pattern)
-	{
-		try
-		{
-			_ = new System.Text.RegularExpressions.Regex(pattern);
-			return true;
-		}
-		catch
-		{
-			return false;
-		}
+		return (instance.IndexType.Type is InputControls.IndexType.Before or InputControls.IndexType.After && instance.SearchTextData.HasErrors)
+			 ? new(nameof(SearchTextData))
+			 : ValidationResult.Success;
 	}
 
 	#endregion
 
-
-	private void SearchTextData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	public static RangeValidationResult ValidateIndicesRange(IndexEditorData start, IndexEditorData end)
 	{
-		if (e.PropertyName == nameof(SearchTextData.HasErrors))
-			UpdateHasErrors();
+		return (start.IndexType.Type, end.IndexType.Type) switch
+		{
+			(_, InputControls.IndexType.Beginning) or
+			(InputControls.IndexType.End, _) or
+			(InputControls.IndexType.FileExtension, InputControls.IndexType.FileExtension) => RangeValidationResult.InvalidIndexType,
+			(InputControls.IndexType.Position, InputControls.IndexType.Position) when end.IndexPosition <= start.IndexPosition => RangeValidationResult.InvalidIndexPosition,
+			_ => RangeValidationResult.Ok,
+		};
 	}
 }

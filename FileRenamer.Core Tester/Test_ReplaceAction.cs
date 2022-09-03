@@ -1,6 +1,8 @@
 ﻿using NUnit.Framework;
+using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Indices;
-using FileRenamer.Core.Actions;
+using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Jobs.FileActions;
 using static FileRenamer.Core_Tester.Resources;
 
 
@@ -19,7 +21,11 @@ public sealed class Test_ReplaceAction
 	[TestCase(neverForget, regex1, "", false, true, neverForget)]
 	public void TestWithoutBounds(string input, string oldString, string newString, bool ignoreCase, bool useRegex, string expected)
 	{
-		Assert.AreEqual(expected, new ReplaceAction(oldString, newString, ignoreCase, useRegex).Run(input));
+		ReplaceAction replaceAction = new(oldString, newString, ignoreCase, useRegex);
+		JobTarget target = new(new FileMock(input), 0);
+		replaceAction.Run(target, NoContext);
+
+		Assert.AreEqual(expected, target.NewFileName);
 	}
 
 
@@ -30,7 +36,11 @@ public sealed class Test_ReplaceAction
 	[TestCase("sun of a beach", 10, 12, /*language=regex*/ @"\w", "*", false, true, "sun of a b**ch")]
 	public void TestWithBounds(string input, int start, int end, string oldString, string newString, bool ignoreCase, bool useRegex, string expected)
 	{
-		Assert.AreEqual(expected, new ReplaceAction(new FixedIndex(start), new FixedIndex(end), oldString, newString, ignoreCase, useRegex).Run(input));
+		ReplaceAction replaceAction = new(new FixedIndex(start), new FixedIndex(end), oldString, newString, ignoreCase, useRegex);
+		JobTarget target = new(new FileMock(input), 0);
+		replaceAction.Run(target, NoContext);
+
+		Assert.AreEqual(expected, target.NewFileName);
 	}
 
 
@@ -39,7 +49,8 @@ public sealed class Test_ReplaceAction
 	[TestCase(regex1, "new text", true, @"replace the expression "",[^\.]*(?=,)"" with ""new text""")]
 	public void TestDescriptionWithoutBounds(string oldString, string newString, bool useRegex, string expected)
 	{
-		Assert.AreEqual(expected, new ReplaceAction(oldString, newString, false, useRegex).Description);
+		ReplaceAction replaceAction = new(oldString, newString, false, useRegex);
+		Assert.AreEqual(expected, replaceAction.Description);
 	}
 
 
@@ -48,6 +59,7 @@ public sealed class Test_ReplaceAction
 	[TestCase(2, 4, regex1, "new text", true, @"replace the expression "",[^\.]*(?=,)"" within characters from before ""sunset"" to after the expression ""(Hi|Hello) kitty"" with ""new text""")]
 	public void TestDescriptionWithBounds(int i1, int i2, string oldString, string newString, bool useRegex, string expected)
 	{
-		Assert.AreEqual(expected, new ReplaceAction(finders[i1], finders[i2], oldString, newString, false, useRegex).Description);
+		ReplaceAction replaceAction = new(finders[i1], finders[i2], oldString, newString, false, useRegex);
+		Assert.AreEqual(expected, replaceAction.Description);
 	}
 }

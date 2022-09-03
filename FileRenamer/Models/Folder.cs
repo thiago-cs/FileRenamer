@@ -1,38 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FileRenamer.Core.FileSystem;
+using Windows.Storage;
 
 
 namespace FileRenamer.Models;
 
 /// <summary>
-/// Implements the <see cref="IFolder"/> interface for WinUI3 using a <see cref="Windows.Storage.StorageFolder"/>.
+/// Implements the <see cref="IFolder"/> interface for WinUI3 using a <see cref="StorageFolder"/>.
 /// </summary>
 internal class Folder : IFolder
 {
-	private readonly Windows.Storage.StorageFolder folder;
+	private StorageFolder folder;
 
 
-	/// <inheritdoc/>
 	public string Path => folder.Path;
 
 
 	#region Constructors
 
-	public Folder(Windows.Storage.StorageFolder folder)
+	public Folder(StorageFolder folder)
 	{
 		this.folder = folder;
 	}
 
-	public static implicit operator Folder(Windows.Storage.StorageFolder folder)
+	public static implicit operator Folder(StorageFolder folder)
 	{
 		return new(folder);
 	}
 
-	public static implicit operator Windows.Storage.StorageFolder(Folder folder)
+	public static implicit operator StorageFolder(Folder folder)
 	{
 		return folder;
 	}
@@ -40,19 +38,18 @@ internal class Folder : IFolder
 	#endregion
 
 
-	/// <inheritdoc/>
 	public Task<IFolder[]> GetSubfoldersAsync()
 	{
 		throw new NotImplementedException();
 	}
 
-	/// <inheritdoc/>
-	public Task<IFile[]> GetFilesAsync()
+	public async Task<IFile[]> GetFilesAsync()
 	{
-		throw new NotImplementedException();
+		return (await folder.GetFilesAsync())
+				.Select(file => new File(file))
+				.ToArray();
 	}
 
-	/// <inheritdoc/>
 	public async Task<bool> RenameAsync(string newName)
 	{
 		try
@@ -70,16 +67,23 @@ internal class Folder : IFolder
 		}
 	}
 
-	/// <inheritdoc/>
-	public async Task<bool> MoveAsync(IFolder newFolder)
+	public async Task<bool> MoveAsync(IFolder destination)
 	{
+		if (destination == null)
+			return false;
+
 		try
 		{
-			IFolder[] subfolders = await newFolder.GetSubfoldersAsync();
+			StorageFolder newParentFolder = destination is Folder f
+										  ? f.folder
+										  : await StorageFolder.GetFolderFromPathAsync(destination.Path);
 
-			IFolder subfolder = subfolders.FirstOrDefault()
-							 ?? await newFolder.CreateFolderAsync((this as IItem).Name);
-			return true;
+			bool success = await folder.MoveAsync(newParentFolder);
+
+			if (!success)
+				return false;
+
+			folder = await newParentFolder.GetFolderAsync(folder.Name);
 		}
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
 #pragma warning disable CS0168 // Variable is declared but never used
@@ -89,12 +93,13 @@ internal class Folder : IFolder
 		{
 			return false;
 		}
+
+		return true;
 	}
 
-	/// <inheritdoc/>
 	public async Task<IFolder> CreateFolderAsync(string name)
 	{
-		Windows.Storage.StorageFolder newFolder = await folder.CreateFolderAsync(name);
+		StorageFolder newFolder = await folder.CreateFolderAsync(name);
 		return new Folder(newFolder);
 	}
 }

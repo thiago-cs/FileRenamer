@@ -1,64 +1,28 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Models;
 
 
 namespace FileRenamer.UserControls.Toolbar;
 
+[INotifyPropertyChanged]
 public sealed partial class ToolbarButton : UserControl
 {
-	#region Fields
+	#region Properties
 
-	private const string mediumToolbarButtonStyleKey = "ToolbarItemSize.Medium";
-	private static Style mediumToolbarButtonStyle;
+	[ObservableProperty]
+	private ToolbarItemSize _itemSize;
+
+	[ObservableProperty]
+	private UICommand _command;
+
+	partial void OnCommandChanged(UICommand value)
+	{
+		if (value.KeyboardAccelerator != null)
+			KeyboardAccelerators.Add(value.KeyboardAccelerator);
+	}
 
 	#endregion
-
-
-	#region ItemSize DependencyProperty
-	public ToolbarItemSize ItemSize
-	{
-		get => (ToolbarItemSize)GetValue(ItemSizeProperty);
-		set => SetValue(ItemSizeProperty, value);
-	}
-
-	public static readonly DependencyProperty ItemSizeProperty =
-		DependencyProperty.Register(
-			nameof(ItemSize),
-			typeof(ToolbarItemSize),
-			typeof(MainWindow),
-			new PropertyMetadata(ToolbarItemSize.Medium, OnItemSizeChanged));
-
-	private static void OnItemSizeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-	{
-		if (d is ToolbarButton button)
-			button.MyContentControl.Style = (ToolbarItemSize)e.NewValue switch
-			{
-				ToolbarItemSize.Medium or _ => mediumToolbarButtonStyle,
-			};
-	}
-	#endregion Size DependencyProperty
-
-	#region Command DependencyProperty
-	public UICommand Command
-	{
-		get => (UICommand)GetValue(CommandProperty);
-		set => SetValue(CommandProperty, value);
-	}
-
-	public static readonly DependencyProperty CommandProperty =
-		DependencyProperty.Register(
-			nameof(Command),
-			typeof(UICommand),
-			typeof(ToolbarButton),
-			new PropertyMetadata(null, OnCommandChanged));
-
-	private static void OnCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-	{
-		if (d is ToolbarButton button)
-			button.MyContentControl.DataContext = e.NewValue;
-	}
-	#endregion Command DependencyProperty
 
 
 	#region Constructors
@@ -66,12 +30,6 @@ public sealed partial class ToolbarButton : UserControl
 	public ToolbarButton()
 	{
 		InitializeComponent();
-
-		if (mediumToolbarButtonStyle == null)
-			if (Resources.TryGetValue(mediumToolbarButtonStyleKey, out object o))
-				mediumToolbarButtonStyle = o as Style;
-
-		MyContentControl.Style = mediumToolbarButtonStyle;
 	}
 
 	#endregion

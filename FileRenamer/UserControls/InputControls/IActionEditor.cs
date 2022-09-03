@@ -1,11 +1,13 @@
-﻿using FileRenamer.Core.Actions;
+﻿using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
-internal interface IActionEditor
+public interface IActionEditor
 {
-	bool IsValid { get; }
+	public string DialogTitle { get; }
 
-	RenameActionBase GetRenameAction();
+	public bool IsValid { get; }
+
+	public RenameActionBase GetRenameAction();
 }

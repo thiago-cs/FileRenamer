@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Windows.System;
+using Windows.Storage.Pickers;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Input;
+using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Models;
 using FileRenamer.ViewModels;
 
@@ -17,6 +21,7 @@ public sealed partial class MainWindow
 	{
 		// 1. 
 		InitializeComponent();
+		//ExtendsContentIntoTitleBar = true;
 
 		#region 2. Commands
 
@@ -25,42 +30,56 @@ public sealed partial class MainWindow
 		// 2.1. Project commands
 		NewProjectCommand = CreateCommand2("New", "N", "Start a new project",
 											Symbol.Add, VirtualKeyModifiers.Control, VirtualKey.N, ExecuteNewProject);
+
 		LoadProjectCommand = CreateCommand2("Load", "L", "Load an existing project",
 											Symbol.OpenLocal, VirtualKeyModifiers.Control, VirtualKey.O, ExecuteLoadProject);
+
 		SaveProjectCommand = CreateCommand2("Save", "S", "Save this project",
 											Symbol.Save, VirtualKeyModifiers.Control, VirtualKey.S, ExecuteSaveProject);
 
 		// 2.2. Manage existing actions commands
 		MoveUpActionCommand = CreateCommand2("Move up", "U", "Move the selected action up",
 											Symbol.Up, VirtualKeyModifiers.Menu, VirtualKey.Up, ViewModel.MoveSelectedActionUp, ViewModel.CanExecuteWhenSelectedActionIsNotFirst);
+
 		MoveDownActionCommand = CreateCommand3("Move down", "D", "Move the selected action down",
 											(char)0xE74B, VirtualKeyModifiers.Menu, VirtualKey.Down, ViewModel.MoveSelectedActionDown, ViewModel.CanExecuteWhenSelectedActionIsNotLast);
+
 		EditActionCommand = CreateCommand2("Edit", "T", "Edit the selected action",
 											Symbol.Edit, null, VirtualKey.F2, ExecuteEditAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
+
 		DuplicateActionCommand = CreateCommand2("Duplicate", "V", "Duplicate the selected action",
 											Symbol.Copy, VirtualKeyModifiers.Control, VirtualKey.D, ViewModel.DuplicateSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
+
 		RemoveActionCommand = CreateCommand2("Remove", "Del", "Remove the selected action",
 											Symbol.Delete, null, VirtualKey.Delete, ViewModel.RemoveSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
+
 		RemoveAllActionCommand = CreateCommand2("Clear", "", "Remove all actions",
 											Symbol.Clear, VirtualKeyModifiers.Control, VirtualKey.Delete, ViewModel.RemoveAllActions, ViewModel.CanExecuteWhenActionsIsNotEmpty);
 
 		// 2.3. Add new actions commands
 		AddInsertActionCommand = CreateCommand2("Insert", "I", "Add an action that inserts a text",
-												Symbol.Add, VirtualKeyModifiers.Control, VirtualKey.I, ExecuteAddInsertAction);
+												Symbol.Add, VirtualKeyModifiers.Control, VirtualKey.I, AddInsertAction);
+
 		AddRemoveActionCommand = CreateCommand2("Remove", "R", "Add an action that removes text",
-												Symbol.Remove, VirtualKeyModifiers.Control, VirtualKey.R, ExecuteAddRemoveAction);
+												Symbol.Remove, VirtualKeyModifiers.Control, VirtualKey.R, AddRemoveAction);
+
 		AddInsertCounterActionCommand = CreateCommand3("Insert counter", "1", "Add an action that inserts a padded number",
-												(char)0xE8EF, Control_Shift, VirtualKey.I, ExecuteAddInsertCounterAction);
+												(char)0xE8EF, Control_Shift, VirtualKey.I, AddInsertCounterAction);
+
 		AddReplaceActionCommand = CreateCommand2("Replace", "H", "Add an action that replaces a text",
-												Symbol.Sync, Control_Shift, VirtualKey.R, ExecuteAddReplaceAction);
-		AddConvertCaseActionCommand = CreateCommand2("Convert case", "C", "Add an action that changes the casing of a text",
-												Symbol.Font, Control_Shift, VirtualKey.C, ExecuteAddConvertCaseAction);
+												Symbol.Sync, Control_Shift, VirtualKey.R, AddReplaceAction);
+
+		AddConvertCaseActionCommand = CreateCommand2("Change case", "C", "Add an action that changes the casing of a text",
+												Symbol.Font, Control_Shift, VirtualKey.C, AddConvertCaseAction);
+
+		AddMoveStringActionCommand = CreateCommand3("Move Text", "M", "Move a text around",
+												(char)0xE8AB, Control_Shift, VirtualKey.M, AddConvertCaseAction);
 
 		#endregion
 
 		// 3.
 		ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-		ViewModel.Project.Actions.CollectionChanged += Actions_CollectionChanged;
+		ViewModel.Project.Jobs.CollectionChanged += Actions_CollectionChanged;
 
 
 
@@ -69,10 +88,14 @@ public sealed partial class MainWindow
 		static UICommand CreateCommand(string label, string accessKey, string description, IconSource icon,
 									   VirtualKeyModifiers? modifier, VirtualKey acceleratorKey, Action execute, Func<bool> canExecute)
 		{
-			UICommand command = new(execute, canExecute) { Label = label, AccessKey = accessKey, Description = description, IconSource = icon, };
-			//command.KeyboardAccelerators.Add(CreateKeyboardAccelerator(modifier, acceleratorKey));
-
-			return command;
+			return new UICommand(execute, canExecute)
+			{
+				Label = label,
+				Description = description,
+				IconSource = icon,
+				AccessKey = accessKey,
+				KeyboardAccelerator = CreateKeyboardAccelerator(modifier, acceleratorKey)
+			};
 		}
 
 		static UICommand CreateCommand2(string label, string accessKey, string description, Symbol symbol,
@@ -87,15 +110,15 @@ public sealed partial class MainWindow
 			return CreateCommand(label, accessKey, description, new FontIconSource() { Glyph = glyph.ToString() }, modifier, acceleratorKey, execute, canExecute);
 		}
 
-		//static KeyboardAccelerator CreateKeyboardAccelerator(VirtualKeyModifiers? modifier, VirtualKey acceleratorKey)
-		//{
-		//	KeyboardAccelerator keyboardAccelerator = new() { Key = acceleratorKey };
+		static KeyboardAccelerator CreateKeyboardAccelerator(VirtualKeyModifiers? modifier, VirtualKey acceleratorKey)
+		{
+			KeyboardAccelerator keyboardAccelerator = new() { Key = acceleratorKey };
 
-		//	if (modifier != null)
-		//		keyboardAccelerator.Modifiers = modifier.Value;
+			if (modifier != null)
+				keyboardAccelerator.Modifiers = modifier.Value;
 
-		//	return keyboardAccelerator;
-		//}
+			return keyboardAccelerator;
+		}
 
 		#endregion
 	}
@@ -150,14 +173,34 @@ public sealed partial class MainWindow
 	public readonly UICommand RemoveAllActionCommand;
 
 
-	private void ExecuteEditAction()
+	private async void ExecuteEditAction()
 	{
+		//
 		if (ViewModel.SelectedAction == null)
 		{
 			// Oops!
 			return;
 		}
-		// ToDo: implement action editing.
+
+		//
+		UserControls.InputControls.IActionEditor actionEditor = ViewModel.SelectedAction switch
+		{
+			InsertAction action => new UserControls.InputControls.InsertActionEditor(action),
+			RemoveAction action => new UserControls.InputControls.RemoveActionEditor(action),
+			ReplaceAction action => new UserControls.InputControls.ReplaceActionEditor(action),
+			ToCaseAction action => new UserControls.InputControls.ChangeCaseActionEditor(action),
+			_ => null,
+		};
+
+		//
+		IJobItem item = await EditJobItemInDialog(actionEditor);
+
+		if (item == null)
+			return;
+
+		int index = ViewModel.Project.Jobs.IndexOf(ViewModel.SelectedAction);
+		ViewModel.Project.Jobs.RemoveAt(index);
+		ViewModel.Project.Jobs.Insert(index, item);
 	}
 
 	#endregion
@@ -169,58 +212,72 @@ public sealed partial class MainWindow
 	public readonly UICommand AddRemoveActionCommand;
 	public readonly UICommand AddReplaceActionCommand;
 	public readonly UICommand AddConvertCaseActionCommand;
+	public readonly UICommand AddMoveStringActionCommand;
 
 
-	private void ExecuteAddInsertAction()
+	private async void AddInsertAction()
 	{
-		_ = ShowActionEditorDialog("Insert", new UserControls.InputControls.InsertActionEditor());
+		await EditAndAddJobItem(new UserControls.InputControls.InsertActionEditor());
 	}
 
-	private void ExecuteAddInsertCounterAction()
+	private async void AddInsertCounterAction()
 	{
 		UserControls.InputControls.InsertActionEditor actionEditor = new();
-		actionEditor.Data.StringType = UserControls.InputControls.StringSourceType.Counter;
+		actionEditor.Data.ValueSourceType = UserControls.InputControls.ValueSourceType.Counter;
 
-		_ = ShowActionEditorDialog("Insert", actionEditor);
+		await EditAndAddJobItem(actionEditor);
 	}
 
-	private void ExecuteAddRemoveAction()
+	private async void AddRemoveAction()
 	{
-		_ = ShowActionEditorDialog("Remove", new UserControls.InputControls.RemoveActionEditor());
+		await EditAndAddJobItem(new UserControls.InputControls.RemoveActionEditor());
 	}
 
-	private void ExecuteAddReplaceAction()
+	private async void AddReplaceAction()
 	{
-		_ = ShowActionEditorDialog("Replace", new UserControls.InputControls.ReplaceActionEditor());
+		await EditAndAddJobItem(new UserControls.InputControls.ReplaceActionEditor());
 	}
 
-	private void ExecuteAddConvertCaseAction()
+	private async void AddConvertCaseAction()
 	{
-		_ = ShowActionEditorDialog("Change case", new UserControls.InputControls.ChangeCaseActionEditor());
+		await EditAndAddJobItem(new UserControls.InputControls.ChangeCaseActionEditor());
 	}
 
 
-	private async Task ShowActionEditorDialog(object title, UserControls.InputControls.IActionEditor actionEditor)
+	private async Task<IJobItem> EditJobItemInDialog(UserControls.InputControls.IActionEditor actionEditor)
 	{
-		dialog.Title = title;
+		if (actionEditor == null)
+		{
+			// Oops!
+			return null;
+		}
+
+		//
 		dialog.DataContext = actionEditor;
 
 		ContentDialogResult result = await dialog.ShowAsync();
 
 		if (result != ContentDialogResult.Primary)
-			return;
+			return null;
 
 		if (!actionEditor.IsValid)
 		{
 			// Oops!
-			return;
+			return null;
 		}
 
-		if (actionEditor.GetRenameAction() is Core.Actions.RenameActionBase newAction)
-		{
-			ViewModel.Project.Actions.Add(newAction);
-			ViewModel.SelectedAction = newAction;
-		}
+		return actionEditor.GetRenameAction();
+	}
+
+	private async Task EditAndAddJobItem(UserControls.InputControls.IActionEditor actionEditor)
+	{
+		IJobItem newAction = await EditJobItemInDialog(actionEditor);
+
+		if (newAction == null)
+			return;
+
+		ViewModel.Project.Jobs.Add(newAction);
+		ViewModel.SelectedAction = newAction;
 	}
 
 	#endregion
@@ -236,4 +293,27 @@ public sealed partial class MainWindow
 	}
 
 	#endregion
+
+
+	// Cannot be moved to a view-model because the dialog shown requires a window reference.
+	private async void PickFolderButton_Click(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+	{
+		FolderPicker picker = new()
+		{
+			SuggestedStartLocation = PickerLocationId.Downloads,
+			ViewMode = PickerViewMode.List,
+			FileTypeFilter = { "*", },
+		};
+
+		// Make folder Picker work in Win32
+		picker.SetOwnerWindow(this);
+
+		// Use file picker like normal!
+		Windows.Storage.StorageFolder folder = await picker.PickSingleFolderAsync();
+
+		if (folder == null)
+			return;
+
+		ViewModel.Project.Folder = new Folder(folder);
+	}
 }

@@ -28,6 +28,7 @@
 		<StackPanel Grid.Row="1" Grid.ColumnSpan="2" >
 			<TextBox HorizontalAlignment="Stretch" MinWidth="120" Text="{x:Bind Data.Text, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 					 IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" />
+
 			<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind Data.TextError, Mode=OneWay}" />
 		</StackPanel>
 	</Grid>

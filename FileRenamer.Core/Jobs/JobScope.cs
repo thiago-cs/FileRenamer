@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 
 
-namespace FileRenamer.Core;
+namespace FileRenamer.Core.Jobs;
 
 /// <summary>
 /// Represents the job scope of a <see cref="Project"/>, indicating whether files, folders, or both should be manipulated.

@@ -1,81 +1,49 @@
-﻿using System;
-using Microsoft.UI.Xaml;
-using FileRenamer.Core.Actions;
+﻿using System.ComponentModel;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
+[ObservableObject]
 public sealed partial class InsertActionEditor : IActionEditor
 {
-	#region Fields
-
-	public static readonly StringSourceType[] stringSourceTypes = Enum.GetValues<StringSourceType>();
-
-	private readonly DataTemplate emptyDataTemplate = new();
-
-	private const string textInputDataTemplateKey = "TextInputDataTemplate";
-	private readonly DataTemplate textInputDataTemplate;
-
-	private const string counterInputDataTemplateKey = "CounterInputDataTemplate";
-	private readonly DataTemplate counterInputDataTemplate;
-
-	#endregion
-
-
 	#region Properties
 
-	public InsertActionData Data { get; } = new();
+	public string DialogTitle => "Insert";
 
-	#region ExtraDataTemplate DependencyProperty
-	public DataTemplate ExtraDataTemplate
-	{
-		get => (DataTemplate)GetValue(ExtraDataTemplateProperty);
-		set => SetValue(ExtraDataTemplateProperty, value);
-	}
+	public InsertActionData Data { get; }
 
-	public static readonly DependencyProperty ExtraDataTemplateProperty =
-		DependencyProperty.Register(
-			nameof(ExtraDataTemplate),
-			typeof(DataTemplate),
-			typeof(IndexEditor),
-			new PropertyMetadata(null));
-	#endregion ExtraDataTemplate DependencyProperty
-
-	#region IsValid DependencyProperty
-	public bool IsValid
-	{
-		get => (bool)GetValue(IsValidProperty);
-		set => SetValue(IsValidProperty, value);
-	}
-
-	public static readonly DependencyProperty IsValidProperty =
-		DependencyProperty.Register(
-			nameof(IsValid),
-			typeof(bool),
-			typeof(InsertActionEditor),
-			new PropertyMetadata(false));
-	#endregion IsValid DependencyProperty
+	[ObservableProperty]
+	// The opposite of HasErrors
+	public bool _isValid;
 
 	#endregion
 
+
+	#region Constructors
 
 	public InsertActionEditor()
 	{
-		//
+		Data = new();
+		Initialize();
+	}
+
+	public InsertActionEditor(InsertAction insertAction)
+	{
+		Data = new(insertAction);
+		Initialize();
+	}
+
+	private void Initialize()
+	{
+		IsValid = !Data.HasErrors;
 		InitializeComponent();
 
-		//
-		if (Resources.TryGetValue(textInputDataTemplateKey, out object o))
-			textInputDataTemplate = o as DataTemplate;
-
-		if (Resources.TryGetValue(counterInputDataTemplateKey, out o))
-			counterInputDataTemplate = o as DataTemplate;
-
-		ExtraDataTemplate = textInputDataTemplate;
-
-		//
 		Data.PropertyChanged += Data_PropertyChanged;
 	}
+
+	#endregion
 
 
 	public RenameActionBase GetRenameAction()
@@ -86,46 +54,13 @@ public sealed partial class InsertActionEditor : IActionEditor
 			return null;
 		}
 
-		Core.Indices.IIndex index = Data.IndexData.GetIIndex();
-
-		switch (Data.StringType)
-		{
-			case StringSourceType.Text:
-				return new InsertAction(index, Data.Text);
-
-			case StringSourceType.Counter:
-				return new InsertCounterAction(index, Data.InitialValue, Data.PaddedLength, increment: Data.Increment/*, Data.PaddingChar[0]*/);
-
-			default:
-				// Oops!
-				return null;
-		}
-	}
-
-	private void UpdateExtraDataTemplate()
-	{
-		ExtraDataTemplate = Data.StringType switch
-		{
-			StringSourceType.Text => textInputDataTemplate,
-			StringSourceType.Counter => counterInputDataTemplate,
-			//StringSourceType.Mp3Tag => throw new NotImplementedException(),
-			//StringSourceType.ExifTag => throw new NotImplementedException(),
-			_ => emptyDataTemplate,
-		};
+		return new InsertAction(Data.IndexData.GetIIndex(), Data.ValueSource);
 	}
 
 
-	private void Data_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	private void Data_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
-		switch (e.PropertyName)
-		{
-			case nameof(Data.StringType):
-				UpdateExtraDataTemplate();
-				break;
-
-			case nameof(Data.HasErrors):
-				IsValid = !Data.HasErrors;
-				break;
-		}
+		if (e.PropertyName == nameof(Data.HasErrors))
+			IsValid = !Data.HasErrors;
 	}
 }

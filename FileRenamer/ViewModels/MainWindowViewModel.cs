@@ -1,13 +1,18 @@
-﻿using FileRenamer.Core;
-using FileRenamer.Core.Actions;
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using FileRenamer.Core;
+using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.ViewModels;
 
-public sealed class MainWindowViewModel : BindableBase
+public sealed partial class MainWindowViewModel : ObservableObject
 {
 	#region Fields
 
@@ -19,27 +24,28 @@ public sealed class MainWindowViewModel : BindableBase
 
 	#region Properties
 
+	[ObservableProperty]
 	private Project _project;
-	public Project Project
+
+	partial void OnProjectChanging(Project value)
 	{
-		get => _project;
-		set
-		{
-			if (_project != null)
-				_project.Actions.CollectionChanged -= Actions_CollectionChanged;
-
-			if (SetProperty(ref _project, value))
-				UpdateTestOutput();
-
-			if (_project != null)
-				_project.Actions.CollectionChanged += Actions_CollectionChanged;
-		}
+		if (value != null)
+			value.Jobs.CollectionChanged -= Actions_CollectionChanged;
 	}
 
-	private RenameActionBase _selectedAction;
-	public RenameActionBase SelectedAction { get => _selectedAction; set => SetProperty(ref _selectedAction, value); }
+	partial void OnProjectChanged(Project value)
+	{
+		if (value != null)
+			value.Jobs.CollectionChanged += Actions_CollectionChanged;
+	}
+
+	[ObservableProperty]
+	private IJobItem _selectedAction;
 
 	public int SelectedIndex { get; set; } = -1;
+
+	[ObservableProperty]
+	private JobScope _scope;
 
 	#endregion
 
@@ -51,7 +57,33 @@ public sealed class MainWindowViewModel : BindableBase
 	}
 
 
-	#region Managing existing actions
+	#region Commands
+
+	#region DoIt command
+
+	[RelayCommand(CanExecute = nameof(CanDoIt))]
+	private async Task DoItAsync()
+	{
+		try
+		{
+			await Project.RunAsync(CancellationToken.None);
+		}
+		catch (Exception ex)
+		{
+			System.Diagnostics.Debugger.Log(0, "error", $"{ex.GetType().Name}: {ex.Message}");
+		}
+	}
+
+	private bool CanDoIt()
+	{
+		return Project.Folder != null && Project.Jobs.Count != 0;
+	}
+
+	#endregion
+
+	#endregion
+
+	#region Project actions management
 
 	public void MoveSelectedActionUp()
 	{
@@ -61,26 +93,26 @@ public sealed class MainWindowViewModel : BindableBase
 			return;
 		}
 
-		ActionCollection actions = Project.Actions;
+		JobCollection actions = Project.Jobs;
 		int index = SelectedIndex;
 
-		RenameActionBase previousAction = actions[index - 1];
+		var previousAction = actions[index - 1];
 		actions.RemoveAt(index - 1);
 		actions.Insert(index, previousAction);
 	}
 
 	public void MoveSelectedActionDown()
 	{
-		if (SelectedIndex == -1 || Project.Actions.Count - 2 < SelectedIndex)
+		if (SelectedIndex == -1 || Project.Jobs.Count - 2 < SelectedIndex)
 		{
 			// Oops!
 			return;
 		}
 
-		ActionCollection actions = Project.Actions;
+		JobCollection actions = Project.Jobs;
 		int index = SelectedIndex;
 
-		RenameActionBase nextAction = actions[index + 1];
+		var nextAction = actions[index + 1];
 		actions.RemoveAt(index + 1);
 		actions.Insert(index, nextAction);
 	}
@@ -93,7 +125,8 @@ public sealed class MainWindowViewModel : BindableBase
 			return;
 		}
 
-		Project.Actions.Insert(SelectedIndex + 1, SelectedAction.Clone());
+		if (SelectedAction is Core.Models.IDeepCopyable<RenameActionBase> copyable)
+			Project.Jobs.Insert(SelectedIndex + 1, copyable.DeepCopy());
 	}
 
 	public void RemoveSelectedAction()
@@ -104,12 +137,12 @@ public sealed class MainWindowViewModel : BindableBase
 			return;
 		}
 
-		Project.Actions.RemoveAt(SelectedIndex);
+		Project.Jobs.RemoveAt(SelectedIndex);
 	}
 
 	public void RemoveAllActions()
 	{
-		Project.Actions.Clear();
+		Project.Jobs.Clear();
 	}
 
 	#endregion
@@ -118,26 +151,25 @@ public sealed class MainWindowViewModel : BindableBase
 
 	public bool CanExecuteWhenActionsIsNotEmpty()
 	{
-		return Project.Actions.Count != 0;
+		return Project.Jobs.Count != 0;
 	}
 
 	public bool CanExecuteWhenSelectedActionIsNotNull()
 	{
-		return Project.Actions.Count != 0 && SelectedAction != null;
+		return Project.Jobs.Count != 0 && SelectedAction != null;
 	}
 
 	public bool CanExecuteWhenSelectedActionIsNotFirst()
 	{
-		return Project.Actions.Count != 0 && SelectedAction != null && SelectedAction != Project.Actions[0];
+		return Project.Jobs.Count != 0 && SelectedAction != null && SelectedAction != Project.Jobs[0];
 	}
 
 	public bool CanExecuteWhenSelectedActionIsNotLast()
 	{
-		return Project.Actions.Count != 0 && SelectedAction != null && SelectedAction != Project.Actions[^1];
+		return Project.Jobs.Count != 0 && SelectedAction != null && SelectedAction != Project.Jobs[^1];
 	}
 
 	#endregion
-
 
 	#region Test lab
 
@@ -157,19 +189,34 @@ public sealed class MainWindowViewModel : BindableBase
 
 	private void UpdateTestOutput()
 	{
-		TestOutput = TestInput is not null
-			? Project?.Actions.Run(TestInput)
-			: null;
+		if (string.IsNullOrEmpty(TestInput) || Project == null)
+		{
+			TestOutput = string.Empty;
+			return;
+		}
+
+		Project.Jobs.Reset();
+
+		JobTarget target = new(new Core.FileSystem.FileMock(TestInput), 0);
+		JobContext context = new(Project.Jobs, new[] { target });
+
+		Project.Jobs.Run(target, context);
+		TestOutput = target.NewFileName;
 	}
 
 	#endregion
 
+	#region Action and ActionCollection event handlers
+
 	private void Actions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
 		// 1.
-		_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
+		DoItCommand.NotifyCanExecuteChanged();
 
 		// 2. 
+		_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
+
+		// 3. 
 		switch (e.Action)
 		{
 			case NotifyCollectionChangedAction.Add:
@@ -202,4 +249,6 @@ public sealed class MainWindowViewModel : BindableBase
 	{
 		UpdateTestOutput();
 	}
+
+	#endregion
 }

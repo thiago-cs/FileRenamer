@@ -6,7 +6,7 @@
 public interface IIndex
 {
 	/// <summary>
-	/// Gets this objects description to be used to compose a <see cref="Actions.RenameActionBase"/>'s own description.
+	/// Gets this objects description to be used to compose a <see cref="Jobs.FileActions.RenameActionBase"/>'s own description.
 	/// </summary>
 	public IndexDescription Description { get; }
 

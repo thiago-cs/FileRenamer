@@ -1,10 +1,13 @@
-﻿using FileRenamer.Core.Actions;
-using FileRenamer.Core.Indices;
+﻿using FileRenamer.Core.Indices;
+using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.Core.ValueSources;
+using FileRenamer.Core.ValueSources.NumberFormatters;
 
 
 namespace FileRenamer.Core_Tester;
 
-public static class Resources
+internal static class Resources
 {
 	public const string quickBrownFox = "the quick brown fox jumps over the lazy dog.";
 	public const string fiveBoxingWizards = "The five boxing wizards jump quickly.";
@@ -56,15 +59,19 @@ public static class Resources
 		new FixedIndex(1),
 	};
 
-	internal static readonly RenameActionBase[] actions =
+
+
+	public static readonly RenameActionBase[] actions =
 	{
-		new InsertAction(new BeginningIndex(), "Once upon a time,"),
-		new InsertAction(new EndIndex(), "The End."),
+		new InsertAction(new BeginningIndex(), (StringValueSource)"Once upon a time,"),
+		new InsertAction(new EndIndex(), (StringValueSource)"The End."),
 		new RemoveAction(new BeginningIndex(), new EndIndex()),
 		new RemoveAction(new FixedIndex(7), 2),
-		new InsertCounterAction(new SubstringIndex("episode", false, false, false),  1, 2),
+		new InsertAction(new SubstringIndex("episode", false, false, false), new CounterValueSource() { InitialValue = 1, Formatter = new PaddedNumberFormatter() { MinWidth = 2 } }),
 		new ReplaceAction("out with the old", "in with the new", false, true),
 		new ReplaceAction(new FixedIndex(3), new FileExtensionIndex(), "out with the old", "in with the new", false, true),
 		new ToCaseAction(new BeginningIndex(), new FileExtensionIndex(), Core.Extensions.TextCasing.TitleCaseIgnoreCommonWords),
 	};
+
+	public static JobContext NoContext { get; } = new(new(), System.Array.Empty<JobTarget>());
 }

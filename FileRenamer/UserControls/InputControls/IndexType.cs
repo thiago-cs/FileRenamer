@@ -2,7 +2,6 @@
 
 public enum IndexType
 {
-	None,
 	Beginning,
 	End,
 	FileExtension,

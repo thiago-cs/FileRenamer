@@ -16,6 +16,7 @@
     <None Remove="UserControls\InputControls\ChangeCaseActionEditor.xaml" />
     <None Remove="UserControls\InputControls\ReplaceActionEditor.xaml" />
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
+    <None Remove="UserControls\InputControls\TextRangeEditor.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,8 +29,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.3" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -72,6 +74,17 @@
   </ItemGroup>
   <ItemGroup>
     <Page Update="UserControls\InputControls\ReplaceActionEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Views\FileActionEditors\" />
+    <Folder Include="Views\Components\" />
+    <Folder Include="Views\Pages\" />
+    <Folder Include="Views\Toolbars\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UserControls\InputControls\TextRangeEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

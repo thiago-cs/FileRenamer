@@ -15,7 +15,7 @@ internal class File : IFile
 {
 	private readonly Windows.Storage.StorageFile file;
 
-
+	// todo: remove all references to inheritdoc!
 	/// <inheritdoc/>
 	public string Path => file.Path;
 

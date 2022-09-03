@@ -1,131 +1,149 @@
-﻿namespace FileRenamer.UserControls.InputControls;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.Core.ValueSources;
+using FileRenamer.ViewModels.ValueSources;
 
-public sealed class InsertActionData : System.ComponentModel.BindableBase
+
+namespace FileRenamer.UserControls.InputControls;
+
+public sealed partial class InsertActionData : ObservableValidator
 {
-	#region Basic
+	#region Value Source Type
 
-	private bool _hasErrors;
-	public new bool HasErrors { get => _hasErrors; private set => SetProperty(ref _hasErrors, value); }
+	public static readonly ValueSourceType[] ValueSourceTypes = System.Enum.GetValues<ValueSourceType>();
 
-	private StringSourceType _stringType;
-	public StringSourceType StringType
+	[ObservableProperty]
+	private ValueSourceType _valueSourceType;
+
+	partial void OnValueSourceTypeChanged(ValueSourceType value)
 	{
-		get => _stringType;
-		set
-		{
-			if (SetProperty(ref _stringType, value))
-				Validate();
-		}
+		ValueSourceViewModel = ToValueSourceViewModel(value);
 	}
-
-	private string _stringTypeError;
-	public string StringTypeError { get => _stringTypeError; private set => SetProperty(ref _stringTypeError, value); }
-
-	public IndexEditorData IndexData { get; } = new();
-
-	private static System.Collections.Generic.HashSet<char> _invalidPathChars;
-	private static System.Collections.Generic.HashSet<char> InvalidPathChars => _invalidPathChars ??= new(System.IO.Path.GetInvalidFileNameChars());
 
 	#endregion
 
-	#region Text
+	#region Value Source ViewModel
 
-	private string _text;
-	public string Text
+	[ObservableProperty]
+	[CustomValidation(typeof(InsertActionData), nameof(ValidateObservableValidator))]
+	private IValueSourceViewModel _valueSourceViewModel;
+
+	partial void OnValueSourceViewModelChanging(IValueSourceViewModel value)
 	{
-		get => _text;
-		set
-		{
-			if (SetProperty(ref _text, value))
-				Validate();
-		}
+		if (ValueSourceViewModel != null)
+			ValueSourceViewModel.PropertyChanged -= ValueSourceViewModel_PropertyChanged;
 	}
 
-	private string _textError;
-	public string TextError { get => _textError; private set => SetProperty(ref _textError, value); }
+	partial void OnValueSourceViewModelChanged(IValueSourceViewModel value)
+	{
+		if (value != null)
+			value.PropertyChanged += ValueSourceViewModel_PropertyChanged;
+	}
+
+	private void ValueSourceViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(HasErrors))
+			ValidateProperty(ValueSourceViewModel, nameof(ValueSourceViewModel));
+	}
 
 	#endregion
 
-	#region Counter
+	#region Index Data
 
-	public int InitialValue { get; set; } = 1;
+	[CustomValidation(typeof(InsertActionData), nameof(ValidateObservableValidator))]
+	public IndexEditorData IndexData { get; }
 
-	public int Increment { get; set; } = 1;
-
-	public int PaddedLength { get; set; } = 1;
-
-	private string _paddingChar = "0";
-	public string PaddingChar
+	private void IndexData_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
-		get => _paddingChar;
-		set
-		{
-			if (SetProperty(ref _paddingChar, value))
-				Validate();
-		}
+		if (e.PropertyName == nameof(HasErrors))
+			ValidateProperty(IndexData, nameof(IndexData));
 	}
-
-	private string _paddingCharError;
-	public string PaddingCharError { get => _paddingCharError; private set => SetProperty(ref _paddingCharError, value); }
 
 	#endregion
 
+	public IValueSource ValueSource => ValueSourceViewModel?.ValueSource;
+
+
+	#region Constructors
 
 	public InsertActionData()
 	{
-		Validate();
+		ValueSourceViewModel = new StringValueSourceViewModel();
+		IndexData = new();
+
+		Initialize();
+	}
+
+	public InsertActionData(InsertAction insertAction)
+	{
+		_valueSourceType = ToValueSourceType(insertAction.ValueSource);
+		OnPropertyChanged(nameof(ValueSourceType));
+
+		// Using {insertAction.ValueSource} instead of {_valueSourceType} is what allows us to edit existing data.
+		ValueSourceViewModel = ToValueSourceViewModel(insertAction.ValueSource);
+
+		IndexData = new(insertAction.InsertIndex);
+
+		Initialize();
+	}
+
+	private void Initialize()
+	{
+		ValidateAllProperties();
 		IndexData.PropertyChanged += IndexData_PropertyChanged;
 	}
 
+	#endregion
 
-	private void Validate()
+
+	#region Validation
+
+	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _context)
 	{
-		string stringTypeError = null;
-		string textError = null;
-		string paddingCharError = null;
+		return notifier.HasErrors
+			 ? new("This object has errors.")
+			 : ValidationResult.Success;
+	}
 
-		switch (StringType)
+	#endregion
+
+
+	#region Static helpers
+
+	private static IValueSourceViewModel ToValueSourceViewModel(ValueSourceType type)
+	{
+		return type switch
 		{
-			case StringSourceType.Text:
-				if (string.IsNullOrEmpty(Text))
-					textError = "Enter the text to insert.";
-				break;
-
-			case StringSourceType.Counter:
-				if (string.IsNullOrEmpty(PaddingChar))
-				{
-					paddingCharError = "Enter the padding char.";
-				}
-				else
-				{
-					char c = PaddingChar[0];
-
-					if (InvalidPathChars.Contains(c) || (c != ' ' && !char.IsDigit(c) && !char.IsLetter(c) && !char.IsPunctuation(c)))
-						paddingCharError = "Enter a valid char.";
-				}
-				break;
-
-			default:
-				stringTypeError = "Chose a different type.";
-				break;
-		}
-
-		//
-		StringTypeError = stringTypeError;
-		TextError = textError;
-		PaddingCharError = paddingCharError;
-		UpdateHasErrors();
+			ValueSourceType.FixedText => new StringValueSourceViewModel(),
+			ValueSourceType.RandomText => new RandomStringValueSourceViewModel(),
+			ValueSourceType.Counter => new CounterValueSourceViewModel(),
+			_ => throw new System.NotImplementedException(),
+		};
 	}
 
-	private void UpdateHasErrors()
+	private static IValueSourceViewModel ToValueSourceViewModel(IValueSource valueSource)
 	{
-		HasErrors = StringTypeError != null || TextError != null || PaddingCharError != null || IndexData.HasErrors;
+		return valueSource switch
+		{
+			StringValueSource vs => new StringValueSourceViewModel(vs),
+			RandomStringValueSource vs => new RandomStringValueSourceViewModel(vs),
+			CounterValueSource vs => new CounterValueSourceViewModel(vs),
+			_ => throw new System.NotImplementedException(),
+		};
 	}
 
-
-	private void IndexData_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+	private static ValueSourceType ToValueSourceType(IValueSource valueSource)
 	{
-		if (e.PropertyName == nameof(IndexEditorData.HasErrors))
-			UpdateHasErrors();
+		return valueSource switch
+		{
+			StringValueSource => ValueSourceType.FixedText,
+			RandomStringValueSource => ValueSourceType.RandomText,
+			CounterValueSource => ValueSourceType.Counter,
+			_ => throw new System.NotImplementedException(),
+		};
 	}
+
+	#endregion
 }

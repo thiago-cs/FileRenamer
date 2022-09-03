@@ -1,99 +1,136 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Indices;
+using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.UserControls.InputControls;
 
-public sealed class ReplaceActionData : BindableBase
+public sealed partial class ReplaceActionData : ObservableValidator
 {
-	public static readonly ExecutionScope[] executionScopeTypes = { ExecutionScope.WholeInput, ExecutionScope.Range };
+	#region Constants
+
+	//public static readonly ExecutionScope[] executionScopeTypes = Enum.GetValues<ExecutionScope>();
+	public static readonly ExecutionScope[] executionScopeTypes = { ExecutionScope.FileName, ExecutionScope.FileExtension, ExecutionScope.WholeInput, ExecutionScope.CustomRange };
+
+	#endregion
 
 
-	private bool _hasErrors;
-	public new bool HasErrors { get => _hasErrors; private set => SetProperty(ref _hasErrors, value); }
+	#region Execution Scope
 
+	[ObservableProperty]
+	private ExecutionScope _executionScope;
+
+	partial void OnExecutionScopeChanged(ExecutionScope value)
+	{
+		ClearErrors(nameof(RangeData));
+
+		if (ExecutionScope == ExecutionScope.CustomRange)
+			ValidateProperty(RangeData, nameof(RangeData));
+	}
+
+	#endregion
+
+	#region Texts
+
+	[CustomValidation(typeof(ReplaceActionData), nameof(ValidateObservableValidator))]
 	public SearchTextData OldString { get; } = new();
 
 	public string NewString { get; set; }
 
-	private ExecutionScope _executionScope;
-	public ExecutionScope ExecutionScope
+	private void OldString_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
-		get => _executionScope;
-		set
-		{
-			if (SetProperty(ref _executionScope, value))
-				Validate();
-		}
+		if (e.PropertyName == nameof(HasErrors))
+			ValidateProperty(OldString, nameof(OldString));
 	}
 
-	public IndexEditorData StartIndexData { get; } = new();
+	#endregion
 
-	public IndexEditorData EndIndexData { get; } = new();
+	#region Range
 
-	private string _endIndexError;
-	public string EndIndexError
+	[CustomValidation(typeof(ReplaceActionData), nameof(ValidateObservableValidator))]
+	public TextRangeData RangeData { get; }
+
+	private void RangeData_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
-		get => _endIndexError;
-		set
-		{
-			if (SetProperty(ref _endIndexError, value))
-				Validate();
-		}
-	}
-
-
-	public ReplaceActionData()
-	{
-		Validate();
-		StartIndexData.PropertyChanged += IndexData_PropertyChanged;
-		EndIndexData.PropertyChanged += IndexData_PropertyChanged;
-		OldString.PropertyChanged += OldString_PropertyChanged;
-	}
-
-
-	#region Validation
-
-	private void Validate()
-	{
-		//// 1. 
-		//string indexTypeError = null;
-
-		//if (IndexType == IndexType.None)
-		//	indexTypeError = "Select an index type.";
-
-		//// 2. 
-		//IndexTypeError = indexTypeError;
-		UpdateHasErrors();
-	}
-
-	private void UpdateHasErrors()
-	{
-		HasErrors = OldString.HasErrors || 
-					(ExecutionScope == ExecutionScope.Range && (StartIndexData.HasErrors || EndIndexData.HasErrors || EndIndexError != null));
+		if (e.PropertyName == nameof(HasErrors))
+			ValidateProperty(RangeData, nameof(RangeData));
 	}
 
 	#endregion
 
 
-	private void IndexData_PropertyChanged(object sender, PropertyChangedEventArgs e)
-	{
-		switch (e.PropertyName)
-		{
-			case nameof(BindableBase.HasErrors):
-				UpdateHasErrors();
-				break;
+	#region Constructors
 
-			case nameof(IndexEditorData.IndexType):
-			case nameof(IndexEditorData.IndexPosition):
-				Validate();
-				break;
-		}
+	public ReplaceActionData()
+	{
+		RangeData = new();
+		ExecutionScope = ExecutionScope.FileName;
+
+		Initialize();
 	}
 
-	private void OldString_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	public ReplaceActionData(ReplaceAction action)
 	{
-		if (e.PropertyName == nameof(BindableBase.HasErrors))
-			UpdateHasErrors();
+		OldString.TextType = action.UseRegex ? TextType.Regex : TextType.Text;
+		OldString.IgnoreCase = action.IgnoreCase;
+		OldString.Text = action.OldString;
+
+		NewString = action.NewString;
+
+		RangeData = new(action?.StartIndex, action?.EndIndex);
+		ExecutionScope = GetScopeFromIndices(action?.StartIndex, action?.EndIndex);
+
+		Initialize();
+	}
+
+	private void Initialize()
+	{
+		OldString.PropertyChanged += OldString_PropertyChanged;
+		RangeData.PropertyChanged += RangeData_PropertyChanged;
+		ValidateProperty(OldString, nameof(OldString));
+	}
+
+	#endregion
+
+
+	#region Validation
+
+	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _)
+	{
+		return notifier.HasErrors
+			 ? new("This object has errors.")
+			 : ValidationResult.Success;
+	}
+
+	#endregion
+
+
+	public ReplaceAction GetRenameAction()
+	{
+		return ExecutionScope switch
+		{
+			ExecutionScope.WholeInput => new(OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
+			ExecutionScope.FileName => new(new BeginningIndex(), new FileExtensionIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
+			ExecutionScope.FileExtension => new(new FileExtensionIndex(), new EndIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
+			ExecutionScope.CustomRange => new(RangeData.StartIndexData.GetIIndex(), RangeData.EndIndexData.GetIIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
+			_ => null,
+		};
+	}
+
+	//public static string f(ValidationResult error) => error == null ? null : string.Join(",", error.MemberNames) + ": " + error.ErrorMessage;
+	//public string[] MyErrors => GetErrors()?.Select(f).ToArray();
+	//public string FirstError => f(GetErrors()?.FirstOrDefault());
+
+	public static ExecutionScope GetScopeFromIndices(IIndex startIndex, IIndex endIndex)
+	{
+		return (startIndex, endIndex) switch
+		{
+			(BeginningIndex, FileExtensionIndex) => ExecutionScope.FileName,
+			(FileExtensionIndex, EndIndex) => ExecutionScope.FileExtension,
+			(BeginningIndex, EndIndex) => ExecutionScope.WholeInput,
+			_ => ExecutionScope.CustomRange,
+		};
 	}
 }

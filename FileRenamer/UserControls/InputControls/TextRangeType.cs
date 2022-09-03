@@ -3,11 +3,11 @@
 
 namespace FileRenamer.UserControls.InputControls;
 
-public enum RemovalType
+public enum TextRangeType
 {
 	[Description("count")]
-	FixedLength,
+	Count,
 
 	[Description("until")]
-	EndIndex,
+	Range,
 }

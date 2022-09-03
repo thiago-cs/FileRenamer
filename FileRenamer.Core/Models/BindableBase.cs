@@ -16,10 +16,8 @@ public abstract class BindableBase : INotifyPropertyChanging, INotifyPropertyCha
 {
 	#region INotifyPropertyChanging and INotifyPropertyChanged
 
-	/// <inheritdoc cref="INotifyPropertyChanging.PropertyChanging" />
 	public event PropertyChangingEventHandler? PropertyChanging;
 
-	/// <inheritdoc cref="INotifyPropertyChanged.PropertyChanged" />
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	/// <summary>
@@ -89,15 +87,17 @@ public abstract class BindableBase : INotifyPropertyChanging, INotifyPropertyCha
 	/// </summary>
 	private readonly Dictionary<string, List<ValidationResult>> dataErrors = new();
 
+	ValidationResult genericError = new("This property has reported to have errors.");
 
-	/// <inheritdoc cref="INotifyDataErrorInfo.HasErrors" />
-	public bool HasErrors => dataErrors.Any();
 
-	/// <inheritdoc cref="INotifyDataErrorInfo.ErrorsChanged" />
+	private bool _hasErrors;
+	public bool HasErrors { get => _hasErrors; private set => SetProperty(ref _hasErrors, value); }
+
 	public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
+	private void UpdateHasErrors() => HasErrors = dataErrors.Any(pair => 0 < pair.Value.Count);
 
-	/// <inheritdoc cref="INotifyDataErrorInfo.GetErrors(string?)" />
+
 	public IEnumerable GetErrors(string? propertyName)
 	{
 		return GetErrorList(propertyName);
@@ -134,13 +134,19 @@ public abstract class BindableBase : INotifyPropertyChanging, INotifyPropertyCha
 	/// </summary>
 	/// <param name="propertyName">The name of the member with which the specified errors will be associated.</param>
 	/// <param name="results">The error collection that should be added to the validation result collection already associated with the specified member.</param>
-	private void AddErrors(string propertyName, List<ValidationResult> results)
+	protected void AddErrors(string propertyName)
+	{
+		AddErrors(propertyName, new() { genericError });
+	}
+
+	protected void AddErrors(string propertyName, List<ValidationResult> results)
 	{
 		if (dataErrors.TryGetValue(propertyName, out List<ValidationResult>? errors))
 			errors.AddRange(results);
 		else
 			dataErrors.Add(propertyName, results);
 
+		UpdateHasErrors();
 		ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 	}
 
@@ -148,11 +154,12 @@ public abstract class BindableBase : INotifyPropertyChanging, INotifyPropertyCha
 	/// Removes all validation results associated with the specified member.
 	/// </summary>
 	/// <param name="memberName">The name of the member of interest.</param>
-	private void ClearErrors(string memberName)
+	protected void ClearErrors(string memberName)
 	{
 		if (dataErrors.TryGetValue(memberName, out List<ValidationResult>? errors))
 		{
 			errors.Clear();
+			UpdateHasErrors();
 			ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(memberName));
 		}
 	}
@@ -162,7 +169,6 @@ public abstract class BindableBase : INotifyPropertyChanging, INotifyPropertyCha
 
 	#region IValidatable
 
-	/// <inheritdoc cref="IValidatable.Validate(string, object)" />
 	public void Validate(string memberName, object? value)
 	{
 		ClearErrors(memberName);

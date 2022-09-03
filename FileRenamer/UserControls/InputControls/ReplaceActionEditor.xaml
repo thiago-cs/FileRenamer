@@ -2,49 +2,45 @@
 	x:Class="FileRenamer.UserControls.InputControls.ReplaceActionEditor"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="using:FileRenamer.Converters"
 	xmlns:uic="using:FileRenamer.UserControls.InputControls" >
 
+	<UserControl.Resources>
+
+		<DataTemplate x:Key="RangeTemplate" x:DataType="uic:ReplaceActionData" >
+			<uic:TextRangeEditor Data="{x:Bind RangeData}" />
+		</DataTemplate>
+
+		<converters:ExecutionScopeToTemplateConverter x:Key="ExecutionScopeToTemplateConverter"
+													  RangeTemplate="{StaticResource RangeTemplate}" />
+
+	</UserControl.Resources>
+
 	<StackPanel Spacing="{StaticResource MediumSpacing}" >
+
+		<!-- what -->
 		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="what" />
 
 			<uic:SearchTextEditor Data="{x:Bind Data.OldString}" />
 		</StackPanel>
 
+		<!-- with -->
 		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="with" />
 
 			<TextBox HorizontalAlignment="Stretch" MinWidth="200" Text="{x:Bind Data.NewString, Mode=TwoWay}" />
 		</StackPanel>
 
+		<!-- within -->
 		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="within" />
 
-			<ComboBox Width="120" PlaceholderText="chose..." 
-					  ItemsSource="{x:Bind uic:ReplaceActionData.executionScopeTypes}" SelectedItem="{x:Bind Data.ExecutionScope, Mode=TwoWay}" >
-				<ItemsControl.ItemTemplate>
-					<DataTemplate x:DataType="uic:ExecutionScope" >
-						<TextBlock Text="{x:Bind Converter={StaticResource EnumToDescriptionConverter}}" />
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ComboBox>
+			<ComboBox Style="{StaticResource EnumComboBoxStyle}" Width="120" PlaceholderText="choose..." 
+					  ItemsSource="{x:Bind uic:ReplaceActionData.executionScopeTypes}" SelectedItem="{x:Bind Data.ExecutionScope, Mode=TwoWay}" />
 
-			<Grid ColumnSpacing="{StaticResource SmallSpacing}" RowSpacing="{StaticResource MediumSpacing}" Visibility="{x:Bind RangeInputVisibility, Mode=TwoWay}" >
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
-
-				<TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="From" />
-				<uic:IndexEditor Grid.Row="0" Grid.Column="1" Data="{x:Bind Data.StartIndexData}" IncludePreposionInDescriptions="False" />
-
-				<TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource HeaderStyle}" Text="To" />
-				<uic:IndexEditor Grid.Row="1" Grid.Column="1" Data="{x:Bind Data.EndIndexData}" IncludePreposionInDescriptions="False" />
-			</Grid>
+			<ContentControl Content="{x:Bind Data}"
+							ContentTemplate="{x:Bind Data.ExecutionScope, Mode=TwoWay, Converter={StaticResource ExecutionScopeToTemplateConverter}}" />
 		</StackPanel>
 	</StackPanel>
 </UserControl>

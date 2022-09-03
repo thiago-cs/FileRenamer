@@ -7,6 +7,6 @@
 		<StaticResource ResourceKey="MediumToolbarButtonStyle" x:Key="ToolbarItemSize.Medium" />
 	</UserControl.Resources>
 
-	<ContentControl Name="MyContentControl" Style="{StaticResource ToolbarItemSize.Medium}" />
+	<ContentControl DataContext="{x:Bind Command, Mode=TwoWay}" Style="{StaticResource ToolbarItemSize.Medium}" />
 
 </UserControl>

@@ -1,6 +1,11 @@
+using System.Linq;
 using NUnit.Framework;
+using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Indices;
-using FileRenamer.Core.Actions;
+using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.Core.ValueSources;
+using FileRenamer.Core.ValueSources.NumberFormatters;
 using static FileRenamer.Core_Tester.Resources;
 
 
@@ -14,28 +19,53 @@ public sealed class Test_InsertCounterAction
 	[TestCase("big file.part", 13, 0, 3, new string[] { "big file.part000", "big file.part001", "big file.part002", "big file.part003", })]
 	public void Test(string input, int insertPosition, int startValue, int width, string[] expected)
 	{
-		InsertCounterAction insertCounterAction = new(new FixedIndex(insertPosition), startValue, width);
+		JobTarget[] targets = expected.Select((_, i) => new JobTarget(new FileMock(input), i)).ToArray();
+		CounterValueSource cvs = new() { InitialValue = startValue, Formatter = new PaddedNumberFormatter() { MinWidth = width } };
+		JobCollection jobs = new()
+		{
+			new InsertAction(new FixedIndex(insertPosition), cvs),
+		};
+		JobContext context = new(jobs, targets);
 
 		for (int i = 0; i < expected.Length; i++)
-			Assert.AreEqual(expected[i], insertCounterAction.Run(input));
+		{
+			new InsertAction(new FixedIndex(insertPosition), cvs).Run(targets[i], context);
 
-		Assert.Pass();
+			Assert.AreEqual(expected[i], targets[i].NewFileName);
+		}
 	}
 
 
 	#region Description tests
 
 	[Test]
-	[TestCase(0, 00, 1, @"insert a 1-char. counter starting from 0 at the beginning (step: 1)")]
-	[TestCase(6, 00, 1, @"insert a 1-char. counter starting from 0 at the end (step: 1)")]
-	[TestCase(1, 01, 2, @"insert a 2-char. counter starting from 1 after the 3rd character (step: 1)")]
-	[TestCase(2, 01, 2, @"insert a 2-char. counter starting from 1 before ""sunset"" (step: 1)")]
-	[TestCase(3, 10, 3, @"insert a 3-char. counter starting from 10 after ""dark"" (step: 1)")]
-	[TestCase(4, 20, 3, @"insert a 3-char. counter starting from 20 after the expression ""(Hi|Hello) kitty"" (step: 1)")]
-	[TestCase(5, 99, 3, @"insert a 3-char. counter starting from 99 before file's extension (step: 1)")]
-	public void TestDescriptionBeginning(int indexFinderIndex, int startValue, int minWidth, string expected)
+	[TestCase(0, 00, 1, @"insert a counter (0, 1, 2, …) at the beginning")]
+	[TestCase(6, 00, 1, @"insert a counter (0, 1, 2, …) at the end")]
+	[TestCase(1, 01, 2, @"insert a counter (01, 02, 03, …) after the 3rd character")]
+	[TestCase(2, 01, 2, @"insert a counter (01, 02, 03, …) before ""sunset""")]
+	[TestCase(3, 10, 3, @"insert a counter (010, 011, 012, …) after ""dark""")]
+	[TestCase(4, 20, 3, @"insert a counter (020, 021, 022, …) after the expression ""(Hi|Hello) kitty""")]
+	[TestCase(5, 99, 3, @"insert a counter (099, 100, 101, …) before file's extension")]
+	public void TestDescriptionForPaddedCardinalNumbers(int indexFinderIndex, int startValue, int minWidth, string expected)
 	{
-		Assert.AreEqual(expected, new InsertCounterAction(finders[indexFinderIndex], startValue, minWidth).Description);
+		CounterValueSource cvs = new() { InitialValue = startValue, Formatter = new PaddedNumberFormatter() { MinWidth = minWidth } };
+		InsertAction insertAction = new(finders[indexFinderIndex], cvs);
+
+		Assert.AreEqual(expected, insertAction.Description);
+	}
+
+	[Test]
+	[TestCase(0, 01, true, @"insert a counter using Roman numerals (I, II, III, …) at the beginning")]
+	[TestCase(6, 04, false, @"insert a counter using Roman numerals (iv, v, vi, …) at the end")]
+	[TestCase(3, 10, false, @"insert a counter using Roman numerals (x, xi, xii, …) after ""dark""")]
+	[TestCase(4, 20, true, @"insert a counter using Roman numerals (XX, XXI, XXII, …) after the expression ""(Hi|Hello) kitty""")]
+	[TestCase(5, 99, false, @"insert a counter using Roman numerals (xcix, c, ci, …) before file's extension")]
+	public void TestDescriptionForRomanNumbers(int indexFinderIndex, int startValue, bool useUppercase, string expected)
+	{
+		CounterValueSource cvs = new() { InitialValue = startValue, Formatter = new RomanNumberFormatter() { UseUppercase = useUppercase } };
+		InsertAction insertAction = new(finders[indexFinderIndex], cvs);
+
+		Assert.AreEqual(expected, insertAction.Description);
 	}
 
 	#endregion
