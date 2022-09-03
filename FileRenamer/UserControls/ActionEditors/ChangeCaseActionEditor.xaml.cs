@@ -1,12 +1,12 @@
 ﻿using System;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Indices;
 using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.UserControls.InputControls;
 
 
-namespace FileRenamer.UserControls.InputControls;
+namespace FileRenamer.UserControls.ActionEditors;
 
 [INotifyPropertyChanged]
 public sealed partial class ChangeCaseActionEditor : UserControl, IActionEditor

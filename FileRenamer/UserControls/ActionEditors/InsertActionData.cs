@@ -4,9 +4,10 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Core.ValueSources;
 using FileRenamer.ViewModels.ValueSources;
+using FileRenamer.UserControls.InputControls;
 
 
-namespace FileRenamer.UserControls.InputControls;
+namespace FileRenamer.UserControls.ActionEditors;
 
 public sealed partial class InsertActionData : ObservableValidator
 {

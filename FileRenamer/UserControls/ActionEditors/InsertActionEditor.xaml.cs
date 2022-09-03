@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Jobs.FileActions;
 
 
-namespace FileRenamer.UserControls.InputControls;
+namespace FileRenamer.UserControls.ActionEditors;
 
 [ObservableObject]
 public sealed partial class InsertActionEditor : IActionEditor

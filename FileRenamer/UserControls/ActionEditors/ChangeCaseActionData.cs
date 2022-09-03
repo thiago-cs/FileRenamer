@@ -3,9 +3,10 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.UserControls.InputControls;
 
 
-namespace FileRenamer.UserControls.InputControls;
+namespace FileRenamer.UserControls.ActionEditors;
 
 public sealed partial class ChangeCaseActionData : ObservableValidator
 {

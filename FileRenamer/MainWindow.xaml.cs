@@ -8,7 +8,7 @@ using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Models;
 using FileRenamer.ViewModels;
-
+using FileRenamer.UserControls.ActionEditors;
 
 namespace FileRenamer;
 
@@ -183,12 +183,12 @@ public sealed partial class MainWindow
 		}
 
 		//
-		UserControls.InputControls.IActionEditor actionEditor = ViewModel.SelectedAction switch
+		IActionEditor actionEditor = ViewModel.SelectedAction switch
 		{
-			InsertAction action => new UserControls.InputControls.InsertActionEditor(action),
-			RemoveAction action => new UserControls.InputControls.RemoveActionEditor(action),
-			ReplaceAction action => new UserControls.InputControls.ReplaceActionEditor(action),
-			ToCaseAction action => new UserControls.InputControls.ChangeCaseActionEditor(action),
+			InsertAction action => new InsertActionEditor(action),
+			RemoveAction action => new RemoveActionEditor(action),
+			ReplaceAction action => new ReplaceActionEditor(action),
+			ToCaseAction action => new ChangeCaseActionEditor(action),
 			_ => null,
 		};
 
@@ -217,12 +217,12 @@ public sealed partial class MainWindow
 
 	private async void AddInsertAction()
 	{
-		await EditAndAddJobItem(new UserControls.InputControls.InsertActionEditor());
+		await EditAndAddJobItem(new InsertActionEditor());
 	}
 
 	private async void AddInsertCounterAction()
 	{
-		UserControls.InputControls.InsertActionEditor actionEditor = new();
+		InsertActionEditor actionEditor = new();
 		actionEditor.Data.ValueSourceType = UserControls.InputControls.ValueSourceType.Counter;
 
 		await EditAndAddJobItem(actionEditor);
@@ -230,21 +230,21 @@ public sealed partial class MainWindow
 
 	private async void AddRemoveAction()
 	{
-		await EditAndAddJobItem(new UserControls.InputControls.RemoveActionEditor());
+		await EditAndAddJobItem(new RemoveActionEditor());
 	}
 
 	private async void AddReplaceAction()
 	{
-		await EditAndAddJobItem(new UserControls.InputControls.ReplaceActionEditor());
+		await EditAndAddJobItem(new ReplaceActionEditor());
 	}
 
 	private async void AddConvertCaseAction()
 	{
-		await EditAndAddJobItem(new UserControls.InputControls.ChangeCaseActionEditor());
+		await EditAndAddJobItem(new ChangeCaseActionEditor());
 	}
 
 
-	private async Task<IJobItem> EditJobItemInDialog(UserControls.InputControls.IActionEditor actionEditor)
+	private async Task<IJobItem> EditJobItemInDialog(IActionEditor actionEditor)
 	{
 		if (actionEditor == null)
 		{
@@ -269,7 +269,7 @@ public sealed partial class MainWindow
 		return actionEditor.GetRenameAction();
 	}
 
-	private async Task EditAndAddJobItem(UserControls.InputControls.IActionEditor actionEditor)
+	private async Task EditAndAddJobItem(IActionEditor actionEditor)
 	{
 		IJobItem newAction = await EditJobItemInDialog(actionEditor);
 

@@ -1,9 +1,10 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.UserControls.InputControls;
 
 
-namespace FileRenamer.UserControls.InputControls;
+namespace FileRenamer.UserControls.ActionEditors;
 
 [ObservableObject]
 public sealed partial class RemoveActionEditor : IActionEditor

@@ -45,7 +45,7 @@
     <ProjectReference Include="..\FileRenamer.Core\FileRenamer.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UserControls\InputControls\ChangeCaseActionEditor.xaml">
+    <Page Update="UserControls\ActionEditors\ChangeCaseActionEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -63,7 +63,7 @@
     <Page Update="UserControls\InputControls\IndexEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="UserControls\InputControls\RemoveActionEditor.xaml">
+    <Page Update="UserControls\ActionEditors\RemoveActionEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -73,7 +73,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UserControls\InputControls\ReplaceActionEditor.xaml">
+    <Page Update="UserControls\ActionEditors\ReplaceActionEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
