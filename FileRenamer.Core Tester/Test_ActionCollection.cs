@@ -23,7 +23,7 @@ public static class Test_ActionCollection
 			new RemoveAction(new BeginningIndex(), new SubstringIndex(" - ", false, false, false)),
 			new InsertAction(new SubstringIndex("vs", false, false, false), (StringValueSource)"."),
 			new ReplaceAction(@"_\d*p", " - Brian Lagunas", false, true),
-			new ToCaseAction(new FileExtensionIndex(), new EndIndex(), TextCasing.LowerCase),
+			new ChangeRangeCaseAction(new FileExtensionIndex(), new EndIndex(), TextCasing.LowerCase),
 		};
 
 		JobTarget target = new(new FileMock(input), 0);

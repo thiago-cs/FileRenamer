@@ -8,7 +8,7 @@ namespace FileRenamer.Core.Extensions;
 /// 
 /// </summary>
 /// Do not forget to update the following methods when adding/removing a value.
-/// <seealso cref="ToCaseAction.ToCaseAction(Indices.IIndex, Indices.IIndex, TextCasing)"/>
+/// <seealso cref="ChangeRangeCaseAction.ChangeRangeCaseAction(Indices.IIndex, Indices.IIndex, TextCasing)"/>
 /// <seealso cref="StringExtensions.ToCase(string, TextCasing)"/>
 public enum TextCasing
 {

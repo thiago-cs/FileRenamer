@@ -7,16 +7,15 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #if DEBUG
 [System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 #endif
-// TODO: rename ToCaseAction to ChangeRangeCaseAction.
 // TODO: create ChangeStringCaseAction.
-public sealed class ToCaseAction : RenameActionBase
+public sealed class ChangeRangeCaseAction : RenameActionBase
 {
 	public IIndex StartIndex { get; set; }
 	public IIndex EndIndex { get; set; }
 	public TextCasing TextCase { get; }
 
 
-	public ToCaseAction(IIndex startIndex, IIndex endIndex, TextCasing textCase)
+	public ChangeRangeCaseAction(IIndex startIndex, IIndex endIndex, TextCasing textCase)
 	{
 		this.StartIndex = startIndex;
 		this.EndIndex = endIndex;
@@ -74,6 +73,6 @@ public sealed class ToCaseAction : RenameActionBase
 
 	public override RenameActionBase DeepCopy()
 	{
-		return new ToCaseAction(StartIndex, EndIndex, TextCase);
+		return new ChangeRangeCaseAction(StartIndex, EndIndex, TextCase);
 	}
 }

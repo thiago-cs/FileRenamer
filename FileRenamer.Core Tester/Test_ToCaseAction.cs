@@ -33,7 +33,7 @@ public sealed class Test_ToCaseAction
 			endIndexFinder  = new EndIndex();
 		}
 
-		ToCaseAction toCaseAction = new(startIndexFinder, endIndexFinder, casing);
+		ChangeRangeCaseAction toCaseAction = new(startIndexFinder, endIndexFinder, casing);
 		JobTarget target = new(new FileMock(fileNames[fileNameIndex]), 0);
 		toCaseAction.Run(target, NoContext);
 
@@ -49,6 +49,6 @@ public sealed class Test_ToCaseAction
 	[TestCase(0, 1, TextCasing.TitleCaseIgnoreCommonWords, @"convert characters from beginning to 3rd character to title case (ignore common words)")]
 	public void TestDescription(int startIndexFinderIndex, int endIndexFinderIndex, TextCasing casing, string expected)
 	{
-		Assert.AreEqual(expected, new ToCaseAction(finders[startIndexFinderIndex], finders[endIndexFinderIndex], casing).Description);
+		Assert.AreEqual(expected, new ChangeRangeCaseAction(finders[startIndexFinderIndex], finders[endIndexFinderIndex], casing).Description);
 	}
 }

@@ -83,7 +83,7 @@ public sealed partial class ChangeCaseActionData : ObservableValidator
 		Initialize();
 	}
 
-	public ChangeCaseActionData(ToCaseAction action)
+	public ChangeCaseActionData(ChangeRangeCaseAction action)
 	{
 		RangeData = new(action.StartIndex, action.EndIndex);
 		ExecutionScope = ReplaceActionData.GetScopeFromIndices(action.StartIndex, action.EndIndex);

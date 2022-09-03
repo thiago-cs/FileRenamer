@@ -70,7 +70,7 @@ internal static class Resources
 		new InsertAction(new SubstringIndex("episode", false, false, false), new CounterValueSource() { InitialValue = 1, Formatter = new PaddedNumberFormatter() { MinWidth = 2 } }),
 		new ReplaceAction("out with the old", "in with the new", false, true),
 		new ReplaceAction(new FixedIndex(3), new FileExtensionIndex(), "out with the old", "in with the new", false, true),
-		new ToCaseAction(new BeginningIndex(), new FileExtensionIndex(), Core.Extensions.TextCasing.TitleCaseIgnoreCommonWords),
+		new ChangeRangeCaseAction(new BeginningIndex(), new FileExtensionIndex(), Core.Extensions.TextCasing.TitleCaseIgnoreCommonWords),
 	};
 
 	public static JobContext NoContext { get; } = new(new(), System.Array.Empty<JobTarget>());

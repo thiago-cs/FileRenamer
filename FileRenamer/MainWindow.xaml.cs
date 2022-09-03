@@ -188,7 +188,7 @@ public sealed partial class MainWindow
 			InsertAction action => new InsertActionEditor(action),
 			RemoveAction action => new RemoveActionEditor(action),
 			ReplaceAction action => new ReplaceActionEditor(action),
-			ToCaseAction action => new ChangeCaseActionEditor(action),
+			ChangeRangeCaseAction action => new ChangeCaseActionEditor(action),
 			_ => null,
 		};
 
