@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Indices;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.UserControls.InputControls;
 
@@ -92,6 +93,19 @@ public sealed partial class ChangeCaseActionData : ObservableValidator
 		Initialize();
 	}
 
+	public ChangeCaseActionData(ChangeStringCaseAction action)
+	{
+		RangeData = new();
+		ExecutionScope = ExecutionScope.Occurrences;
+		TextCase = action.TextCase;
+
+		SearchText.Text = action.OldString;
+		SearchText.TextType = action.UseRegex ? TextType.Regex : TextType.Text;
+		SearchText.IgnoreCase = action.IgnoreCase;
+
+		Initialize();
+	}
+
 	private void Initialize()
 	{
 		RangeData.PropertyChanged += RangeData_PropertyChanged;
@@ -111,4 +125,18 @@ public sealed partial class ChangeCaseActionData : ObservableValidator
 	}
 
 	#endregion
+
+
+	public RenameActionBase GetRenameAction()
+	{
+		return ExecutionScope switch
+		{
+			ExecutionScope.FileName => new ChangeRangeCaseAction(new BeginningIndex(), new FileExtensionIndex(), TextCase),
+			ExecutionScope.FileExtension => new ChangeRangeCaseAction(new FileExtensionIndex(), new EndIndex(), TextCase),
+			ExecutionScope.WholeInput => new ChangeRangeCaseAction(new BeginningIndex(), new EndIndex(), TextCase),
+			ExecutionScope.CustomRange => new ChangeRangeCaseAction(RangeData.StartIndexData.GetIIndex(), RangeData.EndIndexData.GetIIndex(), TextCase),
+			ExecutionScope.Occurrences => new ChangeStringCaseAction(SearchText.Text, SearchText.TextType == TextType.Regex, SearchText.IgnoreCase, TextCase),
+			_ => throw new NotImplementedException(),
+		};
+	}
 }

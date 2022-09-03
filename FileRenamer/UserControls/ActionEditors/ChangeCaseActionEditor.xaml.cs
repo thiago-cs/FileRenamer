@@ -1,9 +1,6 @@
-﻿using System;
-using Microsoft.UI.Xaml.Controls;
+﻿using Microsoft.UI.Xaml.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
-using FileRenamer.Core.Indices;
 using FileRenamer.Core.Jobs.FileActions;
-using FileRenamer.UserControls.InputControls;
 
 
 namespace FileRenamer.UserControls.ActionEditors;
@@ -47,6 +44,14 @@ public sealed partial class ChangeCaseActionEditor : UserControl, IActionEditor
 		Initialize();
 	}
 
+	public ChangeCaseActionEditor(ChangeStringCaseAction action)
+	{
+		Data = new(action);
+
+		InitializeComponent();
+		Initialize();
+	}
+
 	private void Initialize()
 	{
 		Data.PropertyChanged += Data_PropertyChanged;
@@ -57,15 +62,6 @@ public sealed partial class ChangeCaseActionEditor : UserControl, IActionEditor
 
 	public RenameActionBase GetRenameAction()
 	{
-		return Data.ExecutionScope switch
-		{
-			ExecutionScope.FileName => new ChangeRangeCaseAction(new BeginningIndex(), new FileExtensionIndex(), Data.TextCase),
-			ExecutionScope.FileExtension => new ChangeRangeCaseAction(new FileExtensionIndex(), new EndIndex(), Data.TextCase),
-			ExecutionScope.WholeInput => new ChangeRangeCaseAction(new BeginningIndex(), new EndIndex(), Data.TextCase),
-			ExecutionScope.CustomRange => new ChangeRangeCaseAction(Data.RangeData.StartIndexData.GetIIndex(), Data.RangeData.EndIndexData.GetIIndex(), Data.TextCase),
-			// TODO: come back here once ChangeStringCaseAction is implemented.
-			//ExecutionScope.Occurrences => new ChangeStringCaseAction(Data.SearchText.Text, Data.SearchText.TextType == TextType.Regex, Data.SearchText.IgnoreCase, Data.TextCase),
-			_ => throw new NotImplementedException(),
-		};
+		return Data.GetRenameAction();
 	}
 }

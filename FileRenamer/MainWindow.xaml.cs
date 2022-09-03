@@ -45,7 +45,7 @@ public sealed partial class MainWindow
 											(char)0xE74B, VirtualKeyModifiers.Menu, VirtualKey.Down, ViewModel.MoveSelectedActionDown, ViewModel.CanExecuteWhenSelectedActionIsNotLast);
 
 		EditActionCommand = CreateCommand2("Edit", "T", "Edit the selected action",
-											Symbol.Edit, null, VirtualKey.F2, ExecuteEditAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
+											Symbol.Edit, null, VirtualKey.F2, EditSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
 
 		DuplicateActionCommand = CreateCommand2("Duplicate", "V", "Duplicate the selected action",
 											Symbol.Copy, VirtualKeyModifiers.Control, VirtualKey.D, ViewModel.DuplicateSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
@@ -173,7 +173,7 @@ public sealed partial class MainWindow
 	public readonly UICommand RemoveAllActionCommand;
 
 
-	private async void ExecuteEditAction()
+	private async void EditSelectedAction()
 	{
 		//
 		if (ViewModel.SelectedAction == null)
@@ -189,6 +189,7 @@ public sealed partial class MainWindow
 			RemoveAction action => new RemoveActionEditor(action),
 			ReplaceAction action => new ReplaceActionEditor(action),
 			ChangeRangeCaseAction action => new ChangeCaseActionEditor(action),
+			ChangeStringCaseAction action => new ChangeCaseActionEditor(action),
 			_ => null,
 		};
 
