@@ -59,7 +59,8 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 		IList<Match> matches = regex.Matches(input);
 
 		foreach (Match match in matches)
-			input = input.Replace(match.Value, match.Value.ToCase(TextCase));
+			if (match.Value.Length != 0)
+				input = input.Replace(match.Value, match.Value.ToCase(TextCase));
 
 		// 2.3. 
 		target.NewFileName = input;
