@@ -21,10 +21,10 @@ public sealed class ReplaceAction : RenameActionBase
 
 	public ReplaceAction(string oldString, string? newString, bool ignoreCase, bool useRegex)
 	{
-		this.OldString = oldString ?? throw new ArgumentNullException(nameof(oldString));
-		this.NewString = newString;
-		this.IgnoreCase = ignoreCase;
-		this.UseRegex = useRegex;
+		OldString = oldString ?? throw new ArgumentNullException(nameof(oldString));
+		NewString = newString;
+		IgnoreCase = ignoreCase;
+		UseRegex = useRegex;
 
 		UpdateDescription();
 	}
@@ -32,12 +32,12 @@ public sealed class ReplaceAction : RenameActionBase
 	public ReplaceAction(IIndex startIndex, IIndex endIndex, string oldString, string? newString, bool ignoreCase, bool useRegex)
 	{
 		// 1. 
-		this.StartIndex = startIndex ?? throw new ArgumentNullException(nameof(startIndex));
-		this.EndIndex = endIndex ?? throw new ArgumentNullException(nameof(endIndex));
-		this.OldString = oldString ?? throw new ArgumentNullException(nameof(oldString));
-		this.NewString = newString;
-		this.IgnoreCase = ignoreCase;
-		this.UseRegex = useRegex;
+		StartIndex = startIndex ?? throw new ArgumentNullException(nameof(startIndex));
+		EndIndex = endIndex ?? throw new ArgumentNullException(nameof(endIndex));
+		OldString = oldString ?? throw new ArgumentNullException(nameof(oldString));
+		NewString = newString;
+		IgnoreCase = ignoreCase;
+		UseRegex = useRegex;
 
 		UpdateDescription();
 	}
@@ -48,19 +48,19 @@ public sealed class ReplaceAction : RenameActionBase
 		string input = target.NewFileName;
 
 		// 
-		if (this.StartIndex == null || this.EndIndex == null)
+		if (StartIndex == null || EndIndex == null)
 		{
 			target.NewFileName = Run_Core(input);
 			return;
 		}
 
 		//
-		int startIndex = this.StartIndex.FindIn(input);
+		int startIndex = StartIndex.FindIn(input);
 
 		if (startIndex == -1)
 			return;
 
-		int endIndex = this.EndIndex.FindIn(input);
+		int endIndex = EndIndex.FindIn(input);
 
 		if (endIndex == -1)
 			return;
@@ -72,7 +72,6 @@ public sealed class ReplaceAction : RenameActionBase
 		target.NewFileName = input[..startIndex]
 						   + Run_Core(input[startIndex..endIndex])
 						   + input[endIndex..];
-		return;
 	}
 
 	public override void UpdateDescription()
@@ -80,9 +79,9 @@ public sealed class ReplaceAction : RenameActionBase
 		if (StartIndex == null || EndIndex == null)
 		{
 			System.Text.StringBuilder sb = new();
-			bool empty = string.IsNullOrEmpty(NewString);
+			bool newIsEmpty = string.IsNullOrEmpty(NewString);
 
-			sb.Append(empty ? "remove all occurrencies of " : "replace ");
+			sb.Append(newIsEmpty ? "remove all occurrencies of " : "replace ");
 
 			if (UseRegex)
 				sb.Append("the expression ");
@@ -91,7 +90,7 @@ public sealed class ReplaceAction : RenameActionBase
 			  .Append(OldString)
 			  .Append('"');
 
-			if (!empty)
+			if (!newIsEmpty)
 				sb.Append(@" with """).Append(NewString).Append('"');
 
 			Description = sb.ToString();
