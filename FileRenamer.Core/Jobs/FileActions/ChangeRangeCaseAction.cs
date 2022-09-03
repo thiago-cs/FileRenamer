@@ -7,7 +7,6 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #if DEBUG
 [System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 #endif
-// TODO: create ChangeStringCaseAction.
 public sealed class ChangeRangeCaseAction : RenameActionBase
 {
 	public IIndex StartIndex { get; set; }
@@ -17,8 +16,8 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 
 	public ChangeRangeCaseAction(IIndex startIndex, IIndex endIndex, TextCasing textCase)
 	{
-		this.StartIndex = startIndex;
-		this.EndIndex = endIndex;
+		StartIndex = startIndex;
+		EndIndex = endIndex;
 		TextCase = textCase;
 
 		UpdateDescription();
@@ -27,21 +26,21 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 
 	public override void Run(JobTarget target, JobContext context)
 	{
-		string input = target.NewFileName;
-
 		// 1. 
 		// 1.1. 
 		if (!IsEnabled)
 			return;
 
 		// 1.2. 
-		int startIndex = this.StartIndex.FindIn(input);
+		string input = target.NewFileName;
+
+		int startIndex = StartIndex.FindIn(input);
 
 		if (startIndex < 0 || input.Length <= startIndex)
 			return;
 
 		// 1.3. 
-		int endIndex = this.EndIndex.FindIn(input);
+		int endIndex = EndIndex.FindIn(input);
 
 		if (endIndex < startIndex)
 			return;
@@ -53,7 +52,6 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 
 		// 3. 
 		target.NewFileName = s1 + s2 + s3;
-		return;
 	}
 
 	public override void UpdateDescription()
