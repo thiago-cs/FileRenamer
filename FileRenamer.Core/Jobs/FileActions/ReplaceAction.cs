@@ -93,6 +93,9 @@ public sealed class ReplaceAction : RenameActionBase
 			if (!newIsEmpty)
 				sb.Append(@" with """).Append(NewString).Append('"');
 
+			if (IgnoreCase)
+				sb.Append(" (ignore case)");
+
 			Description = sb.ToString();
 		}
 		else
