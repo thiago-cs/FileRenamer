@@ -35,23 +35,19 @@
 
 	<StackPanel Spacing="{StaticResource MediumSpacing}" >
 
+		<!-- starting -->
 		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Width="{StaticResource SectionHeaderWidth}" Text="starting" />
 
 			<uic:IndexEditor Data="{x:Bind Data.StartIndexData}" IncludePreposionInDescriptions="True" />
 		</StackPanel>
 
+		<!-- how much -->
 		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Width="{StaticResource SectionHeaderWidth}" Text="how much" />
 
-			<ComboBox PlaceholderText="chose..." MinWidth="100"
-					  ItemsSource="{x:Bind uae:RemoveActionData.RangeTypes}" SelectedItem="{x:Bind Data.RangeType, Mode=TwoWay}" >
-				<ItemsControl.ItemTemplate>
-					<DataTemplate x:DataType="uic:TextRangeType">
-						<TextBlock Text="{x:Bind Converter={StaticResource EnumToDescriptionConverter}}" />
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ComboBox>
+			<ComboBox Style="{StaticResource EnumComboBoxStyle}" PlaceholderText="chose..." MinWidth="100"
+					  ItemsSource="{x:Bind uae:RemoveActionData.RangeTypes}" SelectedItem="{x:Bind Data.RangeType, Mode=TwoWay}" />
 
 			<ContentControl Content="{x:Bind Data}"
 							ContentTemplate="{x:Bind Data.RangeType, Mode=TwoWay, Converter={StaticResource TextRemovalTypeToTemplateConverter}}" />
