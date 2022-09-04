@@ -76,48 +76,26 @@ public sealed class ReplaceAction : RenameActionBase
 
 	public override void UpdateDescription()
 	{
-		if (StartIndex == null || EndIndex == null)
-		{
-			System.Text.StringBuilder sb = new();
-			bool newIsEmpty = string.IsNullOrEmpty(NewString);
+		bool newIsEmpty = string.IsNullOrEmpty(NewString);
+		System.Text.StringBuilder sb = new();
 
-			sb.Append(newIsEmpty ? "remove all occurrencies of " : "replace ");
+		sb.Append(newIsEmpty ? "remove all occurrencies of " : "replace ");
 
-			if (UseRegex)
-				sb.Append("the expression ");
+		if (UseRegex)
+			sb.Append("the expression ");
 
-			sb.Append('"')
-			  .Append(OldString)
-			  .Append('"');
+		sb.Append('"').Append(OldString).Append('"');
 
-			if (!newIsEmpty)
-				sb.Append(@" with """).Append(NewString).Append('"');
+		if (!newIsEmpty)
+			sb.Append(@" with """).Append(NewString).Append('"');
 
-			if (IgnoreCase)
-				sb.Append(" (ignore case)");
+		if (StartIndex != null && EndIndex != null)
+			sb.Append(" within ").Append(Indices.Range.GetDescription(StartIndex, EndIndex));
 
-			Description = sb.ToString();
-		}
-		else
-		{
-			System.Text.StringBuilder sb = new("replace ");
+		if (IgnoreCase)
+			sb.Append(" (ignore case)");
 
-			if (UseRegex)
-				sb.Append("the expression ");
-
-			sb.Append('"')
-			  .Append(OldString)
-			  .Append(@""" within ")
-			  .Append(Indices.Range.GetDescription(StartIndex, EndIndex))
-			  .Append(@" with """);
-
-			if (NewString != null)
-				sb.Append(NewString);
-
-			sb.Append('"');
-
-			Description = sb.ToString();
-		}
+		Description = sb.ToString();
 	}
 
 	public override RenameActionBase DeepCopy()
