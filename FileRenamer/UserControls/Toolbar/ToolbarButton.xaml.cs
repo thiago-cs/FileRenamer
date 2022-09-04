@@ -14,9 +14,9 @@ public sealed partial class ToolbarButton : UserControl
 	private ToolbarItemSize _itemSize;
 
 	[ObservableProperty]
-	private UICommand _command;
+	private UICommandBase _command;
 
-	partial void OnCommandChanged(UICommand value)
+	partial void OnCommandChanged(UICommandBase value)
 	{
 		if (value.KeyboardAccelerator != null)
 			KeyboardAccelerators.Add(value.KeyboardAccelerator);
