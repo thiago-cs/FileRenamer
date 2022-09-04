@@ -32,7 +32,7 @@
 					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind EditActionCommand}" />
 					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind DuplicateActionCommand}" />
 					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveAllActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveAllActionsCommand}" />
 				</ut:ToolbarGroup>
 				<ut:ToolbarGroup Header="Actions" >
 					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertActionCommand}" />
