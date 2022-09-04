@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input;
+﻿using Microsoft.UI.Xaml.Input;
 
 
 namespace FileRenamer.Models;
@@ -25,6 +24,11 @@ public abstract class UICommandBase
 	/// Gets or sets the access key (mnemonic) for this command.
 	/// </summary>
 	public string AccessKey { get; set; }
+
+	/// <summary>
+	/// Gets the key combinations that invokes the action associated with this command.
+	/// </summary>
+	public KeyboardAccelerator KeyboardAccelerator { get; internal init; }
 
 
 	/// <summary>

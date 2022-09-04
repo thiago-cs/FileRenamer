@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.UI.Xaml.Input;
 using CommunityToolkit.Mvvm.Input;
 
 
@@ -9,7 +8,6 @@ namespace FileRenamer.Models;
 public sealed class UICommand : UICommandBase
 {
 	public RelayCommand Command { get; }
-	public KeyboardAccelerator KeyboardAccelerator { get; internal init; }
 
 
 	/// <summary>
