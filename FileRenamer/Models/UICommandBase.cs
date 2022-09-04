@@ -22,6 +22,38 @@ public abstract class UICommandBase
 	public string Description { get; protected init; }
 
 	/// <summary>
+	/// Gets the tooltip for this command.
+	/// </summary>
+	public string ToolTip
+	{
+		get
+		{
+			if (KeyboardAccelerator == null)
+				return Description;
+
+			System.Text.StringBuilder sb = new(Description);
+
+			sb.Append("    (");
+
+			if (KeyboardAccelerator.Modifiers.HasFlag(VirtualKeyModifiers.Windows))
+				sb.Append("Win + ");
+
+			if (KeyboardAccelerator.Modifiers.HasFlag(VirtualKeyModifiers.Control))
+				sb.Append("Ctrl + ");
+
+			if (KeyboardAccelerator.Modifiers.HasFlag(VirtualKeyModifiers.Menu))
+				sb.Append("Alt + ");
+
+			if (KeyboardAccelerator.Modifiers.HasFlag(VirtualKeyModifiers.Shift))
+				sb.Append("Shift + ");
+
+			sb.Append(KeyboardAccelerator.Key).Append(')');
+
+			return sb.ToString();
+		}
+	}
+
+	/// <summary>
 	/// Gets or sets a glyph for this command.
 	/// </summary>
 	public Microsoft.UI.Xaml.Controls.IconSource IconSource { get; protected init; }
