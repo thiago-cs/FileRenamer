@@ -1,10 +1,12 @@
-﻿using Microsoft.UI.Xaml.Input;
-
-
-namespace FileRenamer.Models;
+﻿namespace FileRenamer.Models;
 
 public abstract class UICommandBase
 {
+	/// <summary>
+	/// Gets the underlying <see cref="ICommand"/> object.
+	/// </summary>
+	public System.Windows.Input.ICommand Command { get; protected init; }
+
 	/// <summary>
 	/// Gets or sets the label for this command.
 	/// </summary>
@@ -28,11 +30,11 @@ public abstract class UICommandBase
 	/// <summary>
 	/// Gets the key combinations that invokes the action associated with this command.
 	/// </summary>
-	public KeyboardAccelerator KeyboardAccelerator { get; internal init; }
+	public Microsoft.UI.Xaml.Input.KeyboardAccelerator KeyboardAccelerator { get; internal init; }
 
 
 	/// <summary>
-	/// Notifies the system that the command state has changed.
+	/// Notifies that the <see cref="ICommand.CanExecute"/> property has changed.
 	/// </summary>
 	public abstract void NotifyCanExecuteChanged();
 }

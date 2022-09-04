@@ -7,9 +7,6 @@ namespace FileRenamer.Models;
 
 public sealed class UICommand : UICommandBase
 {
-	public RelayCommand Command { get; }
-
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="SyncUICommand"/> class.
 	/// </summary>
@@ -18,22 +15,19 @@ public sealed class UICommand : UICommandBase
 	public UICommand(Action execute, Func<bool> canExecute = null)
 	{
 		Command = canExecute == null
-					? new(execute)
-					: new(execute, canExecute);
+					? new RelayCommand(execute)
+					: new RelayCommand(execute, canExecute);
 	}
 
 
 	public override void NotifyCanExecuteChanged()
 	{
-		Command.NotifyCanExecuteChanged();
+		(Command as RelayCommand).NotifyCanExecuteChanged();
 	}
 }
 
 public sealed class AsyncUICommand : UICommandBase
 {
-	public AsyncRelayCommand Command { get; }
-
-
 	/// <summary>
 	/// Initializes a new instance of the <see cref="AsyncUICommand"/> class.
 	/// </summary>
@@ -42,13 +36,13 @@ public sealed class AsyncUICommand : UICommandBase
 	public AsyncUICommand(Func<Task> execute, Func<bool> canExecute = null)
 	{
 		Command = canExecute == null
-					? new(execute)
-					: new(execute, canExecute);
+					? new AsyncRelayCommand(execute)
+					: new AsyncRelayCommand(execute, canExecute);
 	}
 
 
 	public override void NotifyCanExecuteChanged()
 	{
-		Command.NotifyCanExecuteChanged();
+		(Command as AsyncRelayCommand).NotifyCanExecuteChanged();
 	}
 }
