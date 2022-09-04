@@ -1,12 +1,15 @@
-﻿namespace FileRenamer.Core.Jobs.FileActions;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-public abstract class RenameActionBase : Microsoft.Toolkit.Mvvm.ComponentModel.ObservableObject, IFileAction, Models.IDeepCopyable<RenameActionBase>
+
+namespace FileRenamer.Core.Jobs.FileActions;
+
+public abstract partial class RenameActionBase : ObservableObject, IFileAction, Models.IDeepCopyable<RenameActionBase>
 {
+	[ObservableProperty]
 	private bool _isEnabled = true;
-	public bool IsEnabled { get => _isEnabled; set => SetProperty(ref _isEnabled, value); }
 
+	[ObservableProperty]
 	private string _description = "";
-	public string Description { get => _description; set => SetProperty(ref _description, value); }
 
 
 	public abstract void Run(JobTarget target, JobContext context);

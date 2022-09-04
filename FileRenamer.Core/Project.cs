@@ -1,18 +1,19 @@
-﻿using FileRenamer.Core.FileSystem;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Jobs;
 
 
 namespace FileRenamer.Core;
 
-public sealed class Project : System.ComponentModel.BindableBase
+public sealed partial class Project : ObservableValidator
 {
 	public JobCollection Jobs { get; } = new();
 
-	private IFolder? _folder;
 	/// <summary>
 	/// Gets or sets the current working directory on which file operations are run.
 	/// </summary>
-	public IFolder? Folder { get => _folder; set => SetProperty(ref _folder, value); }
+	[ObservableProperty]
+	private IFolder? _folder;
 
 	private double _progress;
 	/// <summary>
@@ -20,11 +21,11 @@ public sealed class Project : System.ComponentModel.BindableBase
 	/// </summary>
 	public double Progress { get => _progress; private set => SetProperty(ref _progress, value); }
 
-	private JobScope _scope;
 	/// <summary>
 	/// Gets or sets a value that indicates whether files, folders, or both should be manipulated.
 	/// </summary>
-	public JobScope Scope { get => _scope; set => SetProperty(ref _scope, value); }
+	[ObservableProperty]
+	private JobScope _scope;
 
 
 	public async Task RunAsync(CancellationToken cancellationToken)
