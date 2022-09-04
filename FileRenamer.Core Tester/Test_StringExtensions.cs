@@ -28,6 +28,5 @@ public sealed class Test_StringExtensions
 	public void Test(int textIndex, TextCasing textCase, string expected)
 	{
 		Assert.AreEqual(expected, texts[textIndex - 1].ToCase(textCase));
-		Assert.Pass();
 	}
 }

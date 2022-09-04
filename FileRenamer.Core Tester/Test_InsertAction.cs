@@ -1,7 +1,5 @@
 using NUnit.Framework;
-using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Indices;
-using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Core.ValueSources;
 using static FileRenamer.Core_Tester.Resources;
@@ -19,22 +17,18 @@ public sealed class Test_InsertAction
 	[TestCase("", "Empty")]
 	public void AddToBeginning(string input, string addend)
 	{
-		JobTarget target = new(new FileMock(input), 0);
-		IFileAction action = new InsertAction(new BeginningIndex(), (StringValueSource)addend);
-		action.Run(target, NoContext);
+		InsertAction action = new(new BeginningIndex(), (StringValueSource)addend);
 
-		Assert.AreEqual(addend + input, target.NewFileName);
+		Assert.AreEqual(addend + input, action.Run(input));
 	}
 
 	[Test]
 	[TestCase(neverForget, ".")]
 	public void AddToEnd(string input, string addend)
 	{
-		JobTarget target = new(new FileMock(input), 0);
-		IFileAction action = new InsertAction(new EndIndex(), (StringValueSource)addend);
-		action.Run(target, NoContext);
+		InsertAction action = new(new EndIndex(), (StringValueSource)addend);
 
-		Assert.AreEqual(input + addend, target.NewFileName);
+		Assert.AreEqual(input + addend, action.Run(input));
 	}
 
 	[Test]
@@ -43,11 +37,9 @@ public sealed class Test_InsertAction
 	[TestCase(quickBrownFox, "dog", true, "old ", "the quick brown fox jumps over the lazy old dog.")]
 	public void InsertInTheMiddle(string input, string reference, bool isBefore, string addend, string expected)
 	{
-		JobTarget target = new(new FileMock(input), 0);
-		IFileAction action = new InsertAction(new SubstringIndex(reference, isBefore, false, false), (StringValueSource)addend);
-		action.Run(target, NoContext);
+		InsertAction action = new (new SubstringIndex(reference, isBefore, false, false), (StringValueSource)addend);
 
-		Assert.AreEqual(expected, target.NewFileName);
+		Assert.AreEqual(expected, action.Run(input));
 	}
 
 	#endregion

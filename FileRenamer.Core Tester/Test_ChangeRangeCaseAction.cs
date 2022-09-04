@@ -1,7 +1,5 @@
 using NUnit.Framework;
-using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Indices;
-using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Core.Extensions;
 using static FileRenamer.Core_Tester.Resources;
@@ -33,11 +31,9 @@ public sealed class Test_ChangeRangeCaseAction
 			endIndexFinder  = new EndIndex();
 		}
 
-		ChangeRangeCaseAction toCaseAction = new(startIndexFinder, endIndexFinder, casing);
-		JobTarget target = new(new FileMock(fileNames[fileNameIndex]), 0);
-		toCaseAction.Run(target, NoContext);
+		ChangeRangeCaseAction action = new(startIndexFinder, endIndexFinder, casing);
 
-		Assert.AreEqual(expected, target.NewFileName);
+		Assert.AreEqual(expected, action.Run(fileNames[fileNameIndex]));
 	}
 
 

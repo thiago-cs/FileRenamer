@@ -1,7 +1,5 @@
 using NUnit.Framework;
-using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Indices;
-using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 using static FileRenamer.Core_Tester.Resources;
 
@@ -63,14 +61,11 @@ public sealed class Test_RemoveAction
 	[TestCase(neverForget, 0, 17, "remove 17 characters after the 1st character", "never forget kindnesses")]
 	public void Test8(string input, int startIndex, int count, string description, string expected)
 	{
-		RemoveAction removeAction = new(new FixedIndex(startIndex), count);
+		RemoveAction action = new(new FixedIndex(startIndex), count);
 
-		Assert.AreEqual(description, removeAction.Description);
+		Assert.AreEqual(description, action.Description);
 
-		JobTarget target = new(new FileMock(input), 0);
-		removeAction.Run(target, NoContext);
-
-		Assert.AreEqual(expected, target.NewFileName);
+		Assert.AreEqual(expected, action.Run(input));
 	}
 
 	[Test]
@@ -79,24 +74,19 @@ public sealed class Test_RemoveAction
 	[TestCase(quickBrownFox, -5, "remove the last 5 characters", "the quick brown fox jumps over the lazy")]
 	public void Test9(string input, int count, string description, string expected)
 	{
-		RemoveAction removeAction = new(new EndIndex(), count);
+		RemoveAction action = new(new EndIndex(), count);
 
-		Assert.AreEqual(description, removeAction.Description);
+		Assert.AreEqual(description, action.Description);
 
-		JobTarget target = new(new FileMock(input), 0);
-		removeAction.Run(target, NoContext);
-
-		Assert.AreEqual(expected, target.NewFileName);
+		Assert.AreEqual(expected, action.Run(input));
 	}
 
 
 	private static void Test(string expected, string input, IIndex startIndexFinder, IIndex endIndexFinder)
 	{
-		RemoveAction removeAction = new(startIndexFinder, endIndexFinder);
-		JobTarget target = new(new FileMock(input), 0);
-		removeAction.Run(target, NoContext);
+		RemoveAction action = new(startIndexFinder, endIndexFinder);
 
-		Assert.AreEqual(expected, target.NewFileName);
+		Assert.AreEqual(expected, action.Run(input));
 	}
 
 
@@ -111,8 +101,8 @@ public sealed class Test_RemoveAction
 	[TestCase(7, 6, @"remove the last 2 characters")]
 	public void TestRemoveRangeDescription(int startIndexFinderIndex, int endIndexFinderIndex, string expected)
 	{
-		RemoveAction removeAction = new(finders[startIndexFinderIndex], finders[endIndexFinderIndex]);
-		Assert.AreEqual(expected, removeAction.Description);
+		RemoveAction action = new(finders[startIndexFinderIndex], finders[endIndexFinderIndex]);
+		Assert.AreEqual(expected, action.Description);
 	}
 
 
@@ -121,7 +111,7 @@ public sealed class Test_RemoveAction
 	[TestCase(3, 5, "remove 5 characters after \"dark\"")]
 	public void TestRemoveCountDescription(int startIndexFinderIndex, int count, string expected)
 	{
-		RemoveAction removeAction = new(finders[startIndexFinderIndex], count);
-		Assert.AreEqual(expected, removeAction.Description);
+		RemoveAction action = new(finders[startIndexFinderIndex], count);
+		Assert.AreEqual(expected, action.Description);
 	}
 }

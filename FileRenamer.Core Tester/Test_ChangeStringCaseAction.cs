@@ -1,10 +1,6 @@
 using NUnit.Framework;
-using FileRenamer.Core.FileSystem;
-using FileRenamer.Core.Indices;
-using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Core.Extensions;
-using static FileRenamer.Core_Tester.Resources;
 
 
 namespace FileRenamer.Core_Tester;
@@ -20,10 +16,8 @@ public sealed class Test_ChangeStringCaseAction
 	public void FileNameTest(string input, string oldString, bool ignoreCase, bool useRegex, TextCasing textCase, string expected)
 	{
 		ChangeStringCaseAction action = new(oldString, ignoreCase, useRegex, textCase);
-		JobTarget target = new(new FileMock(input), 0);
-		action.Run(target, NoContext);
 
-		Assert.AreEqual(expected, target.NewFileName);
+		Assert.AreEqual(expected, action.Run(input));
 	}
 
 
