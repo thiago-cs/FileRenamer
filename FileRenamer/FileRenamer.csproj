@@ -13,6 +13,7 @@
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="UserControls\ActionEditors\MoveStringActionEditor.xaml" />
     <None Remove="UserControls\InputControls\ChangeCaseActionEditor.xaml" />
     <None Remove="UserControls\InputControls\ReplaceActionEditor.xaml" />
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
@@ -59,6 +60,10 @@
     </Page>
     <Page Update="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Update="UserControls\ActionEditors\MoveStringActionEditor.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\InputControls\IndexEditor.xaml">
       <Generator>MSBuild:Compile</Generator>

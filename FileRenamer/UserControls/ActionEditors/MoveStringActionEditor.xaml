@@ -1,0 +1,29 @@
+﻿<UserControl
+	x:Class="FileRenamer.UserControls.ActionEditors.MoveStringActionEditor"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:uic="using:FileRenamer.UserControls.InputControls" >
+
+	<StackPanel Spacing="{StaticResource MediumSpacing}" >
+
+		<!-- what -->
+		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
+			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="what" />
+
+			<uic:SearchTextEditor Data="{x:Bind Data.OldString}" />
+		</StackPanel>
+
+		<!-- by -->
+		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
+			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="by" />
+
+			<StackPanel>
+				<NumberBox HorizontalAlignment="Left" Width="160" HorizontalContentAlignment="Right" 
+						   Minimum="-100" Maximum="100" Value="{x:Bind Data.Count, Mode=TwoWay}" SpinButtonPlacementMode="Inline" />
+
+				<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}" Text="{x:Bind Data.CountErrorMessage, Mode=OneWay}" />
+			</StackPanel>
+		</StackPanel>
+
+	</StackPanel>
+</UserControl>
