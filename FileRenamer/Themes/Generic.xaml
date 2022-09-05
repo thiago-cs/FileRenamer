@@ -64,7 +64,7 @@
 
 	<DataTemplate x:Key="MediumToolbarButtonDataTemplate" >
 		<!-- x:DataType="UICommand" -->
-		<Button Style="{StaticResource ButtonStyle1}" Command="{Binding Command}" AccessKey="{Binding AccessKey}" ToolTipService.ToolTip="{Binding Description}" >
+		<Button Style="{StaticResource ButtonStyle1}" Command="{Binding Command}" AccessKey="{Binding AccessKey}" ToolTipService.ToolTip="{Binding ToolTip}" >
 			<StackPanel Orientation="Horizontal" >
 				<Viewbox Margin="{StaticResource XSmallRightMargin}" Width="{StaticResource MediumToolbarIconSize}" Height="{StaticResource MediumToolbarIconSize}" >
 					<IconSourceElement IconSource="{Binding IconSource}" />
