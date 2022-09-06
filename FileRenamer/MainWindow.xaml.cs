@@ -1,8 +1,5 @@
 ﻿using System;
-using Windows.System;
 using Windows.Storage.Pickers;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Input;
 using FileRenamer.Models;
 using FileRenamer.ViewModels;
 
@@ -20,104 +17,9 @@ public sealed partial class MainWindow
 		InitializeComponent();
 		//ExtendsContentIntoTitleBar = true;
 
-		#region 2. Commands
-
-		const VirtualKeyModifiers Control_Shift = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift;
-
-		// 2.1. Project commands
-		NewProjectCommand = CreateCommand2("New", "N", "Start a new project",
-											Symbol.Add, VirtualKeyModifiers.Control, VirtualKey.N, ExecuteNewProject);
-
-		LoadProjectCommand = CreateCommand2("Load", "L", "Load an existing project",
-											Symbol.OpenLocal, VirtualKeyModifiers.Control, VirtualKey.O, ExecuteLoadProject);
-
-		SaveProjectCommand = CreateCommand2("Save", "S", "Save this project",
-											Symbol.Save, VirtualKeyModifiers.Control, VirtualKey.S, ExecuteSaveProject);
-
-		// 2.2. Manage existing actions commands
-		MoveUpActionCommand = CreateCommand2("Move up", "U", "Move the selected action up",
-											Symbol.Up, VirtualKeyModifiers.Menu, VirtualKey.Up, ViewModel.MoveSelectedActionUp, ViewModel.CanExecuteWhenSelectedActionIsNotFirst);
-
-		MoveDownActionCommand = CreateCommand3("Move down", "D", "Move the selected action down",
-											(char)0xE74B, VirtualKeyModifiers.Menu, VirtualKey.Down, ViewModel.MoveSelectedActionDown, ViewModel.CanExecuteWhenSelectedActionIsNotLast);
-
-		EditActionCommand = CreateCommand2("Edit", "T", "Edit the selected action",
-											Symbol.Edit, null, VirtualKey.F2, EditSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
-
-		DuplicateActionCommand = CreateCommand2("Duplicate", "V", "Duplicate the selected action",
-											Symbol.Copy, VirtualKeyModifiers.Control, VirtualKey.D, ViewModel.DuplicateSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
-
-		RemoveActionCommand = CreateCommand2("Remove", "Del", "Remove the selected action",
-											Symbol.Delete, null, VirtualKey.Delete, ViewModel.RemoveSelectedAction, ViewModel.CanExecuteWhenSelectedActionIsNotNull);
-
-		RemoveAllActionsCommand = CreateCommand2("Clear", "", "Remove all actions",
-											Symbol.Clear, VirtualKeyModifiers.Control, VirtualKey.Delete, ViewModel.RemoveAllActions, ViewModel.CanExecuteWhenActionsIsNotEmpty);
-
-		// 2.3. Add new actions commands
-		AddInsertActionCommand = CreateCommand2("Insert", "I", "Add an action that inserts a text",
-												Symbol.Add, VirtualKeyModifiers.Control, VirtualKey.I, AddInsertAction);
-
-		AddRemoveActionCommand = CreateCommand2("Remove", "R", "Add an action that removes text",
-												Symbol.Remove, VirtualKeyModifiers.Control, VirtualKey.R, AddRemoveAction);
-
-		AddInsertCounterActionCommand = CreateCommand3("Insert counter", "1", "Add an action that inserts a padded number",
-												(char)0xE8EF, Control_Shift, VirtualKey.I, AddInsertCounterAction);
-
-		AddReplaceActionCommand = CreateCommand2("Replace", "H", "Add an action that replaces a text",
-												Symbol.Sync, Control_Shift, VirtualKey.R, AddReplaceAction);
-
-		AddConvertCaseActionCommand = CreateCommand2("Change case", "C", "Add an action that changes the casing of a text",
-												Symbol.Font, Control_Shift, VirtualKey.C, AddConvertCaseAction);
-
-		AddMoveStringActionCommand = CreateCommand3("Move Text", "M", "Move a text around",
-												(char)0xE8AB, Control_Shift, VirtualKey.M, AddMoveStringAction);
-
-		#endregion
-
-		// 3.
+		// 2.
 		ViewModel.PropertyChanged += ViewModel_PropertyChanged;
 		ViewModel.Project.Jobs.CollectionChanged += Actions_CollectionChanged;
-
-
-
-		#region Local functions
-
-		static UICommand CreateCommand(string label, string accessKey, string description, IconSource icon,
-									   VirtualKeyModifiers? modifier, VirtualKey acceleratorKey, Action execute, Func<bool> canExecute)
-		{
-			return new UICommand(execute, canExecute)
-			{
-				Label = label,
-				Description = description,
-				IconSource = icon,
-				AccessKey = accessKey,
-				KeyboardAccelerator = CreateKeyboardAccelerator(modifier, acceleratorKey)
-			};
-		}
-
-		static UICommand CreateCommand2(string label, string accessKey, string description, Symbol symbol,
-										VirtualKeyModifiers? modifier, VirtualKey acceleratorKey, Action execute, Func<bool> canExecute = null)
-		{
-			return CreateCommand(label, accessKey, description, new SymbolIconSource() { Symbol = symbol }, modifier, acceleratorKey, execute, canExecute);
-		}
-
-		static UICommand CreateCommand3(string label, string accessKey, string description, char glyph,
-										VirtualKeyModifiers? modifier, VirtualKey acceleratorKey, Action execute, Func<bool> canExecute = null)
-		{
-			return CreateCommand(label, accessKey, description, new FontIconSource() { Glyph = glyph.ToString() }, modifier, acceleratorKey, execute, canExecute);
-		}
-
-		static KeyboardAccelerator CreateKeyboardAccelerator(VirtualKeyModifiers? modifier, VirtualKey acceleratorKey)
-		{
-			KeyboardAccelerator keyboardAccelerator = new() { Key = acceleratorKey };
-
-			if (modifier != null)
-				keyboardAccelerator.Modifiers = modifier.Value;
-
-			return keyboardAccelerator;
-		}
-
-		#endregion
 	}
 
 
