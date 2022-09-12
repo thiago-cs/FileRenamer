@@ -1,4 +1,6 @@
-﻿using FileRenamer.Core.Indices;
+﻿using System.Xml;
+using FileRenamer.Core.Indices;
+using FileRenamer.Core.Serialization;
 using FileRenamer.Core.ValueSources;
 
 
@@ -9,8 +11,12 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #endif
 public sealed class InsertAction : RenameActionBase
 {
+	#region Properties and fields
+
 	public IIndex InsertIndex { get; }
 	public IValueSource ValueSource { get; }
+	
+	#endregion
 
 
 	public InsertAction(IIndex insertIndex, IValueSource value)
@@ -21,6 +27,8 @@ public sealed class InsertAction : RenameActionBase
 		UpdateDescription();
 	}
 
+
+	#region RenameActionBase implementation
 
 	public override void Run(JobTarget target, JobContext context)
 	{
@@ -52,4 +60,57 @@ public sealed class InsertAction : RenameActionBase
 	{
 		return new InsertAction(InsertIndex, ValueSource);
 	}
+
+	#endregion
+
+
+	#region XML serialization
+
+	public override async Task WriteXmlAsync(XmlWriter writer)
+	{
+		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
+
+		await writer.WriteElementAsync(nameof(InsertIndex), InsertIndex).ConfigureAwait(false);
+		await writer.WriteElementAsync(nameof(ValueSource), ValueSource).ConfigureAwait(false);
+
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+	}
+
+	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	{
+		reader.ReadStartElement(nameof(InsertAction));
+
+		IIndex? insertIndex = null;
+		IValueSource? value = null;
+
+		//
+		while (reader.NodeType != XmlNodeType.EndElement)
+			switch (reader.Name)
+			{
+				case nameof(InsertIndex):
+					reader.ReadStartElement();
+					insertIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				case nameof(ValueSource):
+					reader.ReadStartElement();
+					value = await reader.ReadValueSourceAsync().ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				default:
+					break;
+			}
+
+		reader.ReadEndElement();
+
+		//
+		XmlSerializationHelper.ThrowIfNull(insertIndex, nameof(InsertIndex));
+		XmlSerializationHelper.ThrowIfNull(value, nameof(ValueSource));
+
+		return new InsertAction(insertIndex, value);
+	}
+
+	#endregion
 }

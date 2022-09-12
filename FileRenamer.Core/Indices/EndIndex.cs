@@ -1,4 +1,8 @@
-﻿namespace FileRenamer.Core.Indices;
+﻿using System.Xml;
+using FileRenamer.Core.Serialization;
+
+
+namespace FileRenamer.Core.Indices;
 
 public sealed class EndIndex : IIndex
 {
@@ -12,4 +16,22 @@ public sealed class EndIndex : IIndex
 	{
 		return input.Length;
 	}
+
+
+	#region XML serialization
+
+	public async Task WriteXmlAsync(XmlWriter writer)
+	{
+		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+	}
+
+	public static Task<IIndex> ReadXmlAsync(XmlReader reader)
+	{
+		reader.ReadStartElement(nameof(EndIndex));
+
+		return Task.FromResult(new EndIndex() as IIndex);
+	}
+
+	#endregion
 }

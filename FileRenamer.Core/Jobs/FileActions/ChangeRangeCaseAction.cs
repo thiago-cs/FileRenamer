@@ -1,5 +1,7 @@
-﻿using FileRenamer.Core.Extensions;
+﻿using System.Xml;
+using FileRenamer.Core.Extensions;
 using FileRenamer.Core.Indices;
+using FileRenamer.Core.Serialization;
 
 
 namespace FileRenamer.Core.Jobs.FileActions;
@@ -9,9 +11,13 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #endif
 public sealed class ChangeRangeCaseAction : RenameActionBase
 {
+	#region Properties and fields
+
 	public IIndex StartIndex { get; set; }
 	public IIndex EndIndex { get; set; }
 	public TextCasing TextCase { get; }
+	
+	#endregion
 
 
 	public ChangeRangeCaseAction(IIndex startIndex, IIndex endIndex, TextCasing textCase)
@@ -23,6 +29,8 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 		UpdateDescription();
 	}
 
+
+	#region RenameActionBase implementation
 
 	public override void Run(JobTarget target, JobContext context)
 	{
@@ -73,4 +81,75 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 	{
 		return new ChangeRangeCaseAction(StartIndex, EndIndex, TextCase);
 	}
+
+	#endregion
+
+
+	#region XML serialization
+
+	public override async Task WriteXmlAsync(XmlWriter writer)
+	{
+		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
+
+		await writer.WriteAttributeAsync(nameof(TextCase), TextCase).ConfigureAwait(false);
+		await writer.WriteElementAsync(nameof(StartIndex), StartIndex).ConfigureAwait(false);
+		await writer.WriteElementAsync(nameof(EndIndex), EndIndex).ConfigureAwait(false);
+
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+	}
+
+	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	{
+		//
+		TextCasing? textCase = null;
+
+		while (reader.MoveToNextAttribute())
+			switch (reader.Name)
+			{
+				case nameof(TextCase):
+					textCase = Enum.Parse<TextCasing>(reader.Value);
+					break;
+
+				default:
+					// Unknown attribute!?
+					//Console.WriteLine($"Name: {reader.Name}, value: {reader.Value}");
+					break;
+			}
+
+		reader.ReadStartElement(nameof(ChangeRangeCaseAction));
+
+		//
+		IIndex? startIndex = null;
+		IIndex? endIndex = null;
+
+		while (reader.NodeType != XmlNodeType.EndElement)
+			switch (reader.Name)
+			{
+				case nameof(StartIndex):
+					reader.ReadStartElement();
+					startIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				case nameof(EndIndex):
+					reader.ReadStartElement();
+					endIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				default:
+					throw new XmlException($@"Unknown property ""{reader.Name}"".");
+			}
+
+		reader.ReadEndElement();
+
+		//
+		XmlSerializationHelper.ThrowIfNull(startIndex, nameof(StartIndex));
+		XmlSerializationHelper.ThrowIfNull(endIndex, nameof(EndIndex));
+		XmlSerializationHelper.ThrowIfNull(textCase, nameof(TextCase));
+
+		return new ChangeRangeCaseAction(startIndex, endIndex, textCase.Value);
+	}
+
+	#endregion
 }

@@ -1,13 +1,15 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Xml;
+using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Serialization;
 
 
 namespace FileRenamer.Core;
 
 public sealed partial class Project : ObservableValidator
 {
-	public JobCollection Jobs { get; } = new();
+	public JobCollection Jobs { get; }
 
 	/// <summary>
 	/// Gets or sets the current working directory on which file operations are run.
@@ -26,6 +28,19 @@ public sealed partial class Project : ObservableValidator
 	/// </summary>
 	[ObservableProperty]
 	private JobScope _scope;
+
+
+	public Project()
+	{
+		Jobs = new();
+	}
+
+	public Project(JobCollection jobs)
+	{
+		ArgumentNullException.ThrowIfNull(jobs, nameof(jobs));
+
+		Jobs = jobs;
+	}
 
 
 	public async Task RunAsync(CancellationToken cancellationToken)
@@ -62,4 +77,67 @@ public sealed partial class Project : ObservableValidator
 			Progress = i;
 		}
 	}
+
+
+	#region XML serialization
+
+	public async Task WriteXmlAsync(Stream output)
+	{
+		// 1. Locals.
+		XmlWriterSettings settings = new() { Async = true };
+		using XmlWriter writer = XmlWriter.Create(output, settings);
+
+		// 2. The deal.
+		await writer.WriteStartElementAsync(nameof(Project)).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(Scope), Scope.ToString()).ConfigureAwait(false);
+		await writer.WriteElementAsync(nameof(Jobs), Jobs).ConfigureAwait(false);
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+
+		// 3. Writes the last closing element and flushes whatever is in the buffer.
+		await writer.FlushAsync().ConfigureAwait(false);
+	}
+
+	public static async Task<Project> ReadXmlAsync(TextReader input)
+	{
+		XmlReaderSettings settings = new() { Async = true };
+		using XmlReader reader = XmlReader.Create(input, settings);
+
+		reader.MoveToContent();
+
+		//
+		JobScope scope = default;
+
+		if (reader.AttributeCount != 0)
+		{
+			string? value = reader.GetAttribute(nameof(Scope));
+
+			if (value != null)
+				scope = Enum.Parse<JobScope>(value);
+		}
+
+		reader.ReadStartElement(nameof(Project));
+
+		//
+		JobCollection? jobs = null;
+
+		while (reader.NodeType != XmlNodeType.EndElement)
+			switch (reader.Name)
+			{
+				case nameof(Jobs):
+					reader.ReadStartElement();
+					jobs = await JobCollection.ReadXmlAsync(reader).ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				default:
+					break;
+			}
+
+		reader.ReadEndElement();
+
+		//
+		return new(jobs ?? new()) { Scope = scope };
+	}
+
+	#endregion
 }

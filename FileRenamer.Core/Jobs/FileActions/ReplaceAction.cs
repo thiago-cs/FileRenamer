@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml;
 using FileRenamer.Core.Indices;
+using FileRenamer.Core.Serialization;
 
 
 namespace FileRenamer.Core.Jobs.FileActions;
@@ -9,6 +11,8 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #endif
 public sealed class ReplaceAction : RenameActionBase
 {
+	#region Properties and fields
+
 	private Regex? regex;
 
 	public IIndex? StartIndex { get; set; }
@@ -17,6 +21,8 @@ public sealed class ReplaceAction : RenameActionBase
 	public string? NewString { get; set; }
 	public bool IgnoreCase { get; set; }
 	public bool UseRegex { get; set; }
+
+	#endregion
 
 
 	public ReplaceAction(string oldString, string? newString, bool ignoreCase, bool useRegex)
@@ -42,6 +48,8 @@ public sealed class ReplaceAction : RenameActionBase
 		UpdateDescription();
 	}
 
+
+	#region RenameActionBase implementation
 
 	public override void Run(JobTarget target, JobContext context)
 	{
@@ -124,4 +132,102 @@ public sealed class ReplaceAction : RenameActionBase
 		else
 			return input.Replace(OldString, NewString, IgnoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture);
 	}
+
+	#endregion
+
+
+	#region XML serialization
+
+	public override async Task WriteXmlAsync(XmlWriter writer)
+	{
+		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
+
+		await writer.WriteAttributeAsync(nameof(OldString), OldString).ConfigureAwait(false);
+
+		if (!string.IsNullOrEmpty(NewString))
+			await writer.WriteAttributeAsync(nameof(NewString), NewString).ConfigureAwait(false);
+
+		await writer.WriteAttributeAsync(nameof(IgnoreCase), IgnoreCase).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(UseRegex), UseRegex).ConfigureAwait(false);
+
+
+		if (StartIndex != null && EndIndex != null)
+		{
+			await writer.WriteElementAsync(nameof(StartIndex), StartIndex).ConfigureAwait(false);
+			await writer.WriteElementAsync(nameof(EndIndex), EndIndex).ConfigureAwait(false);
+		}
+
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+	}
+
+	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	{
+		string? oldString = null;
+		string? newString = null;
+		bool? ignoreCase = null;
+		bool? useRegex = null;
+
+		while (reader.MoveToNextAttribute())
+			switch (reader.Name)
+			{
+				case nameof(OldString):
+					oldString = reader.Value;
+					break;
+
+				case nameof(NewString):
+					newString = reader.Value;
+					break;
+
+				case nameof(IgnoreCase):
+					ignoreCase = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(UseRegex):
+					useRegex = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				default:
+					// Unknown attribute!?
+					//Console.WriteLine($"Name: {reader.Name}, value: {reader.Value}");
+					break;
+			}
+
+		reader.ReadStartElement(nameof(ReplaceAction));
+
+		//
+		IIndex? startIndex = null;
+		IIndex? endIndex = null;
+
+		while (reader.NodeType != XmlNodeType.EndElement)
+			switch (reader.Name)
+			{
+				case nameof(StartIndex):
+					reader.ReadStartElement();
+					startIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				case nameof(EndIndex):
+					reader.ReadStartElement();
+					endIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				default:
+					break;
+			}
+
+		reader.ReadEndElement();
+
+		//
+		XmlSerializationHelper.ThrowIfNull(oldString, nameof(OldString));
+		XmlSerializationHelper.ThrowIfNull(ignoreCase, nameof(IgnoreCase));
+		XmlSerializationHelper.ThrowIfNull(useRegex, nameof(UseRegex));
+
+		return startIndex == null || endIndex == null
+			? new ReplaceAction(oldString, newString, ignoreCase.Value, useRegex.Value)
+			: new ReplaceAction(startIndex, endIndex, oldString, newString, ignoreCase.Value, useRegex.Value);
+	}
+
+	#endregion
 }

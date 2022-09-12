@@ -1,4 +1,6 @@
-﻿using Humanizer;
+﻿using System.Xml;
+using Humanizer;
+using FileRenamer.Core.Serialization;
 
 
 namespace FileRenamer.Core.Indices;
@@ -37,4 +39,43 @@ public sealed class FixedIndex : IIndex
 	{
 		return Index < 0 ? input.Length + Index : Index;
 	}
+
+
+	#region XML serialization
+
+	public async Task WriteXmlAsync(XmlWriter writer)
+	{
+		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
+
+		await writer.WriteAttributeAsync(nameof(Index), Index).ConfigureAwait(false);
+
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+	}
+
+	public static Task<IIndex> ReadXmlAsync(XmlReader reader)
+	{
+		int? index = null;
+
+		while (reader.MoveToNextAttribute())
+			switch (reader.Name)
+			{
+				case nameof(Index):
+					index = int.Parse(reader.Value);
+					break;
+
+				default:
+					// Unknown attribute!?
+					//Console.WriteLine($"Name: {reader.Name}, value: {reader.Value}");
+					break;
+			}
+
+		reader.ReadStartElement(nameof(FixedIndex));
+
+		//
+		XmlSerializationHelper.ThrowIfNull(index, nameof(Index));
+
+		return Task.FromResult(new FixedIndex(index.Value) as IIndex);
+	}
+
+	#endregion
 }

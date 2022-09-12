@@ -1,6 +1,9 @@
-﻿namespace FileRenamer.Core.Jobs;
+﻿using FileRenamer.Core.Serialization;
 
-public interface IJobItem
+
+namespace FileRenamer.Core.Jobs;
+
+public interface IJobItem: IXmlSerializableAsync
 {
 	void Run(JobTarget target, JobContext context);
 }

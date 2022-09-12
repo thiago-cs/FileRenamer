@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents an object that provides methods for finding an index within a <see cref="string"/>.
 /// </summary>
-public interface IIndex
+public interface IIndex : Serialization.IXmlSerializableAsync
 {
 	/// <summary>
 	/// Gets this objects description to be used to compose a <see cref="Jobs.FileActions.RenameActionBase"/>'s own description.
