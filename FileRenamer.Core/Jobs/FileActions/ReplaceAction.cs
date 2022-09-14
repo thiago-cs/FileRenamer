@@ -192,32 +192,36 @@ public sealed class ReplaceAction : RenameActionBase
 					break;
 			}
 
+		var depth = reader.Depth;
 		reader.ReadStartElement(nameof(ReplaceAction));
 
 		//
 		IIndex? startIndex = null;
 		IIndex? endIndex = null;
 
-		while (reader.NodeType != XmlNodeType.EndElement)
-			switch (reader.Name)
-			{
-				case nameof(StartIndex):
-					reader.ReadStartElement();
-					startIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
-					reader.ReadEndElement();
-					break;
+		if (reader.Depth == depth)
+		{
+			while (reader.NodeType != XmlNodeType.EndElement)
+				switch (reader.Name)
+				{
+					case nameof(StartIndex):
+						reader.ReadStartElement();
+						startIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+						reader.ReadEndElement();
+						break;
 
-				case nameof(EndIndex):
-					reader.ReadStartElement();
-					endIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
-					reader.ReadEndElement();
-					break;
+					case nameof(EndIndex):
+						reader.ReadStartElement();
+						endIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+						reader.ReadEndElement();
+						break;
 
-				default:
-					break;
-			}
+					default:
+						break;
+				}
 
-		reader.ReadEndElement();
+			reader.ReadEndElement();
+		}
 
 		//
 		XmlSerializationHelper.ThrowIfNull(oldString, nameof(OldString));
