@@ -12,7 +12,7 @@ public sealed class StringValueSource : IValueSource
 	/// <summary>
 	/// Gets or sets the string value provided on every request.
 	/// </summary>
-	public string Value { get; set; }
+	public string Value { get; }
 
 
 	#region Constructors

@@ -12,9 +12,9 @@ public sealed class RemoveAction : RenameActionBase
 {
 	#region Properties and fields
 
-	public IIndex StartIndex { get; set; }
-	public IIndex? EndIndex { get; set; }
-	public int Count { get; set; }
+	public IIndex StartIndex { get; }
+	public IIndex? EndIndex { get; }
+	public int Count { get; }
 
 	#endregion
 

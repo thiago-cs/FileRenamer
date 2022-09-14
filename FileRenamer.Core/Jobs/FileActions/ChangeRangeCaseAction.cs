@@ -13,8 +13,8 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 {
 	#region Properties and fields
 
-	public IIndex StartIndex { get; set; }
-	public IIndex EndIndex { get; set; }
+	public IIndex StartIndex { get; }
+	public IIndex EndIndex { get; }
 	public TextCasing TextCase { get; }
 	
 	#endregion

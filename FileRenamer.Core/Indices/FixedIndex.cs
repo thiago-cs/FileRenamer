@@ -7,7 +7,7 @@ namespace FileRenamer.Core.Indices;
 
 public sealed class FixedIndex : IIndex
 {
-	public int Index { get; set; }
+	public int Index { get; }
 
 
 	public IndexDescription Description
@@ -27,12 +27,12 @@ public sealed class FixedIndex : IIndex
 	}
 
 
-	public FixedIndex(int value)
+	public FixedIndex(int index)
 	{
-		Index = value;
+		Index = index;
 	}
 
-	public static implicit operator FixedIndex(int value) => new(value);
+	public static implicit operator FixedIndex(int index) => new(index);
 
 
 	public int FindIn(string input)

@@ -12,10 +12,10 @@ public sealed class SubstringIndex : IIndex
 	private Regex? regex;
 
 
-	public string Value { get; set; }
-	public bool Before { get; set; }
-	public bool IgnoreCase { get; set; }
-	public bool UseRegex { get; set; }
+	public string Value { get; }
+	public bool Before { get; }
+	public bool IgnoreCase { get; }
+	public bool UseRegex { get; }
 	public IndexDescription Description
 	{
 		get
@@ -44,10 +44,10 @@ public sealed class SubstringIndex : IIndex
 
 	public SubstringIndex(string value, bool before, bool ignoreCase, bool useRegex)
 	{
-		this.Value = value;
-		this.Before = before;
-		this.IgnoreCase = ignoreCase;
-		this.UseRegex = useRegex;
+		Value = value;
+		Before = before;
+		IgnoreCase = ignoreCase;
+		UseRegex = useRegex;
 	}
 
 

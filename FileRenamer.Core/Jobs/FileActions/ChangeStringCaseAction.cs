@@ -15,9 +15,9 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 
 	private Regex? regex;
 
-	public string OldString { get; set; }
-	public bool IgnoreCase { get; set; }
-	public bool UseRegex { get; set; }
+	public string OldString { get; }
+	public bool IgnoreCase { get; }
+	public bool UseRegex { get; }
 	public TextCasing TextCase { get; }
 
 	#endregion

@@ -15,12 +15,12 @@ public sealed class ReplaceAction : RenameActionBase
 
 	private Regex? regex;
 
-	public IIndex? StartIndex { get; set; }
-	public IIndex? EndIndex { get; set; }
-	public string OldString { get; set; }
-	public string? NewString { get; set; }
-	public bool IgnoreCase { get; set; }
-	public bool UseRegex { get; set; }
+	public IIndex? StartIndex { get; }
+	public IIndex? EndIndex { get; }
+	public string OldString { get; }
+	public string? NewString { get; }
+	public bool IgnoreCase { get; }
+	public bool UseRegex { get; }
 
 	#endregion
 

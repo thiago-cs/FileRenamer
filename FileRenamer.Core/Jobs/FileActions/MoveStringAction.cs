@@ -15,20 +15,20 @@ public sealed class MoveStringAction : RenameActionBase
 
 	private Regex? regex;
 
-	public string Text { get; set; }
-	public bool IgnoreCase { get; set; }
-	public bool UseRegex { get; set; }
-	public int Count { get; set; }
+	public string Text { get; }
+	public bool IgnoreCase { get; }
+	public bool UseRegex { get; }
+	public int Count { get; }
 
 	#endregion
 
 
-	public MoveStringAction(string text, bool ignoreCase, bool useRegex, int length)
+	public MoveStringAction(string text, bool ignoreCase, bool useRegex, int count)
 	{
 		Text = text ?? throw new ArgumentNullException(nameof(text));
 		IgnoreCase = ignoreCase;
 		UseRegex = useRegex;
-		Count = length;
+		Count = count;
 
 		UpdateDescription();
 	}
