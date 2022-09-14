@@ -139,7 +139,7 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 			switch (reader.Name)
 			{
 				case nameof(IsEnabled):
-					isEnable = reader.ReadContentAsBoolean();
+					isEnable = XmlSerializationHelper.ParseBoolean(reader.Value);
 					break;
 
 				case nameof(OldString):
@@ -147,11 +147,11 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 					break;
 
 				case nameof(IgnoreCase):
-					ignoreCase = reader.ReadContentAsBoolean();
+					ignoreCase = XmlSerializationHelper.ParseBoolean(reader.Value);
 					break;
 
 				case nameof(UseRegex):
-					useRegex = reader.ReadContentAsBoolean();
+					useRegex = XmlSerializationHelper.ParseBoolean(reader.Value);
 					break;
 
 				case nameof(TextCase):
