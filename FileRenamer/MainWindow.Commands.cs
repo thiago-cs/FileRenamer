@@ -24,7 +24,12 @@ partial class MainWindow
 	private string projectPath = null;
 
 	[ObservableProperty]
-	private bool _hasUnavedChanges = false;
+	private bool _hasUnsavedChanges = false;
+
+	partial void OnHasUnsavedChangesChanged(bool value)
+	{
+		SaveProjectCommand.NotifyCanExecuteChanged();
+	}
 
 
 	#region New Project
@@ -42,7 +47,7 @@ partial class MainWindow
 	public async Task NewProject()
 	{
 		// 1.
-		if (HasUnavedChanges)
+		if (HasUnsavedChanges)
 		{
 			// 1.1.
 			ContentDialog dialog = new()
@@ -77,7 +82,7 @@ partial class MainWindow
 				case ContentDialogResult.Primary:
 					await SaveProjectAsync();
 
-					if (HasUnavedChanges)
+					if (HasUnsavedChanges)
 						return;
 					break;
 
@@ -89,7 +94,7 @@ partial class MainWindow
 
 		// 2.
 		ViewModel.Project = new();
-		HasUnavedChanges = false;
+		HasUnsavedChanges = false;
 	}
 
 	#endregion
@@ -132,7 +137,7 @@ partial class MainWindow
 			using Stream stream = await file.OpenStreamForWriteAsync();
 			using StreamReader input = new(stream);
 			ViewModel.Project = await Project.ReadXmlAsync(input).ConfigureAwait(false);
-			HasUnavedChanges = false;
+			HasUnsavedChanges = false;
 			projectPath = file.Path;
 		}
 		catch (Exception ex)
@@ -159,7 +164,7 @@ partial class MainWindow
 
 	public async Task SaveProjectAsync()
 	{
-		if (!HasUnavedChanges)
+		if (!HasUnsavedChanges)
 			return;
 
 		Windows.Storage.StorageFile file;
@@ -198,7 +203,7 @@ partial class MainWindow
 		{
 			using Stream stream = await file.OpenStreamForWriteAsync();
 			await ViewModel.Project.WriteXmlAsync(stream).ConfigureAwait(false);
-			HasUnavedChanges = false;
+			HasUnsavedChanges = false;
 			projectPath = file.Path;
 		}
 		catch (Exception ex)
@@ -210,7 +215,7 @@ partial class MainWindow
 
 	public bool CanSaveProject()
 	{
-		return HasUnavedChanges;
+		return HasUnsavedChanges;
 	}
 
 	#endregion
@@ -292,7 +297,7 @@ partial class MainWindow
 		int index = ViewModel.Project.Jobs.IndexOf(ViewModel.SelectedAction);
 		ViewModel.Project.Jobs.RemoveAt(index);
 		ViewModel.Project.Jobs.Insert(index, item);
-		HasUnavedChanges = true;
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
@@ -361,7 +366,7 @@ partial class MainWindow
 	private async Task AddInsertActionAsync()
 	{
 		await EditAndAddJobItemAsync(new InsertActionEditor());
-		HasUnavedChanges = true;
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
@@ -384,7 +389,7 @@ partial class MainWindow
 		actionEditor.Data.ValueSourceType = UserControls.InputControls.ValueSourceType.Counter;
 
 		await EditAndAddJobItemAsync(actionEditor);
-		HasUnavedChanges = true;
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
@@ -404,7 +409,7 @@ partial class MainWindow
 	private async Task AddRemoveActionAsync()
 	{
 		await EditAndAddJobItemAsync(new RemoveActionEditor());
-		HasUnavedChanges = true;
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
@@ -424,7 +429,7 @@ partial class MainWindow
 	private async Task AddReplaceActionAsync()
 	{
 		await EditAndAddJobItemAsync(new ReplaceActionEditor());
-		HasUnavedChanges = true;
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
@@ -444,7 +449,7 @@ partial class MainWindow
 	private async Task AddConvertCaseActionAsync()
 	{
 		await EditAndAddJobItemAsync(new ChangeCaseActionEditor());
-		HasUnavedChanges = true;
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
@@ -464,7 +469,7 @@ partial class MainWindow
 	private async Task AddMoveStringActionAsync()
 	{
 		await EditAndAddJobItemAsync(new MoveStringActionEditor());
-		HasUnavedChanges = true;
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
