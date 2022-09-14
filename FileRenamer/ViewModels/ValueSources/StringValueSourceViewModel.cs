@@ -38,8 +38,10 @@ internal sealed partial class StringValueSourceViewModel : ObservableValidator, 
 	public string TextErrorMessage => GetErrors(nameof(Text))?.FirstOrDefault()?.ErrorMessage;
 
 
-	public IValueSource ValueSource => new StringValueSource() { Value = Text };
+	public IValueSource ValueSource => new StringValueSource(Text);
 
+
+	#region Constructors
 
 	public StringValueSourceViewModel() : this(new())
 	{ }
@@ -48,4 +50,6 @@ internal sealed partial class StringValueSourceViewModel : ObservableValidator, 
 	{
 		Text = valueSource.Value;
 	}
+
+	#endregion
 }

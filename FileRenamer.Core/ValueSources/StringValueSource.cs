@@ -12,16 +12,29 @@ public sealed class StringValueSource : IValueSource
 	/// <summary>
 	/// Gets or sets the string value provided on every request.
 	/// </summary>
-	public string Value { get; set; } = "";
+	public string Value { get; set; }
+
+
+	#region Constructors
+
+	public StringValueSource()
+		: this(string.Empty)
+	{ }
+
+	public StringValueSource(string value)
+	{
+		Value = value;
+	}
+
+	public static implicit operator StringValueSource(string s) => new(s);
+
+	#endregion
 
 
 	public string GetValue(JobTarget target)
 	{
 		return Value;
 	}
-
-
-	public static implicit operator StringValueSource(string s) => new() { Value = s };
 
 
 	#region XML serialization
@@ -57,7 +70,7 @@ public sealed class StringValueSource : IValueSource
 		//
 		XmlSerializationHelper.ThrowIfNull(value, nameof(Value));
 
-		StringValueSource result = new StringValueSource() { Value = value };
+		StringValueSource result = new(value);
 		return Task.FromResult(result as IValueSource);
 	}
 
