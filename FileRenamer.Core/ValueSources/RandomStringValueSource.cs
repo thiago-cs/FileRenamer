@@ -33,7 +33,7 @@ public sealed class RandomStringValueSource : IValueSource
 			if (IncludeUppercase)
 				builder.Append("A-Z");
 
-			if (IncludeUppercase)
+			if (IncludeNumbers)
 				builder.Append("0-9");
 
 			if (IncludeSymbols)
