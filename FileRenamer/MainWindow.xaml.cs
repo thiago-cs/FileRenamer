@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Windows.Storage.Pickers;
+using Microsoft.UI.Xaml.Controls;
 using FileRenamer.Models;
 using FileRenamer.ViewModels;
 
@@ -59,5 +61,16 @@ public sealed partial class MainWindow
 			return;
 
 		ViewModel.Project.Folder = new Folder(folder);
+	}
+
+	public async Task<ContentDialogResult> ShowDialogAsync(ContentDialog dialog)
+	{
+		Panel panel = Content as Panel;
+		panel.Children.Add(dialog);
+
+		ContentDialogResult result = await dialog.ShowAsync();
+
+		panel.Children.Remove(dialog);
+		return result;
 	}
 }
