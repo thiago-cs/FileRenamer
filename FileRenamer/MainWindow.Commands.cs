@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
+using Windows.Storage.Pickers;
 using Windows.System;
 using Microsoft.UI.Xaml.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core;
 using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Models;
@@ -10,14 +15,22 @@ using FileRenamer.UserControls.ActionEditors;
 
 namespace FileRenamer;
 
+[INotifyPropertyChanged]
 partial class MainWindow
 {
+
 	#region Project Commands
+
+	private string projectPath = null;
+
+	[ObservableProperty]
+	private bool _hasUnavedChanges = false;
+
 
 	#region New Project
 
-	private UICommand _newProjectCommand;
-	public UICommand NewProjectCommand => _newProjectCommand ??= new(
+	private AsyncUICommand _newProjectCommand;
+	public AsyncUICommand NewProjectCommand => _newProjectCommand ??= new(
 		description: "Start a new project",
 		label: "New",
 		accessKey: "N",
@@ -26,16 +39,65 @@ partial class MainWindow
 		icon: CreateIconFromSymbol(Symbol.Add),
 		execute: NewProject);
 
-	private void NewProject()
+	public async Task NewProject()
 	{
+		// 1.
+		if (HasUnavedChanges)
+		{
+			// 1.1.
+			ContentDialog dialog = new()
+			{
+				Title = "Save your changes to this project?",
+				PrimaryButtonText = "Save",
+				SecondaryButtonText = "Don't save",
+				CloseButtonText = "Cancel",
+				DefaultButton = ContentDialogButton.Primary,
+			};
+
+			ContentDialogResult result;
+
+			try
+			{
+				result = await (Microsoft.UI.Xaml.Application.Current as App).Window.ShowDialogAsync(dialog);
+			}
+			catch (Exception ex)
+			{
+				Debug.WriteLine(ex);
+				throw;
+			}
+
+			// 1.2.
+			switch (result)
+			{
+				// Cancel
+				case ContentDialogResult.None:
+					return;
+
+				// Save
+				case ContentDialogResult.Primary:
+					await SaveProjectAsync();
+
+					if (HasUnavedChanges)
+						return;
+					break;
+
+				// Don't save
+				case ContentDialogResult.Secondary:
+					break;
+			}
+		}
+
+		// 2.
+		ViewModel.Project = new();
+		HasUnavedChanges = false;
 	}
 
 	#endregion
 
 	#region Load Project
 
-	private UICommand _loadProjectCommand;
-	public UICommand LoadProjectCommand => _loadProjectCommand ??= new(
+	private AsyncUICommand _loadProjectCommand;
+	public AsyncUICommand LoadProjectCommand => _loadProjectCommand ??= new(
 		description: "Load an existing project",
 		label: "Load",
 		accessKey: "L",
@@ -44,32 +106,111 @@ partial class MainWindow
 		icon: CreateIconFromSymbol(Symbol.OpenLocal),
 		execute: LoadProject);
 
-	private void LoadProject()
+	public async Task LoadProject()
 	{
+		// 1.
+		FileOpenPicker picker = new()
+		{
+			SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+			ViewMode = PickerViewMode.List,
+			FileTypeFilter = { ".xml", },
+		};
+
+		picker.SetOwnerWindow((Microsoft.UI.Xaml.Application.Current as App).Window);
+
+		var file = await picker.PickSingleFileAsync();
+
+		if (file == null)
+		{
+			//
+			return;
+		}
+
+		// .
+		try
+		{
+			using Stream stream = await file.OpenStreamForWriteAsync();
+			using StreamReader input = new(stream);
+			ViewModel.Project = await Project.ReadXmlAsync(input).ConfigureAwait(false);
+			HasUnavedChanges = false;
+			projectPath = file.Path;
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine(ex);
+			throw;
+		}
 	}
 
 	#endregion
 
 	#region Save Project
 
-	private UICommand _saveProjectCommand;
-	public UICommand SaveProjectCommand => _saveProjectCommand ??= new(
+	private AsyncUICommand _saveProjectCommand;
+	public AsyncUICommand SaveProjectCommand => _saveProjectCommand ??= new(
 		description: "Save this project",
 		label: "Save",
 		accessKey: "S",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.S,
 		icon: CreateIconFromSymbol(Symbol.Save),
-		execute: SaveProject,
+		execute: SaveProjectAsync,
 		canExecute: CanSaveProject);
 
-	private void SaveProject()
+	public async Task SaveProjectAsync()
 	{
+		if (!HasUnavedChanges)
+			return;
+
+		Windows.Storage.StorageFile file;
+
+		try
+		{
+			if (projectPath != null)
+				file = await Windows.Storage.StorageFile.GetFileFromPathAsync(projectPath);
+			else
+			{
+				FileSavePicker savePicker = new()
+				{
+					SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+					SuggestedFileName = "my file rename project",
+					FileTypeChoices = { { "XML file", new[] { ".xml" } } },
+				};
+
+				savePicker.SetOwnerWindow((Microsoft.UI.Xaml.Application.Current as App).Window);
+
+				file = await savePicker.PickSaveFileAsync();
+			}
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine(ex.ToString());
+			throw;
+		}
+
+		if (file == null)
+		{
+			//
+			return;
+		}
+
+		try
+		{
+			using Stream stream = await file.OpenStreamForWriteAsync();
+			await ViewModel.Project.WriteXmlAsync(stream).ConfigureAwait(false);
+			HasUnavedChanges = false;
+			projectPath = file.Path;
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine(ex);
+			throw;
+		}
 	}
 
-	private bool CanSaveProject()
+	public bool CanSaveProject()
 	{
-		return true;
+		return HasUnavedChanges;
 	}
 
 	#endregion
@@ -151,6 +292,7 @@ partial class MainWindow
 		int index = ViewModel.Project.Jobs.IndexOf(ViewModel.SelectedAction);
 		ViewModel.Project.Jobs.RemoveAt(index);
 		ViewModel.Project.Jobs.Insert(index, item);
+		HasUnavedChanges = true;
 	}
 
 	#endregion
@@ -219,6 +361,7 @@ partial class MainWindow
 	private async Task AddInsertActionAsync()
 	{
 		await EditAndAddJobItemAsync(new InsertActionEditor());
+		HasUnavedChanges = true;
 	}
 
 	#endregion
@@ -241,6 +384,7 @@ partial class MainWindow
 		actionEditor.Data.ValueSourceType = UserControls.InputControls.ValueSourceType.Counter;
 
 		await EditAndAddJobItemAsync(actionEditor);
+		HasUnavedChanges = true;
 	}
 
 	#endregion
@@ -260,6 +404,7 @@ partial class MainWindow
 	private async Task AddRemoveActionAsync()
 	{
 		await EditAndAddJobItemAsync(new RemoveActionEditor());
+		HasUnavedChanges = true;
 	}
 
 	#endregion
@@ -279,6 +424,7 @@ partial class MainWindow
 	private async Task AddReplaceActionAsync()
 	{
 		await EditAndAddJobItemAsync(new ReplaceActionEditor());
+		HasUnavedChanges = true;
 	}
 
 	#endregion
@@ -298,6 +444,7 @@ partial class MainWindow
 	private async Task AddConvertCaseActionAsync()
 	{
 		await EditAndAddJobItemAsync(new ChangeCaseActionEditor());
+		HasUnavedChanges = true;
 	}
 
 	#endregion
@@ -317,6 +464,7 @@ partial class MainWindow
 	private async Task AddMoveStringActionAsync()
 	{
 		await EditAndAddJobItemAsync(new MoveStringActionEditor());
+		HasUnavedChanges = true;
 	}
 
 	#endregion
