@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Xml;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 
 namespace FileRenamer.Core.Jobs.FileActions;
@@ -17,6 +18,15 @@ public abstract partial class RenameActionBase : ObservableObject, IFileAction, 
 	public abstract void UpdateDescription();
 
 	public abstract RenameActionBase DeepCopy();
+
+
+	#region XML serialization
+
+	public abstract Task WriteXmlAsync(XmlWriter writer);
+
+	//public static abstract Task<RenameActionBase> ReadXmlAsync(XmlReader reader);
+
+	#endregion
 
 
 #if DEBUG

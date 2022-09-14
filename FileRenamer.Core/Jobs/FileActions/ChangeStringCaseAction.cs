@@ -1,5 +1,7 @@
 ﻿using System.Text.RegularExpressions;
+using System.Xml;
 using FileRenamer.Core.Extensions;
+using FileRenamer.Core.Serialization;
 
 
 namespace FileRenamer.Core.Jobs.FileActions;
@@ -9,12 +11,16 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #endif
 public sealed class ChangeStringCaseAction : RenameActionBase
 {
+	#region Properties and fields
+
 	private Regex? regex;
 
 	public string OldString { get; set; }
 	public bool IgnoreCase { get; set; }
 	public bool UseRegex { get; set; }
 	public TextCasing TextCase { get; }
+
+	#endregion
 
 
 	public ChangeStringCaseAction(string oldString, bool ignoreCase, bool useRegex, TextCasing textCase)
@@ -27,6 +33,8 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 		UpdateDescription();
 	}
 
+
+	#region RenameActionBase implementation
 
 	public override void Run(JobTarget target, JobContext context)
 	{
@@ -100,4 +108,67 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 	{
 		return new ChangeStringCaseAction(OldString, IgnoreCase, UseRegex, TextCase);
 	}
+
+	#endregion
+
+
+	#region XML serialization
+
+	public override async Task WriteXmlAsync(XmlWriter writer)
+	{
+		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
+
+		await writer.WriteAttributeAsync(nameof(OldString), OldString).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(IgnoreCase), IgnoreCase).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(UseRegex), UseRegex).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(TextCase), TextCase).ConfigureAwait(false);
+
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+	}
+
+	public static Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	{
+		string? oldString = null;
+		bool? ignoreCase = null;
+		bool? useRegex = null;
+		TextCasing? textCase = null;
+
+		while (reader.MoveToNextAttribute())
+			switch (reader.Name)
+			{
+				case nameof(OldString):
+					oldString = reader.Value;
+					break;
+
+				case nameof(IgnoreCase):
+					ignoreCase = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(UseRegex):
+					useRegex = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(TextCase):
+					textCase = Enum.Parse<TextCasing>(reader.Value);
+					break;
+
+				default:
+					// Unknown attribute!?
+					//Console.WriteLine($"Name: {reader.Name}, value: {reader.Value}");
+					break;
+			}
+
+		reader.ReadStartElement(nameof(ChangeStringCaseAction));
+
+		//
+		XmlSerializationHelper.ThrowIfNull(oldString, nameof(OldString));
+		XmlSerializationHelper.ThrowIfNull(ignoreCase, nameof(IgnoreCase));
+		XmlSerializationHelper.ThrowIfNull(useRegex, nameof(UseRegex));
+		XmlSerializationHelper.ThrowIfNull(textCase, nameof(TextCase));
+
+		ChangeStringCaseAction result = new(oldString, ignoreCase.Value, useRegex.Value, textCase.Value);
+		return Task.FromResult(result as RenameActionBase);
+	}
+
+	#endregion
 }

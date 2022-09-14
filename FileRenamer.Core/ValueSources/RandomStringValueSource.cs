@@ -1,10 +1,14 @@
-﻿using FileRenamer.Core.Jobs;
+﻿using System.Xml;
+using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Serialization;
 
 
 namespace FileRenamer.Core.ValueSources;
 
 public sealed class RandomStringValueSource : IValueSource
 {
+	#region Properties and fields
+
 	public const int DefaultLength = 8;
 	public const int MaxLength = 100;
 	/// <summary>'!', '@', '#', '$', '%', '&amp;'</summary>
@@ -81,6 +85,8 @@ public sealed class RandomStringValueSource : IValueSource
 	/// </summary>
 	public string Symbols { get; set; } = DefaultSymbols;
 
+	#endregion
+
 
 	public string GetValue(JobTarget target)
 	{
@@ -124,4 +130,88 @@ public sealed class RandomStringValueSource : IValueSource
 		//
 		return new(chars);
 	}
+
+
+	#region XML serialization
+
+	public async Task WriteXmlAsync(XmlWriter writer)
+	{
+		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
+
+		await writer.WriteAttributeAsync(nameof(Length), Length).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(IncludeLowercase), IncludeLowercase).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(IncludeUppercase), IncludeUppercase).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(IncludeNumbers), IncludeNumbers).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(IncludeSymbols), IncludeSymbols).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(Symbols), Symbols).ConfigureAwait(false);
+
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+	}
+
+	public static Task<IValueSource> ReadXmlAsync(XmlReader reader)
+	{
+		int? length = null;
+		bool? includeLowercase = null;
+		bool? includeUppercase = null;
+		bool? includeNumbers = null;
+		bool? includeSymbols = null;
+		string? symbols = null;
+
+		while (reader.MoveToNextAttribute())
+			switch (reader.Name)
+			{
+				case nameof(Length):
+					length = int.Parse(reader.Value);
+					break;
+
+				case nameof(IncludeLowercase):
+					includeLowercase = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(IncludeUppercase):
+					includeUppercase = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(IncludeNumbers):
+					includeNumbers = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(IncludeSymbols):
+					includeSymbols = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(Symbols):
+					symbols = reader.Value;
+					break;
+
+				default:
+					// Unknown attribute!?
+					//Console.WriteLine($"Name: {reader.Name}, value: {reader.Value}");
+					break;
+			}
+
+		reader.ReadStartElement(nameof(RandomStringValueSource));
+
+		//
+		XmlSerializationHelper.ThrowIfNull(length, nameof(Length));
+		XmlSerializationHelper.ThrowIfNull(includeLowercase, nameof(IncludeLowercase));
+		XmlSerializationHelper.ThrowIfNull(includeUppercase, nameof(IncludeUppercase));
+		XmlSerializationHelper.ThrowIfNull(includeNumbers, nameof(IncludeNumbers));
+		XmlSerializationHelper.ThrowIfNull(includeSymbols, nameof(IncludeSymbols));
+		XmlSerializationHelper.ThrowIfNull(symbols, nameof(Symbols));
+
+		RandomStringValueSource result = new()
+		{
+			Length = length.Value,
+			IncludeLowercase = includeLowercase.Value,
+			IncludeUppercase = includeUppercase.Value,
+			IncludeNumbers = includeNumbers.Value,
+			IncludeSymbols = includeSymbols.Value,
+			Symbols = symbols,
+		};
+
+		return Task.FromResult(result as IValueSource);
+	}
+
+	#endregion
 }

@@ -1,4 +1,6 @@
-﻿using FileRenamer.Core.Indices;
+﻿using System.Xml;
+using FileRenamer.Core.Indices;
+using FileRenamer.Core.Serialization;
 
 
 namespace FileRenamer.Core.Jobs.FileActions;
@@ -8,9 +10,13 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #endif
 public sealed class RemoveAction : RenameActionBase
 {
+	#region Properties and fields
+
 	public IIndex StartIndex { get; set; }
 	public IIndex? EndIndex { get; set; }
 	public int Count { get; set; }
+
+	#endregion
 
 
 	public RemoveAction(IIndex startIndex, IIndex endIndex)
@@ -29,6 +35,8 @@ public sealed class RemoveAction : RenameActionBase
 		UpdateDescription();
 	}
 
+
+	#region RenameActionBase implementation
 
 	public override void Run(JobTarget target, JobContext context)
 	{
@@ -108,4 +116,75 @@ public sealed class RemoveAction : RenameActionBase
 				? new RemoveAction(StartIndex, EndIndex)
 				: new RemoveAction(StartIndex, Count);
 	}
+
+	#endregion
+
+
+	#region XML serialization
+
+	public override async Task WriteXmlAsync(XmlWriter writer)
+	{
+		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
+
+		if (EndIndex == null)
+			await writer.WriteAttributeAsync(nameof(Count), Count).ConfigureAwait(false);
+
+		await writer.WriteElementAsync(nameof(StartIndex), StartIndex).ConfigureAwait(false);
+
+		if (EndIndex != null)
+			await writer.WriteElementAsync(nameof(EndIndex), EndIndex).ConfigureAwait(false);
+
+		await writer.WriteEndElementAsync().ConfigureAwait(false);
+	}
+
+	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	{
+		//
+		int? count = null;
+
+		if (reader.AttributeCount != 0 && reader.GetAttribute(nameof(Count)) is string value)
+			count = int.Parse(value);
+
+		reader.ReadStartElement(nameof(RemoveAction));
+
+		//
+		IIndex? startIndex = null;
+		IIndex? endIndex = null;
+
+		while (reader.NodeType != XmlNodeType.EndElement)
+			switch (reader.Name)
+			{
+				case nameof(StartIndex):
+					reader.ReadStartElement();
+					startIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				case nameof(EndIndex):
+					reader.ReadStartElement();
+					endIndex = await reader.ReadIIndexAsync().ConfigureAwait(false);
+					reader.ReadEndElement();
+					break;
+
+				default:
+					throw new XmlException($@"Unknown property ""{reader.Name}"".");
+			}
+
+		reader.ReadEndElement();
+
+		//
+		XmlSerializationHelper.ThrowIfNull(startIndex, nameof(StartIndex));
+
+		if (count == null && endIndex == null)
+			throw new XmlException($"A value for either the {nameof(Count)} or the {nameof(EndIndex)} property must be specified in XML.");
+
+		if (count != null && endIndex != null)
+			throw new XmlException($"Values for both the {nameof(Count)} and the {nameof(EndIndex)} properties were specified in XML.");
+
+		return count != null
+			 ? new RemoveAction(startIndex, count.Value)
+			 : new RemoveAction(startIndex, endIndex!);
+	}
+
+	#endregion
 }

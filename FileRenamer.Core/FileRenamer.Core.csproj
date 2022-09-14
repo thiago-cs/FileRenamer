@@ -13,7 +13,6 @@
 
   <ItemGroup>
     <Folder Include="FileOperations\" />
-    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>

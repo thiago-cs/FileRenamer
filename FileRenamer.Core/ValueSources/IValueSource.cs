@@ -1,9 +1,10 @@
 ﻿using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Serialization;
 
 
 namespace FileRenamer.Core.ValueSources;
 
-public interface IValueSource
+public interface IValueSource : IXmlSerializableAsync
 {
 	/// <summary>
 	/// Gets the description for the value that is provided by this <see cref="IValueSource"/> instance.
