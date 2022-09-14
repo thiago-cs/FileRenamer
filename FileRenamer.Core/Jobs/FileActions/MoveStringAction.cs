@@ -131,6 +131,7 @@ public sealed class MoveStringAction : RenameActionBase
 	{
 		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
 
+		await writer.WriteAttributeAsync(nameof(IsEnabled), IsEnabled).ConfigureAwait(false);
 		await writer.WriteAttributeAsync(nameof(Text), Text).ConfigureAwait(false);
 		await writer.WriteAttributeAsync(nameof(IgnoreCase), IgnoreCase).ConfigureAwait(false);
 		await writer.WriteAttributeAsync(nameof(UseRegex), UseRegex).ConfigureAwait(false);
@@ -141,6 +142,7 @@ public sealed class MoveStringAction : RenameActionBase
 
 	public static Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
 	{
+		bool isEnable = true;
 		string? text = null;
 		bool? ignoreCase = null;
 		bool? useRegex = null;
@@ -149,6 +151,10 @@ public sealed class MoveStringAction : RenameActionBase
 		while (reader.MoveToNextAttribute())
 			switch (reader.Name)
 			{
+				case nameof(IsEnabled):
+					isEnable = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
 				case nameof(Text):
 					text = reader.Value;
 					break;
@@ -179,7 +185,7 @@ public sealed class MoveStringAction : RenameActionBase
 		XmlSerializationHelper.ThrowIfNull(useRegex, nameof(UseRegex));
 		XmlSerializationHelper.ThrowIfNull(length, nameof(Count));
 
-		MoveStringAction result = new(text, ignoreCase.Value, useRegex.Value, length.Value);
+		MoveStringAction result = new(text, ignoreCase.Value, useRegex.Value, length.Value) { IsEnabled = isEnable };
 		return Task.FromResult(result as RenameActionBase);
 	}
 

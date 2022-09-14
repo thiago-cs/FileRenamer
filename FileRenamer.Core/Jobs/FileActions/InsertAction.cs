@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using FileRenamer.Core.Extensions;
 using FileRenamer.Core.Indices;
 using FileRenamer.Core.Serialization;
 using FileRenamer.Core.ValueSources;
@@ -70,6 +71,8 @@ public sealed class InsertAction : RenameActionBase
 	{
 		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
 
+		await writer.WriteAttributeAsync(nameof(IsEnabled), IsEnabled).ConfigureAwait(false);
+
 		await writer.WriteElementAsync(nameof(InsertIndex), InsertIndex).ConfigureAwait(false);
 		await writer.WriteElementAsync(nameof(ValueSource), ValueSource).ConfigureAwait(false);
 
@@ -78,12 +81,28 @@ public sealed class InsertAction : RenameActionBase
 
 	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
 	{
+		//
+		bool isEnable = true;
+
+		while (reader.MoveToNextAttribute())
+			switch (reader.Name)
+			{
+				case nameof(IsEnabled):
+					isEnable = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				default:
+					// Unknown attribute!?
+					//Console.WriteLine($"Name: {reader.Name}, value: {reader.Value}");
+					break;
+			}
+
 		reader.ReadStartElement(nameof(InsertAction));
 
+		//
 		IIndex? insertIndex = null;
 		IValueSource? value = null;
 
-		//
 		while (reader.NodeType != XmlNodeType.EndElement)
 			switch (reader.Name)
 			{
@@ -109,7 +128,7 @@ public sealed class InsertAction : RenameActionBase
 		XmlSerializationHelper.ThrowIfNull(insertIndex, nameof(InsertIndex));
 		XmlSerializationHelper.ThrowIfNull(value, nameof(ValueSource));
 
-		return new InsertAction(insertIndex, value);
+		return new InsertAction(insertIndex, value) { IsEnabled = isEnable };
 	}
 
 	#endregion

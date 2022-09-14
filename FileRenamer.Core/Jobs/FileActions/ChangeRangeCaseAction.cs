@@ -91,7 +91,9 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 	{
 		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
 
+		await writer.WriteAttributeAsync(nameof(IsEnabled), IsEnabled).ConfigureAwait(false);
 		await writer.WriteAttributeAsync(nameof(TextCase), TextCase).ConfigureAwait(false);
+
 		await writer.WriteElementAsync(nameof(StartIndex), StartIndex).ConfigureAwait(false);
 		await writer.WriteElementAsync(nameof(EndIndex), EndIndex).ConfigureAwait(false);
 
@@ -101,11 +103,16 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
 	{
 		//
+		bool isEnable = true;
 		TextCasing? textCase = null;
 
 		while (reader.MoveToNextAttribute())
 			switch (reader.Name)
 			{
+				case nameof(IsEnabled):
+					isEnable = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
 				case nameof(TextCase):
 					textCase = Enum.Parse<TextCasing>(reader.Value);
 					break;
@@ -148,7 +155,7 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 		XmlSerializationHelper.ThrowIfNull(endIndex, nameof(EndIndex));
 		XmlSerializationHelper.ThrowIfNull(textCase, nameof(TextCase));
 
-		return new ChangeRangeCaseAction(startIndex, endIndex, textCase.Value);
+		return new ChangeRangeCaseAction(startIndex, endIndex, textCase.Value) { IsEnabled = isEnable };
 	}
 
 	#endregion

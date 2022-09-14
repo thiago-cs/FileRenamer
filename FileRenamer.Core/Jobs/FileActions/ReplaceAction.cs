@@ -142,6 +142,7 @@ public sealed class ReplaceAction : RenameActionBase
 	{
 		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
 
+		await writer.WriteAttributeAsync(nameof(IsEnabled), IsEnabled).ConfigureAwait(false);
 		await writer.WriteAttributeAsync(nameof(OldString), OldString).ConfigureAwait(false);
 
 		if (!string.IsNullOrEmpty(NewString))
@@ -162,6 +163,7 @@ public sealed class ReplaceAction : RenameActionBase
 
 	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
 	{
+		bool isEnable = true;
 		string? oldString = null;
 		string? newString = null;
 		bool? ignoreCase = null;
@@ -170,6 +172,10 @@ public sealed class ReplaceAction : RenameActionBase
 		while (reader.MoveToNextAttribute())
 			switch (reader.Name)
 			{
+				case nameof(IsEnabled):
+					isEnable = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
 				case nameof(OldString):
 					oldString = reader.Value;
 					break;
@@ -229,8 +235,8 @@ public sealed class ReplaceAction : RenameActionBase
 		XmlSerializationHelper.ThrowIfNull(useRegex, nameof(UseRegex));
 
 		return startIndex == null || endIndex == null
-			? new ReplaceAction(oldString, newString, ignoreCase.Value, useRegex.Value)
-			: new ReplaceAction(startIndex, endIndex, oldString, newString, ignoreCase.Value, useRegex.Value);
+			? new ReplaceAction(oldString, newString, ignoreCase.Value, useRegex.Value) { IsEnabled = isEnable }
+			: new ReplaceAction(startIndex, endIndex, oldString, newString, ignoreCase.Value, useRegex.Value) { IsEnabled = isEnable };
 	}
 
 	#endregion

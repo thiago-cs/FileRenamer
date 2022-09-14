@@ -11,7 +11,7 @@ namespace FileRenamer.Core.Serialization;
 
 public sealed class XmlSerializationHelper
 {
-	internal static bool? ParseBoolean(string value)
+	internal static bool ParseBoolean(string value)
 	{
 		return value.ToLowerInvariant() == "true";
 	}

@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using FileRenamer.Core.Extensions;
 using FileRenamer.Core.Indices;
 using FileRenamer.Core.Serialization;
 
@@ -126,6 +127,8 @@ public sealed class RemoveAction : RenameActionBase
 	{
 		await writer.WriteStartElementAsync(GetType().Name).ConfigureAwait(false);
 
+		await writer.WriteAttributeAsync(nameof(IsEnabled), IsEnabled).ConfigureAwait(false);
+
 		if (EndIndex == null)
 			await writer.WriteAttributeAsync(nameof(Count), Count).ConfigureAwait(false);
 
@@ -140,10 +143,25 @@ public sealed class RemoveAction : RenameActionBase
 	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
 	{
 		//
+		bool isEnable = true;
 		int? count = null;
 
-		if (reader.AttributeCount != 0 && reader.GetAttribute(nameof(Count)) is string value)
-			count = int.Parse(value);
+		while (reader.MoveToNextAttribute())
+			switch (reader.Name)
+			{
+				case nameof(IsEnabled):
+					isEnable = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(Count):
+					count = int.Parse(reader.Value);
+					break;
+
+				default:
+					// Unknown attribute!?
+					//Console.WriteLine($"Name: {reader.Name}, value: {reader.Value}");
+					break;
+			}
 
 		reader.ReadStartElement(nameof(RemoveAction));
 
@@ -182,8 +200,8 @@ public sealed class RemoveAction : RenameActionBase
 			throw new XmlException($"Values for both the {nameof(Count)} and the {nameof(EndIndex)} properties were specified in XML.");
 
 		return count != null
-			 ? new RemoveAction(startIndex, count.Value)
-			 : new RemoveAction(startIndex, endIndex!);
+			 ? new RemoveAction(startIndex, count.Value) { IsEnabled = isEnable }
+			 : new RemoveAction(startIndex, endIndex!) { IsEnabled = isEnable };
 	}
 
 	#endregion
