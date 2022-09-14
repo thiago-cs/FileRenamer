@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="FileRenamer.Core.Jobs.JobCollection">
+    <Position X="4.5" Y="2.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAAAAAAAAAAAAAACAAAAQAAAAAI=</HashCode>
+      <FileName>Jobs\JobCollection.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="FileRenamer.Core.Jobs.JobContext">
+    <Position X="6.75" Y="1.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAEAAAAAAEAAAAAAAAQAAEAAAAAIAAAAAAA=</HashCode>
+      <FileName>Jobs\JobContext.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Core.Jobs.JobTarget">
+    <Position X="8.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAIEAAwAAAAAAAEAAAAEAAABAAAA=</HashCode>
+      <FileName>Jobs\JobTarget.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FileRenamer.Core.Project">
+    <Position X="0.5" Y="1.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAIAQAAAAAAAAAAgEAAAAAAIAAAAAACAAAAQACAAAA=</HashCode>
+      <FileName>Project.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="FileRenamer.Core.Serialization.IXmlSerializableAsync">
+    <Position X="4.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Serialization\IXmlSerializableAsync.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="FileRenamer.Core.Jobs.JobScope">
+    <Position X="2.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIg=</HashCode>
+      <FileName>Jobs\JobScope.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
