@@ -61,6 +61,7 @@ public sealed partial class MainWindow
 			return;
 
 		ViewModel.Project.Folder = new Folder(folder);
+		ViewModel.DoItCommand.NotifyCanExecuteChanged();
 	}
 
 	public async Task<ContentDialogResult> ShowDialogAsync(ContentDialog dialog)
