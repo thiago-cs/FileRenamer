@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Indices;
 using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.Helpers;
 using FileRenamer.UserControls.InputControls;
 
 
@@ -35,7 +35,7 @@ public sealed partial class ReplaceActionData : ObservableValidator
 
 	#region Texts
 
-	[CustomValidation(typeof(ReplaceActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	public SearchTextData OldString { get; } = new();
 
 	public string NewString { get; set; }
@@ -50,7 +50,7 @@ public sealed partial class ReplaceActionData : ObservableValidator
 
 	#region Range
 
-	[CustomValidation(typeof(ReplaceActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	public TextRangeData RangeData { get; }
 
 	private void RangeData_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -96,18 +96,6 @@ public sealed partial class ReplaceActionData : ObservableValidator
 	#endregion
 
 
-	#region Validation
-
-	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _)
-	{
-		return notifier.HasErrors
-			 ? new("This object has errors.")
-			 : ValidationResult.Success;
-	}
-
-	#endregion
-
-
 	public ReplaceAction GetRenameAction()
 	{
 		return ExecutionScope switch
@@ -119,10 +107,6 @@ public sealed partial class ReplaceActionData : ObservableValidator
 			_ => null,
 		};
 	}
-
-	//public static string f(ValidationResult error) => error == null ? null : string.Join(",", error.MemberNames) + ": " + error.ErrorMessage;
-	//public string[] MyErrors => GetErrors()?.Select(f).ToArray();
-	//public string FirstError => f(GetErrors()?.FirstOrDefault());
 
 	public static ExecutionScope GetScopeFromIndices(IIndex startIndex, IIndex endIndex)
 	{

@@ -1,7 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using FileRenamer.Core.Indices;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Indices;
+using FileRenamer.Helpers;
 
 
 namespace FileRenamer.UserControls.InputControls;
@@ -18,7 +19,7 @@ public sealed partial class TextRangeData : ObservableValidator
 
 	#region StartIndex
 
-	[CustomValidation(typeof(TextRangeData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	public IndexEditorData StartIndexData { get; }
 
 	private void IndexData_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -36,7 +37,7 @@ public sealed partial class TextRangeData : ObservableValidator
 
 	#region EndIndex
 
-	[CustomValidation(typeof(TextRangeData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	[CustomValidation(typeof(TextRangeData), nameof(ValidateEndIndex))]
 	public IndexEditorData EndIndexData { get; }
 
@@ -96,17 +97,6 @@ public sealed partial class TextRangeData : ObservableValidator
 
 		return errorMessage == null ? ValidationResult.Success : new(errorMessage);
 	}
-
-	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _)
-	{
-		return notifier.HasErrors
-			 ? new("This object has errors.")
-			 : ValidationResult.Success;
-	}
-
-	//public static string f(ValidationResult error) => error == null ? null : string.Join(",", error.MemberNames) + ": " + error.ErrorMessage;
-	//public string[] MyErrors => GetErrors()?.Select(f).ToArray();
-	//public string FirstError => f(GetErrors()?.FirstOrDefault());
 
 	#endregion
 }

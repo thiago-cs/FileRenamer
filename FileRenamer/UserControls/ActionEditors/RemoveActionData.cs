@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.Helpers;
 using FileRenamer.UserControls.InputControls;
 
 
@@ -43,7 +44,7 @@ public sealed partial class RemoveActionData : ObservableValidator
 
 	#region StartIndex
 
-	[CustomValidation(typeof(RemoveActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	public IndexEditorData StartIndexData { get; }
 
 	private void StartIndexData_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -65,7 +66,7 @@ public sealed partial class RemoveActionData : ObservableValidator
 
 	#region EndIndex
 
-	[CustomValidation(typeof(RemoveActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	[CustomValidation(typeof(RemoveActionData), nameof(ValidateIndices))]
 	public IndexEditorData EndIndexData { get; }
 
@@ -127,13 +128,6 @@ public sealed partial class RemoveActionData : ObservableValidator
 
 
 	#region Validation
-
-	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _)
-	{
-		return notifier.HasErrors
-			 ? new("This object has errors.")
-			 : ValidationResult.Success;
-	}
 
 	public static ValidationResult ValidateIndices(IndexEditorData indexData, ValidationContext context)
 	{

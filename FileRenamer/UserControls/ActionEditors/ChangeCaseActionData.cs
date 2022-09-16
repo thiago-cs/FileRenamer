@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Indices;
 using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.Helpers;
 using FileRenamer.UserControls.InputControls;
 
 
@@ -50,7 +50,7 @@ public sealed partial class ChangeCaseActionData : ObservableValidator
 
 	#region Range
 
-	[CustomValidation(typeof(ChangeCaseActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	public TextRangeData RangeData { get; }
 
 	private void RangeData_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -63,7 +63,7 @@ public sealed partial class ChangeCaseActionData : ObservableValidator
 
 	#region Occurences of a text/pattern
 
-	[CustomValidation(typeof(ChangeCaseActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	public SearchTextData SearchText { get; } = new();
 
 	private void SearchText_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -110,18 +110,6 @@ public sealed partial class ChangeCaseActionData : ObservableValidator
 	{
 		RangeData.PropertyChanged += RangeData_PropertyChanged;
 		SearchText.PropertyChanged += SearchText_PropertyChanged;
-	}
-
-	#endregion
-
-
-	#region Validation
-
-	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _)
-	{
-		return notifier.HasErrors
-			 ? new("This object has errors.")
-			 : ValidationResult.Success;
 	}
 
 	#endregion

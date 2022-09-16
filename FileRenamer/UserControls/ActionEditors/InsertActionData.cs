@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Core.ValueSources;
+using FileRenamer.Helpers;
 using FileRenamer.ViewModels.ValueSources;
 using FileRenamer.UserControls.InputControls;
 
@@ -29,7 +29,7 @@ public sealed partial class InsertActionData : ObservableValidator
 
 	[ObservableProperty]
 	[NotifyDataErrorInfo]
-	[CustomValidation(typeof(InsertActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	private IValueSourceViewModel _valueSourceViewModel;
 
 	partial void OnValueSourceViewModelChanging(IValueSourceViewModel value)
@@ -54,7 +54,7 @@ public sealed partial class InsertActionData : ObservableValidator
 
 	#region Index Data
 
-	[CustomValidation(typeof(InsertActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	public IndexEditorData IndexData { get; }
 
 	private void IndexData_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -95,18 +95,6 @@ public sealed partial class InsertActionData : ObservableValidator
 	{
 		ValidateAllProperties();
 		IndexData.PropertyChanged += IndexData_PropertyChanged;
-	}
-
-	#endregion
-
-
-	#region Validation
-
-	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _context)
-	{
-		return notifier.HasErrors
-			 ? new("This object has errors.")
-			 : ValidationResult.Success;
 	}
 
 	#endregion

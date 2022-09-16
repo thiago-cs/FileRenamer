@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
-using FileRenamer.Core.Indices;
 using FileRenamer.Core.Jobs.FileActions;
+using FileRenamer.Helpers;
 using FileRenamer.UserControls.InputControls;
 
 
@@ -15,7 +15,7 @@ public sealed partial class MoveStringActionData : ObservableValidator
 
 	#region Texts
 
-	[CustomValidation(typeof(MoveStringActionData), nameof(ValidateObservableValidator))]
+	[NoErrors]
 	public SearchTextData OldString { get; } = new();
 
 	private void OldString_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -67,13 +67,6 @@ public sealed partial class MoveStringActionData : ObservableValidator
 
 
 	#region Validation
-
-	public static ValidationResult ValidateObservableValidator(INotifyDataErrorInfo notifier, ValidationContext _)
-	{
-		return notifier.HasErrors
-			 ? new("This object has errors.")
-			 : ValidationResult.Success;
-	}
 
 	public static ValidationResult ValidateCount(int value, ValidationContext context)
 	{
