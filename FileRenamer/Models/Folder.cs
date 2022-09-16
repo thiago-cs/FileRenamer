@@ -38,9 +38,9 @@ internal class Folder : IFolder
 	#endregion
 
 
-	public Task<IFolder[]> GetSubfoldersAsync()
+	public async Task<IFolder[]> GetSubfoldersAsync()
 	{
-		throw new NotImplementedException();
+		return (await folder.GetFoldersAsync()).Select(folder => new Folder(folder)).ToArray();
 	}
 
 	public async Task<IFile[]> GetFilesAsync()
