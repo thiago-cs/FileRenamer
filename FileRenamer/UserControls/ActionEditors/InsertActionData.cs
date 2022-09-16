@@ -28,6 +28,7 @@ public sealed partial class InsertActionData : ObservableValidator
 	#region Value Source ViewModel
 
 	[ObservableProperty]
+	[NotifyDataErrorInfo]
 	[CustomValidation(typeof(InsertActionData), nameof(ValidateObservableValidator))]
 	private IValueSourceViewModel _valueSourceViewModel;
 
