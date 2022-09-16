@@ -22,25 +22,25 @@
 
 			<ut:Toolbar Grid.Row="0" >
 				<ut:ToolbarGroup Header="Project" >
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind NewProjectCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind LoadProjectCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind SaveProjectCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.NewProjectCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.LoadProjectCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.SaveProjectCommand}" />
 				</ut:ToolbarGroup>
 				<ut:ToolbarGroup Header="Management" >
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveUpActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveDownActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind EditActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind DuplicateActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveAllActionsCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.MoveUpActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.MoveDownActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.EditActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.DuplicateActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.RemoveActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.RemoveAllActionsCommand}" />
 				</ut:ToolbarGroup>
 				<ut:ToolbarGroup Header="Actions" >
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddRemoveActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertCounterActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddReplaceActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddConvertCaseActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddMoveStringActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddInsertActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddRemoveActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddInsertCounterActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddReplaceActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddConvertCaseActionCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddMoveStringActionCommand}" />
 				</ut:ToolbarGroup>
 			</ut:Toolbar>
 

@@ -10,34 +10,15 @@ namespace FileRenamer;
 
 public sealed partial class MainWindow
 {
-	internal MainWindowViewModel ViewModel { get; } = new();
+	internal MainWindowViewModel ViewModel { get; }
 
 
 	public MainWindow()
 	{
-		// 1. 
+		ViewModel = new(this);
+
 		InitializeComponent();
 		//ExtendsContentIntoTitleBar = true;
-
-		// 2.
-		ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-		ViewModel.Project.Jobs.CollectionChanged += Actions_CollectionChanged;
-	}
-
-
-	private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-	{
-		switch (e.PropertyName)
-		{
-			case nameof(MainWindowViewModel.SelectedAction):
-				UpdateCommandStates();
-				break;
-		}
-	}
-
-	private void Actions_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-	{
-		UpdateCommandStates();
 	}
 
 
@@ -72,6 +53,15 @@ public sealed partial class MainWindow
 		ContentDialogResult result = await dialog.ShowAsync();
 
 		panel.Children.Remove(dialog);
+		return result;
+	}
+
+	public async Task<ContentDialogResult> ShowJobEditorDialogAsync(UserControls.ActionEditors.IActionEditor editor)
+	{
+		dialog.DataContext = editor;
+
+		ContentDialogResult result = await dialog.ShowAsync();
+
 		return result;
 	}
 }
