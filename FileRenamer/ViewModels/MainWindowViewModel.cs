@@ -627,6 +627,34 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
+	#region Pick folder
+
+	[RelayCommand]
+	private async void PickFolder()
+	{
+		FolderPicker picker = new()
+		{
+			SuggestedStartLocation = PickerLocationId.Downloads,
+			ViewMode = PickerViewMode.List,
+			FileTypeFilter = { "*", },
+		};
+
+		// Make folder Picker work in Win32
+		picker.SetOwnerWindow(window);
+
+		// Use file picker like normal!
+		Windows.Storage.StorageFolder folder = await picker.PickSingleFolderAsync();
+
+		if (folder == null)
+			return;
+
+		Project.Folder = new Folder(folder);
+
+		DoItCommand.NotifyCanExecuteChanged();
+	}
+
+	#endregion
+
 	#region CanExecute predicates
 
 	public bool CanExecuteWhenActionsIsNotEmpty()
