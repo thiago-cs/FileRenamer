@@ -28,6 +28,6 @@
 				  SelectedItem="{x:Bind Data.IndexType, Mode=TwoWay}" />
 
 		<ContentControl Content="{x:Bind Data}"
-						ContentTemplate="{x:Bind Data.IndexType, Mode=TwoWay, Converter={StaticResource IndexTypeEntryToTemplateConverter}}" />
+						ContentTemplate="{x:Bind Data.IndexType, Mode=OneWay, Converter={StaticResource IndexTypeEntryToTemplateConverter}}" />
 	</StackPanel>
 </UserControl>

@@ -50,7 +50,7 @@
 					  ItemsSource="{x:Bind uae:RemoveActionData.RangeTypes}" SelectedItem="{x:Bind Data.RangeType, Mode=TwoWay}" />
 
 			<ContentControl Content="{x:Bind Data}"
-							ContentTemplate="{x:Bind Data.RangeType, Mode=TwoWay, Converter={StaticResource TextRemovalTypeToTemplateConverter}}" />
+							ContentTemplate="{x:Bind Data.RangeType, Mode=OneWay, Converter={StaticResource TextRemovalTypeToTemplateConverter}}" />
 		</StackPanel>
 
 	</StackPanel>
