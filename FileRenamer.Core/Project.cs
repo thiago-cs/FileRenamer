@@ -26,8 +26,9 @@ public sealed partial class Project : ObservableValidator
 	/// <summary>
 	/// Gets or sets a value that indicates whether files, folders, or both should be manipulated.
 	/// </summary>
+	/// <remarks>The default value is <see cref="JobScope.Files"/>.</remarks>
 	[ObservableProperty]
-	private JobScope _scope;
+	private JobScope _scope = JobScope.Files;
 
 
 	public Project()
