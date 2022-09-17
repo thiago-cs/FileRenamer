@@ -57,9 +57,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	public int SelectedIndex { get; set; } = -1;
 
-	[ObservableProperty]
-	private JobScope _scope;
-
 	#endregion
 
 
