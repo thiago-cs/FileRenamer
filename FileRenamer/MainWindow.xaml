@@ -98,7 +98,7 @@
 			<Expander Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Live preview"
 					  IsExpanded="{x:Bind ViewModel.ShowLivePreview, Mode=TwoWay}" HorizontalContentAlignment="Stretch" >
 
-				<comp:FolderView Items="{x:Bind ViewModel.Preview, Mode=OneWay}" />
+				<comp:FolderView Items="{x:Bind ViewModel.Preview, Mode=OneWay}" TestRequested="FolderView_TestRequested" />
 
 			</Expander>
 

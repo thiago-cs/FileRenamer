@@ -734,6 +734,12 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	private string _testOutput;
 	public string TestOutput { get => _testOutput; private set => SetProperty(ref _testOutput, value); }
 
+	internal void ImmidiatelyTestInput(string name)
+	{
+		TestInput = name;
+		UpdateTestOutput();
+	}
+
 	private void UpdateTestOutput()
 	{
 		if (string.IsNullOrEmpty(TestInput) || Project == null)

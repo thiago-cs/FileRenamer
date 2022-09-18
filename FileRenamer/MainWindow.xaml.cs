@@ -39,4 +39,10 @@ public sealed partial class MainWindow
 
 		return result;
 	}
+
+	private void FolderView_TestRequested(object sender, EventArgs e)
+	{
+		var itemNode = sender as Core.Jobs.JobTarget;
+		ViewModel.ImmidiatelyTestInput(itemNode.StorageItem.Name);
+	}
 }
