@@ -44,6 +44,28 @@ public sealed partial class Project : ObservableValidator
 	}
 
 
+	public JobTarget[] ComputeChanges(IList<IItem> items)
+	{
+		JobTarget[] targets = items.Select((file, i) => new JobTarget(file, i)).ToArray();
+		JobContext context = new(Jobs, targets);
+
+		for (int i = 0; i < targets.Length; i++)
+		{
+			bool shouldRun = Scope switch
+			{
+				JobScope.Files => items[i] is IFile,
+				JobScope.Folders => items[i] is IFolder,
+				JobScope.FilesAndFolders => true,
+				_ => throw new NotImplementedException(@$"Unknown {nameof(JobScope)} ""{Scope}""."),
+			};
+
+			if (shouldRun)
+				Jobs.Run(targets[i], context);
+		}
+
+		return targets;
+	}
+
 	public async Task RunAsync(CancellationToken cancellationToken)
 	{
 		// 0. 
@@ -54,27 +76,15 @@ public sealed partial class Project : ObservableValidator
 		}
 
 		// 1. 
-		// 1.1. 
 		IFile[] files = await Folder.GetFilesAsync();
-		JobTarget[] targets = files.Select((file, i) => new JobTarget(file, i)).ToArray();
-		JobContext context = new(Jobs, targets);
+		JobTarget[] targets = ComputeChanges(files);
 
-		// 1.2. 
 		for (int i = 0; i < files.Length; i++)
 		{
-			//
 			if (cancellationToken.IsCancellationRequested)
 				break;
 
-			//
-			IFile file = files[i];
-			JobTarget target = targets[i];
-
-			//
-			Jobs.Run(target, context);
-			await file.RenameAsync(target.NewFileName).ConfigureAwait(true);
-
-			//
+			await files[i].RenameAsync(targets[i].NewFileName).ConfigureAwait(true);
 			Progress = i;
 		}
 	}
