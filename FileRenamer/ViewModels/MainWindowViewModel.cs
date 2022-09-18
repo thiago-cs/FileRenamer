@@ -104,51 +104,10 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	public async Task NewProject()
 	{
 		// 1.
-		if (HasUnsavedChanges)
-		{
-			// 1.1.
-			ContentDialog dialog = new()
-			{
-				Title = "Save your changes to this project?",
-				Content = "You have unsaved changes in this project. Do you want to save them?",
-				PrimaryButtonText = "Save",
-				SecondaryButtonText = "Don't save",
-				CloseButtonText = "Cancel",
-				DefaultButton = ContentDialogButton.Primary,
-			};
+		bool changesWereSaved = await ShowSaveChangesConfirmationDialogAsync();
 
-			ContentDialogResult result;
-
-			try
-			{
-				result = await window.ShowDialogAsync(dialog);
-			}
-			catch (Exception ex)
-			{
-				Debug.WriteLine(ex);
-				throw;
-			}
-
-			// 1.2.
-			switch (result)
-			{
-				// Cancel
-				case ContentDialogResult.None:
-					return;
-
-				// Save
-				case ContentDialogResult.Primary:
-					await SaveProjectAsync();
-
-					if (HasUnsavedChanges)
-						return;
-					break;
-
-				// Don't save
-				case ContentDialogResult.Secondary:
-					break;
-			}
-		}
+		if (!changesWereSaved)
+			return;
 
 		// 2.
 		Project = new();
@@ -172,6 +131,12 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	public async Task LoadProject()
 	{
 		// 1.
+		bool changesWereSaved = await ShowSaveChangesConfirmationDialogAsync();
+
+		if (!changesWereSaved)
+			return;
+
+		// 2.
 		FileOpenPicker picker = new()
 		{
 			SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
@@ -189,7 +154,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			return;
 		}
 
-		// .
+		// 3.
 		try
 		{
 			using Stream stream = await file.OpenStreamForWriteAsync();
@@ -219,6 +184,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		icon: CreateIconFromSymbol(Symbol.Save),
 		execute: SaveProjectAsync,
 		canExecute: CanSaveProject);
+
 
 	public async Task SaveProjectAsync()
 	{
@@ -274,6 +240,63 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	public bool CanSaveProject()
 	{
 		return HasUnsavedChanges;
+	}
+
+	/// <summary>
+	/// Shows a confirmation dialog when there are unsaved changes in the project.
+	/// </summary>
+	/// <returns>
+	/// <see langword="true"/> if there are no unsaved changes or the changes were successfully saved.
+	/// <see langword="false"/> if there are changes that could not be saved (e.g. the user canceled the operation).</returns>
+	private async Task<bool> ShowSaveChangesConfirmationDialogAsync()
+	{
+		if (!HasUnsavedChanges)
+			return true;
+
+		// 1.
+		ContentDialog dialog = new()
+		{
+			Title = "Save your changes to this project?",
+			Content = "You have unsaved changes in this project. Do you want to save them?",
+			PrimaryButtonText = "Save",
+			SecondaryButtonText = "Don't save",
+			CloseButtonText = "Cancel",
+			DefaultButton = ContentDialogButton.Primary,
+		};
+
+		ContentDialogResult result;
+
+		try
+		{
+			result = await window.ShowDialogAsync(dialog);
+		}
+		catch (Exception ex)
+		{
+			Debug.WriteLine(ex);
+			throw;
+		}
+
+		// 2.
+		switch (result)
+		{
+			// Cancel
+			case ContentDialogResult.None:
+				return false;
+
+			// Save
+			case ContentDialogResult.Primary:
+				await SaveProjectAsync();
+
+				if (HasUnsavedChanges)
+					return false;
+				break;
+
+			// Don't save
+			case ContentDialogResult.Secondary:
+				break;
+		}
+
+		return true;
 	}
 
 	#endregion
