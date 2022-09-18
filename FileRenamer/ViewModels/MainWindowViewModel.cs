@@ -45,7 +45,10 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	partial void OnProjectChanged(Project value)
 	{
 		if (value != null)
+		{
 			value.Jobs.CollectionChanged += Actions_CollectionChanged;
+			UpdateCommandStates();
+		}
 	}
 
 	[ObservableProperty]
