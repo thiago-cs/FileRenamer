@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -602,33 +603,15 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region DoIt command
-
-	[RelayCommand(CanExecute = nameof(CanDoIt))]
-	private async Task DoItAsync()
-	{
-		try
-		{
-			await Project.RunAsync(CancellationToken.None);
-		}
-		catch (Exception ex)
-		{
-			Debugger.Log(0, "error", $"{ex.GetType().Name}: {ex.Message}");
-		}
-	}
-
-	private bool CanDoIt()
-	{
-		return Project.Folder != null && Project.Jobs.Count != 0;
-	}
-
-	#endregion
-
 	#region Pick folder
 
+	private List<Core.FileSystem.IItem> itemsInFolder;
+
+
 	[RelayCommand]
-	private async void PickFolder()
+	private async Task PickFolderAsync()
 	{
+		// 1. 
 		FolderPicker picker = new()
 		{
 			SuggestedStartLocation = PickerLocationId.Downloads,
@@ -642,12 +625,71 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		// Use file picker like normal!
 		Windows.Storage.StorageFolder folder = await picker.PickSingleFolderAsync();
 
+		// 2. 
 		if (folder == null)
 			return;
 
 		Project.Folder = new Folder(folder);
 
+		// 3. 
+		await UpdateItemsInFolder();
+
+		// 4. 
 		DoItCommand.NotifyCanExecuteChanged();
+	}
+
+	private async Task UpdateItemsInFolder()
+	{
+		itemsInFolder = new();
+		itemsInFolder.AddRange(await Project.Folder.GetSubfoldersAsync());
+		itemsInFolder.AddRange(await Project.Folder.GetFilesAsync());
+
+		UpdatePreview();
+	}
+
+	#endregion
+
+	#region Result preview
+
+	[ObservableProperty]
+	private IList<JobTarget> _preview;
+
+	[ObservableProperty]
+	private bool _showLivePreview = false;
+
+	partial void OnShowLivePreviewChanged(bool value)
+	{
+		UpdatePreview();
+	}
+
+	private void UpdatePreview()
+	{
+		if (ShowLivePreview)
+			Preview = itemsInFolder == null ? null : (IList<JobTarget>)Project.ComputeChanges(itemsInFolder);
+	}
+
+	#endregion
+
+	#region DoIt command
+
+	[RelayCommand(CanExecute = nameof(CanDoIt))]
+	private async Task DoItAsync()
+	{
+		try
+		{
+			await Project.RunAsync(CancellationToken.None);
+
+			await UpdateItemsInFolder();
+		}
+		catch (Exception ex)
+		{
+			Debugger.Log(0, "error", $"{ex.GetType().Name}: {ex.Message}");
+		}
+	}
+
+	private bool CanDoIt()
+	{
+		return Project.Folder != null && Project.Jobs.Count != 0;
 	}
 
 	#endregion
@@ -717,6 +759,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	{
 		// 1.
 		UpdateCommandStates();
+		UpdatePreview();
 
 		// 2. 
 		_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
@@ -753,6 +796,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	private void Action_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
 		UpdateTestOutput();
+		UpdatePreview();
 
 		HasUnsavedChanges = true;
 	}
