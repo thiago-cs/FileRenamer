@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FileRenamer.Core;
+using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Models;
@@ -608,7 +609,23 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#region Pick folder
 
-	private List<Core.FileSystem.IItem> itemsInFolder;
+	/// <summary>
+	/// Gets or sets the current working directory on which file operations are run.
+	/// </summary>
+	[ObservableProperty]
+	private IFolder _folder;
+
+	partial void OnFolderChanged(IFolder value)
+	{
+		if (value != null)
+		{ 
+			DoItCommand.NotifyCanExecuteChanged();
+
+			_ = UpdateItemsInFolderAsync();
+		}
+	}
+
+	private List<IItem> itemsInFolder;
 
 
 	[RelayCommand]
@@ -632,20 +649,14 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		if (folder == null)
 			return;
 
-		Project.Folder = new Folder(folder);
-
-		// 3. 
-		await UpdateItemsInFolder();
-
-		// 4. 
-		DoItCommand.NotifyCanExecuteChanged();
+		Folder = new Folder(folder);
 	}
 
-	private async Task UpdateItemsInFolder()
+	private async Task UpdateItemsInFolderAsync()
 	{
 		itemsInFolder = new();
-		itemsInFolder.AddRange(await Project.Folder.GetSubfoldersAsync());
-		itemsInFolder.AddRange(await Project.Folder.GetFilesAsync());
+		itemsInFolder.AddRange(await Folder.GetSubfoldersAsync());
+		itemsInFolder.AddRange(await Folder.GetFilesAsync());
 
 		UpdatePreview();
 	}
@@ -680,9 +691,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	{
 		try
 		{
-			await Project.RunAsync(CancellationToken.None);
+			await Project.RunAsync(Folder, CancellationToken.None);
 
-			await UpdateItemsInFolder();
+			await UpdateItemsInFolderAsync();
 		}
 		catch (Exception ex)
 		{
@@ -692,7 +703,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private bool CanDoIt()
 	{
-		return Project.Folder != null && Project.Jobs.Count != 0;
+		return Folder != null && Project.Jobs.Count != 0;
 	}
 
 	#endregion

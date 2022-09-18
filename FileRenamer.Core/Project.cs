@@ -11,12 +11,6 @@ public sealed partial class Project : ObservableValidator
 {
 	public JobCollection Jobs { get; }
 
-	/// <summary>
-	/// Gets or sets the current working directory on which file operations are run.
-	/// </summary>
-	[ObservableProperty]
-	private IFolder? _folder;
-
 	private double _progress;
 	/// <summary>
 	/// Gets a value between 0 and 100 representing the progress of the ongoing operation.
@@ -66,17 +60,17 @@ public sealed partial class Project : ObservableValidator
 		return targets;
 	}
 
-	public async Task RunAsync(CancellationToken cancellationToken)
+	public async Task RunAsync(IFolder? folder, CancellationToken cancellationToken)
 	{
 		// 0. 
-		if (Folder == null)
+		if (folder == null)
 		{
 			//Error("Folder is null.");
 			return;
 		}
 
 		// 1. 
-		IFile[] files = await Folder.GetFilesAsync();
+		IFile[] files = await folder.GetFilesAsync();
 		JobTarget[] targets = ComputeChanges(files);
 
 		for (int i = 0; i < files.Length; i++)

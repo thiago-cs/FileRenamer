@@ -81,7 +81,7 @@
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
-				<TextBox Grid.Column="0" Header="Work folder" Text="{x:Bind ViewModel.Project.Folder.Path, Mode=OneWay}" IsReadOnly="True" />
+				<TextBox Grid.Column="0" Header="Work folder" Text="{x:Bind ViewModel.Folder.Path, Mode=OneWay}" IsReadOnly="True" />
 				<Button  Grid.Column="1" VerticalAlignment="Bottom" Margin="{StaticResource SmallLeftMargin}" Width="80" Height="32" Command="{x:Bind ViewModel.PickFolderCommand}" >
 					<Viewbox Width="16" >
 						<SymbolIcon Symbol="Folder" />
