@@ -18,6 +18,7 @@
     <None Remove="UserControls\InputControls\ReplaceActionEditor.xaml" />
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
     <None Remove="UserControls\InputControls\TextRangeEditor.xaml" />
+    <None Remove="Views\Components\FolderView.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -84,9 +85,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\FileActionEditors\" />
-    <Folder Include="Views\Components\" />
     <Folder Include="Views\Pages\" />
     <Folder Include="Views\Toolbars\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\Components\FolderView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="UserControls\InputControls\TextRangeEditor.xaml">

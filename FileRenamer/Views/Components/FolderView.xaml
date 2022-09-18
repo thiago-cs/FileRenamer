@@ -1,0 +1,55 @@
+﻿<UserControl
+	x:Class="FileRenamer.Views.Components.FolderView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:jobs="using:FileRenamer.Core.Jobs"
+	xmlns:conv="using:FileRenamer.Converters" >
+
+	<FrameworkElement.Resources>
+
+		<Symbol x:Key="FolderIcon" >Folder</Symbol>
+		<Symbol x:Key="FileIcon"   >Page</Symbol>
+
+		<SolidColorBrush x:Key="MovedItemBrush"     Color="#08AEEA" />
+		<SolidColorBrush x:Key="RenamedItemBrush"   Color="#9AE5C8" />
+		<SolidColorBrush x:Key="DeletedItemBrush"   Color="OrangeRed" />
+		<SolidColorBrush x:Key="DefaultFileBrush"   Color="LightGray" />
+		<SolidColorBrush x:Key="DefaultFolderBrush" Color="DarkGray" />
+		<LinearGradientBrush x:Key="MovedAndRenamedItemBrush" StartPoint="0 0" EndPoint="1 1" >
+			<GradientStop Offset="0.5" Color="#08AEEA" />
+			<GradientStop Offset="0.6" Color="#2AF598" />
+		</LinearGradientBrush>
+
+		<conv:TargetToSymbolConverter x:Key="TargetToSymbolConverter"
+									  FolderSymbol="{StaticResource FolderIcon}"
+									  FileSymbol="{StaticResource FileIcon}" />
+
+		<conv:TargetToBrushConverter x:Key="TargetToBrushConverter"
+										MovedItemBrush="{StaticResource MovedItemBrush}"
+										RenamedItemBrush="{StaticResource RenamedItemBrush}"
+										MovedAndRenamedItemBrush="{StaticResource MovedAndRenamedItemBrush}"
+										DeletedItemBrush="{StaticResource DeletedItemBrush}"
+										DefaultFileBrush="{StaticResource DefaultFileBrush}"
+										DefaultFolderBrush="{StaticResource DefaultFolderBrush}" />
+
+		<MenuFlyout x:Key="MenuFlyout" >
+			<MenuFlyoutItem Text="Test this name" Click="TestNameMenuFlyoutItem_Click" Margin="{StaticResource SmallTopBottomMargin}" />
+		</MenuFlyout>
+
+		<DataTemplate x:Key="ItemDataTemplate" x:DataType="jobs:JobTarget" >
+			<ListViewItem MinHeight="28" Margin="0 -1" ContextFlyout="{StaticResource MenuFlyout}" >
+				<RelativePanel>
+					<SymbolIcon Name="Icon" Width="16" Height="16" Symbol="{x:Bind Converter={StaticResource TargetToSymbolConverter}}"
+								Foreground="{x:Bind Converter={StaticResource TargetToBrushConverter}}" />
+
+					<TextBlock RelativePanel.RightOf="Icon" Margin="{StaticResource XSmallLeftMargin}" FontSize="12"
+							   Text="{x:Bind NewFileName}" TextTrimming="CharacterEllipsis" />
+				</RelativePanel>
+			</ListViewItem>
+		</DataTemplate>
+
+	</FrameworkElement.Resources>
+
+	<ListView Name="ItemsControl" ItemTemplate="{StaticResource ItemDataTemplate}" CanDrag="False" CanDragItems="False" AllowDrop="False" />
+
+</UserControl>
