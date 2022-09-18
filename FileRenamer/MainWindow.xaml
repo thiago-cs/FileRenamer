@@ -102,27 +102,17 @@
 
 			</Expander>
 
-			<SplitButton Grid.Row="9" VerticalAlignment="Bottom" HorizontalAlignment="Right" Padding="24 12"
-						 Margin="{StaticResource MediumTopMargin}"
-						 Command="{x:Bind ViewModel.DoItCommand}" >
+			<Button Grid.Row="9" VerticalAlignment="Bottom" HorizontalAlignment="Right" HorizontalContentAlignment="Center"
+					Margin="{StaticResource MediumTopMargin}" Padding="24 12"
+					Command="{x:Bind ViewModel.DoItCommand}" >
 
-				<StackPanel Orientation="Horizontal" Spacing="{StaticResource XSmallSpacing}" >
-					<Viewbox Width="16" Height="16" >
+				<RelativePanel>
+					<Viewbox Name="GoButtonIcon" Width="16" Height="16" >
 						<FontIcon Glyph="&#xF5B0;" />
 					</Viewbox>
-					<TextBlock HorizontalAlignment="Center" Text="Go" />
-				</StackPanel>
-
-				<SplitButton.Flyout>
-					<MenuFlyout Placement="Bottom" >
-						<MenuFlyoutItem Text="Simulate" Padding="8 8" >
-							<MenuFlyoutItem.Icon>
-								<SymbolIcon Symbol="Play" />
-							</MenuFlyoutItem.Icon>
-						</MenuFlyoutItem>
-					</MenuFlyout>
-				</SplitButton.Flyout>
-			</SplitButton>
+					<TextBlock RelativePanel.RightOf="GoButtonIcon" Margin="{StaticResource XSmallLeftMargin}" Text="Go" />
+				</RelativePanel>
+			</Button>
 
 		</Grid>
 
