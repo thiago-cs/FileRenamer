@@ -1,16 +1,17 @@
-﻿using FileRenamer.Core.Indices;
-using FileRenamer.Core.Jobs.FileActions;
+﻿using System.Xml;
+using FileRenamer.Core.Indices;
 using FileRenamer.Core.Jobs;
-using FileRenamer.Core.ValueSources.NumberFormatters;
+using FileRenamer.Core.Jobs.Conditionals;
+using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Core.ValueSources;
-using System.Xml;
+using FileRenamer.Core.ValueSources.NumberFormatters;
 
 
 namespace FileRenamer.Core.Serialization;
 
 public static class XmlReaderExtensions
 {
-	public static async Task<IJobItem> ReadJobItemAsync(this XmlReader reader)
+	public static async Task<JobItem> ReadJobItemAsync(this XmlReader reader)
 	{
 		return reader.Name switch
 		{
@@ -21,7 +22,9 @@ public static class XmlReaderExtensions
 			nameof(ChangeRangeCaseAction) => await ChangeRangeCaseAction.ReadXmlAsync(reader).ConfigureAwait(false),
 			nameof(ChangeStringCaseAction) => await ChangeStringCaseAction.ReadXmlAsync(reader).ConfigureAwait(false),
 
-			_ => throw new XmlException($@"Unknown {nameof(IJobItem)} type: ""{reader.Name}""."),
+			nameof(ItemNameJobConditional) => await ItemNameJobConditional.ReadXmlAsync(reader).ConfigureAwait(false),
+
+			_ => throw new XmlException($@"Unknown {nameof(JobItem)} type: ""{reader.Name}""."),
 		};
 	}
 
