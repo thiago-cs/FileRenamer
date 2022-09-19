@@ -60,7 +60,7 @@ public sealed partial class ChangeCaseActionEditor : UserControl, IActionEditor
 	#endregion
 
 
-	public RenameActionBase GetRenameAction()
+	public RenameFileJob GetRenameAction()
 	{
 		return Data.GetRenameAction();
 	}

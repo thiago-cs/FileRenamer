@@ -46,7 +46,7 @@ public sealed partial class InsertActionEditor : IActionEditor
 	#endregion
 
 
-	public RenameActionBase GetRenameAction()
+	public RenameFileJob GetRenameAction()
 	{
 		if (!IsValid)
 		{

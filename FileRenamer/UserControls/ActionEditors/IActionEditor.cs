@@ -9,5 +9,5 @@ public interface IActionEditor
 
     public bool IsValid { get; }
 
-    public RenameActionBase GetRenameAction();
+    public RenameFileJob GetRenameAction();
 }

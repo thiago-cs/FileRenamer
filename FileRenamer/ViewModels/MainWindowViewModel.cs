@@ -451,7 +451,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			return;
 		}
 
-		if (SelectedAction is Core.Models.IDeepCopyable<RenameActionBase> copyable)
+		if (SelectedAction is Core.Models.IDeepCopyable<RenameFileJob> copyable)
 		{
 			Project.Jobs.Insert(SelectedIndex + 1, copyable.DeepCopy());
 

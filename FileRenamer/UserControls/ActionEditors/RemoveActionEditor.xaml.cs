@@ -49,7 +49,7 @@ public sealed partial class RemoveActionEditor : IActionEditor
 	#endregion
 
 
-	public RenameActionBase GetRenameAction()
+	public RenameFileJob GetRenameAction()
 	{
 		return Data.RangeType switch
 		{

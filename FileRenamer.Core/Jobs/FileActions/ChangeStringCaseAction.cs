@@ -9,7 +9,7 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #if DEBUG
 [System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 #endif
-public sealed class ChangeStringCaseAction : RenameActionBase
+public sealed class ChangeStringCaseAction : RenameFileJob
 {
 	#region Properties and fields
 
@@ -104,7 +104,7 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 		Description = sb.ToString();
 	}
 
-	public override RenameActionBase DeepCopy()
+	public override RenameFileJob DeepCopy()
 	{
 		return new ChangeStringCaseAction(OldString, IgnoreCase, UseRegex, TextCase);
 	}
@@ -127,7 +127,7 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 		await writer.WriteEndElementAsync().ConfigureAwait(false);
 	}
 
-	public static Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	public static Task<RenameFileJob> ReadXmlAsync(XmlReader reader)
 	{
 		bool isEnable = true;
 		string? oldString = null;
@@ -173,7 +173,7 @@ public sealed class ChangeStringCaseAction : RenameActionBase
 		XmlSerializationHelper.ThrowIfNull(textCase, nameof(TextCase));
 
 		ChangeStringCaseAction result = new(oldString, ignoreCase.Value, useRegex.Value, textCase.Value) { IsEnabled = isEnable };
-		return Task.FromResult(result as RenameActionBase);
+		return Task.FromResult(result as RenameFileJob);
 	}
 
 	#endregion

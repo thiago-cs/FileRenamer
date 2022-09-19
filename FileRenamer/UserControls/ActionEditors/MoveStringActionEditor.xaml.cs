@@ -46,7 +46,7 @@ public sealed partial class MoveStringActionEditor : IActionEditor
 	}
 
 
-	public RenameActionBase GetRenameAction() => Data.GetRenameAction();
+	public RenameFileJob GetRenameAction() => Data.GetRenameAction();
 
 	private void Validate()
 	{

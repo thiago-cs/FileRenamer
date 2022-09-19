@@ -115,7 +115,7 @@ public sealed partial class ChangeCaseActionData : ObservableValidator
 	#endregion
 
 
-	public RenameActionBase GetRenameAction()
+	public RenameFileJob GetRenameAction()
 	{
 		return ExecutionScope switch
 		{

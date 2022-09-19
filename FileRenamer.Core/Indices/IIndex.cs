@@ -6,7 +6,7 @@
 public interface IIndex : Serialization.IXmlSerializableAsync
 {
 	/// <summary>
-	/// Gets this objects description to be used to compose a <see cref="Jobs.FileActions.RenameActionBase"/>'s own description.
+	/// Gets this objects description to be used to compose a <see cref="Jobs.FileActions.RenameFileJob"/>'s own description.
 	/// </summary>
 	public IndexDescription Description { get; }
 

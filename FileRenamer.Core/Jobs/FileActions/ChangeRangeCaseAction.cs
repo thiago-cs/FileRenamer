@@ -9,7 +9,7 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #if DEBUG
 [System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 #endif
-public sealed class ChangeRangeCaseAction : RenameActionBase
+public sealed class ChangeRangeCaseAction : RenameFileJob
 {
 	#region Properties and fields
 
@@ -77,7 +77,7 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 		Description = $"change {Indices.Range.GetDescription(StartIndex, EndIndex)} to {@case}";
 	}
 
-	public override RenameActionBase DeepCopy()
+	public override RenameFileJob DeepCopy()
 	{
 		return new ChangeRangeCaseAction(StartIndex, EndIndex, TextCase);
 	}
@@ -100,7 +100,7 @@ public sealed class ChangeRangeCaseAction : RenameActionBase
 		await writer.WriteEndElementAsync().ConfigureAwait(false);
 	}
 
-	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	public static async Task<RenameFileJob> ReadXmlAsync(XmlReader reader)
 	{
 		//
 		bool isEnable = true;
