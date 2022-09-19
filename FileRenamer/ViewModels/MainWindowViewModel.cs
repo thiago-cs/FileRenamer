@@ -405,19 +405,20 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		}
 
 		//
-		IActionEditor actionEditor = SelectedAction switch
+		IJobEditor jobEditor = SelectedAction switch
 		{
-			InsertAction action => new InsertActionEditor(action),
-			RemoveAction action => new RemoveActionEditor(action),
-			ReplaceAction action => new ReplaceActionEditor(action),
-			ChangeRangeCaseAction action => new ChangeCaseActionEditor(action),
-			ChangeStringCaseAction action => new ChangeCaseActionEditor(action),
-			MoveStringAction action => new MoveStringActionEditor(action),
+			InsertAction job => new InsertRenameJobEditor(job),
+			RemoveAction job => new RemoveRenameJobEditor(job),
+			ReplaceAction job => new ReplaceRenameJobEditor(job),
+			ChangeRangeCaseAction job => new ChangeCaseRenameJobEditor(job),
+			ChangeStringCaseAction job => new ChangeCaseRenameJobEditor(job),
+			MoveStringAction job => new MoveStringRenameJobEditor(job),
+
 			_ => null,
 		};
 
 		//
-		JobItem item = await EditJobItemInDialogAsync(actionEditor);
+		JobItem item = await EditJobItemInDialogAsync(jobEditor);
 
 		if (item == null)
 			return;
@@ -530,7 +531,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddInsertActionAsync()
 	{
-		await EditAndAddJobItemAsync(new InsertActionEditor());
+		await EditAndAddJobItemAsync(new InsertRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -550,10 +551,10 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddInsertCounterActionAsync()
 	{
-		InsertActionEditor actionEditor = new();
-		actionEditor.Data.ValueSourceType = UserControls.InputControls.ValueSourceType.Counter;
+		InsertRenameJobEditor jobEditor = new();
+		jobEditor.Data.ValueSourceType = UserControls.InputControls.ValueSourceType.Counter;
 
-		await EditAndAddJobItemAsync(actionEditor);
+		await EditAndAddJobItemAsync(jobEditor);
 		HasUnsavedChanges = true;
 	}
 
@@ -573,7 +574,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddRemoveActionAsync()
 	{
-		await EditAndAddJobItemAsync(new RemoveActionEditor());
+		await EditAndAddJobItemAsync(new RemoveRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -593,7 +594,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddReplaceActionAsync()
 	{
-		await EditAndAddJobItemAsync(new ReplaceActionEditor());
+		await EditAndAddJobItemAsync(new ReplaceRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -613,7 +614,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddConvertCaseActionAsync()
 	{
-		await EditAndAddJobItemAsync(new ChangeCaseActionEditor());
+		await EditAndAddJobItemAsync(new ChangeCaseRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -633,7 +634,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddMoveStringActionAsync()
 	{
-		await EditAndAddJobItemAsync(new MoveStringActionEditor());
+		await EditAndAddJobItemAsync(new MoveStringRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -657,19 +658,11 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddConditionalAsync()
 	{
-		try
-		{
-			await Task.CompletedTask;
-			var conditional = new ItemNameJobConditional("\\d{3,4}", false);
-			Project.Jobs.Add(conditional);
-			HasUnsavedChanges = true;
-
-		}
-		catch (Exception ex)
-		{
-
-			throw;
-		}	}
+		await Task.CompletedTask;
+		var conditional = new ItemNameJobConditional("\\d{3,4}", false);
+		Project.Jobs.Add(conditional);
+		HasUnsavedChanges = true;
+	}
 
 	#endregion
 
@@ -857,24 +850,20 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		{
 			case NotifyCollectionChangedAction.Add:
 				foreach (JobItem item in e.NewItems)
-					if (item is RenameFileJob action)
-					action.PropertyChanged += Action_PropertyChanged;
+					item.PropertyChanged += Action_PropertyChanged;
 				break;
 
 			case NotifyCollectionChangedAction.Remove:
 				foreach (JobItem item in e.OldItems)
-					if (item is RenameFileJob action)
-					action.PropertyChanged -= Action_PropertyChanged;
+					item.PropertyChanged -= Action_PropertyChanged;
 				break;
 
 			case NotifyCollectionChangedAction.Replace:
 				foreach (JobItem item in e.NewItems)
-					if (item is RenameFileJob action)
-					action.PropertyChanged += Action_PropertyChanged;
+					item.PropertyChanged += Action_PropertyChanged;
 
 				foreach (JobItem item in e.OldItems)
-					if (item is RenameFileJob action)
-					action.PropertyChanged -= Action_PropertyChanged;
+					item.PropertyChanged -= Action_PropertyChanged;
 
 				break;
 
@@ -897,7 +886,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#region Helper functions
 
-	private async Task<JobItem> EditJobItemInDialogAsync(IActionEditor editor)
+	private async Task<JobItem> EditJobItemInDialogAsync(IJobEditor editor)
 	{
 		if (editor == null)
 		{
@@ -920,9 +909,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		return editor.GetRenameAction();
 	}
 
-	private async Task EditAndAddJobItemAsync(IActionEditor actionEditor)
+	private async Task EditAndAddJobItemAsync(IJobEditor jobEditor)
 	{
-		JobItem newAction = await EditJobItemInDialogAsync(actionEditor);
+		JobItem newAction = await EditJobItemInDialogAsync(jobEditor);
 
 		if (newAction == null)
 			return;

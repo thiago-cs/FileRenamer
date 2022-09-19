@@ -1,0 +1,16 @@
+﻿<UserControl
+	x:Class="FileRenamer.UserControls.ConditionalJobEditors.NamePatternConditionalJobEditor"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:uic="using:FileRenamer.UserControls.InputControls" >
+
+	<StackPanel Spacing="{StaticResource MediumSpacing}" >
+
+		<!-- matches -->
+		<StackPanel Style="{StaticResource StackPanelCardStyle}" >
+			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="matches" />
+
+			<uic:SearchTextEditor Data="{x:Bind Data.Pattern}" />
+		</StackPanel>
+	</StackPanel>
+</UserControl>

@@ -8,7 +8,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class ReplaceActionData : ObservableValidator
+public sealed partial class ReplaceRenameJobData : ObservableValidator
 {
 	#region Constants
 
@@ -64,7 +64,7 @@ public sealed partial class ReplaceActionData : ObservableValidator
 
 	#region Constructors
 
-	public ReplaceActionData()
+	public ReplaceRenameJobData()
 	{
 		RangeData = new();
 		ExecutionScope = ExecutionScope.FileName;
@@ -72,7 +72,7 @@ public sealed partial class ReplaceActionData : ObservableValidator
 		Initialize();
 	}
 
-	public ReplaceActionData(ReplaceAction action)
+	public ReplaceRenameJobData(ReplaceAction action)
 	{
 		OldString.TextType = action.UseRegex ? TextType.Regex : TextType.Text;
 		OldString.IgnoreCase = action.IgnoreCase;

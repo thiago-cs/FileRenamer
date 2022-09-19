@@ -1,5 +1,5 @@
 ﻿<UserControl
-	x:Class="FileRenamer.UserControls.ActionEditors.ReplaceActionEditor"
+	x:Class="FileRenamer.UserControls.ActionEditors.ReplaceRenameJobEditor"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="using:FileRenamer.Converters"
@@ -8,7 +8,7 @@
 
 	<UserControl.Resources>
 
-		<DataTemplate x:Key="RangeTemplate" x:DataType="uae:ReplaceActionData" >
+		<DataTemplate x:Key="RangeTemplate" x:DataType="uae:ReplaceRenameJobData" >
 			<uic:TextRangeEditor Data="{x:Bind RangeData}" />
 		</DataTemplate>
 
@@ -38,7 +38,7 @@
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Text="within" />
 
 			<ComboBox Style="{StaticResource EnumComboBoxStyle}" Width="120" PlaceholderText="choose..." 
-					  ItemsSource="{x:Bind uae:ReplaceActionData.executionScopeTypes}" SelectedItem="{x:Bind Data.ExecutionScope, Mode=TwoWay}" />
+					  ItemsSource="{x:Bind uae:ReplaceRenameJobData.executionScopeTypes}" SelectedItem="{x:Bind Data.ExecutionScope, Mode=TwoWay}" />
 
 			<ContentControl Content="{x:Bind Data}"
 							ContentTemplate="{x:Bind Data.ExecutionScope, Mode=OneWay, Converter={StaticResource ExecutionScopeToTemplateConverter}}" />

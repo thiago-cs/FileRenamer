@@ -1,5 +1,5 @@
 ﻿<UserControl
-	x:Class="FileRenamer.UserControls.ActionEditors.InsertActionEditor"
+	x:Class="FileRenamer.UserControls.ActionEditors.InsertRenameJobEditor"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:vsvm="using:FileRenamer.ViewModels.ValueSources"
@@ -146,7 +146,6 @@
 													NumberToWordsFormatter="{StaticResource NumberToWordsFormatterDataTemplate}"
 													PaddedNumberFormatter="{StaticResource PaddedNumberFormatterDataTemplate}"
 													RomanNumberFormatter="{StaticResource RomanNumberFormatterDataTemplate}" />
-
 		<!--#endregion-->
 
 	</UserControl.Resources>
@@ -161,7 +160,7 @@
 
 				<StackPanel Spacing="{StaticResource RowSpacing}" >
 					<ComboBox Width="{StaticResource InputBoxWidth}" PlaceholderText="choose..." 
-							  ItemsSource="{x:Bind uae:InsertActionData.ValueSourceTypes}"
+							  ItemsSource="{x:Bind uae:InsertRenameJobData.ValueSourceTypes}"
 							  ItemTemplate="{StaticResource EnumDescriptionDataTemplate}"
 							  SelectedItem="{x:Bind Data.ValueSourceType, Mode=TwoWay}" />
 

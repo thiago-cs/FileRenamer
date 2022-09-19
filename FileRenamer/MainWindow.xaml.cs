@@ -31,7 +31,7 @@ public sealed partial class MainWindow
 		return result;
 	}
 
-	public async Task<ContentDialogResult> ShowJobEditorDialogAsync(UserControls.ActionEditors.IActionEditor editor)
+	public async Task<ContentDialogResult> ShowJobEditorDialogAsync(UserControls.ActionEditors.IJobEditor editor)
 	{
 		dialog.DataContext = editor;
 

@@ -8,7 +8,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class MoveStringActionData : ObservableValidator
+public sealed partial class MoveStringRenameJobData : ObservableValidator
 {
 	private const string ZeroCountErrorMessage = "Enter a value other than zero.";
 
@@ -30,7 +30,7 @@ public sealed partial class MoveStringActionData : ObservableValidator
 
 	[ObservableProperty]
 	[NotifyDataErrorInfo]
-	[CustomValidation(typeof(MoveStringActionData), nameof(ValidateCount))]
+	[CustomValidation(typeof(MoveStringRenameJobData), nameof(ValidateCount))]
 	private int _count;
 
 	[ObservableProperty]
@@ -41,12 +41,12 @@ public sealed partial class MoveStringActionData : ObservableValidator
 
 	#region Constructors
 
-	public MoveStringActionData()
+	public MoveStringRenameJobData()
 	{
 		Initialize();
 	}
 
-	public MoveStringActionData(MoveStringAction action)
+	public MoveStringRenameJobData(MoveStringAction action)
 	{
 		OldString.TextType = action.UseRegex ? TextType.Regex : TextType.Text;
 		OldString.IgnoreCase = action.IgnoreCase;
@@ -70,7 +70,7 @@ public sealed partial class MoveStringActionData : ObservableValidator
 
 	public static ValidationResult ValidateCount(int value, ValidationContext context)
 	{
-		MoveStringActionData data = context.ObjectInstance as MoveStringActionData;
+		MoveStringRenameJobData data = context.ObjectInstance as MoveStringRenameJobData;
 
 		if (value == 0)
 		{

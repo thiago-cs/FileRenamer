@@ -9,7 +9,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class ChangeCaseActionData : ObservableValidator
+public sealed partial class ChangeCaseRenameJobData : ObservableValidator
 {
 	#region Constants
 
@@ -77,23 +77,23 @@ public sealed partial class ChangeCaseActionData : ObservableValidator
 
 	#region Constructors
 
-	public ChangeCaseActionData()
+	public ChangeCaseRenameJobData()
 	{
 		RangeData = new();
 
 		Initialize();
 	}
 
-	public ChangeCaseActionData(ChangeRangeCaseAction action)
+	public ChangeCaseRenameJobData(ChangeRangeCaseAction action)
 	{
 		RangeData = new(action.StartIndex, action.EndIndex);
-		ExecutionScope = ReplaceActionData.GetScopeFromIndices(action.StartIndex, action.EndIndex);
+		ExecutionScope = ReplaceRenameJobData.GetScopeFromIndices(action.StartIndex, action.EndIndex);
 		TextCase = action.TextCase;
 
 		Initialize();
 	}
 
-	public ChangeCaseActionData(ChangeStringCaseAction action)
+	public ChangeCaseRenameJobData(ChangeStringCaseAction action)
 	{
 		RangeData = new();
 		ExecutionScope = ExecutionScope.Occurrences;

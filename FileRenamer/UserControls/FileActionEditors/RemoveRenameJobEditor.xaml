@@ -1,5 +1,5 @@
 ﻿<UserControl
-	x:Class="FileRenamer.UserControls.ActionEditors.RemoveActionEditor"
+	x:Class="FileRenamer.UserControls.ActionEditors.RemoveRenameJobEditor"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="using:FileRenamer.Converters"
@@ -10,7 +10,7 @@
 
 		<x:Double x:Key="SectionHeaderWidth" >72</x:Double>
 
-		<DataTemplate x:Key="CountInputDataTemplate" x:DataType="uae:RemoveActionData" >
+		<DataTemplate x:Key="CountInputDataTemplate" x:DataType="uae:RemoveRenameJobData" >
 			<StackPanel>
 				<NumberBox HorizontalAlignment="Left" Width="160" HorizontalContentAlignment="Right" 
 						   Minimum="-1000" Maximum="1000" Value="{x:Bind Count, Mode=TwoWay}" SpinButtonPlacementMode="Inline" />
@@ -19,7 +19,7 @@
 			</StackPanel>
 		</DataTemplate>
 
-		<DataTemplate x:Key="EndIndexInputDataTemplate" x:DataType="uae:RemoveActionData" >
+		<DataTemplate x:Key="EndIndexInputDataTemplate" x:DataType="uae:RemoveRenameJobData" >
 			<StackPanel>
 				<uic:IndexEditor Data="{x:Bind EndIndexData}" IncludePreposionInDescriptions="False" />
 
@@ -47,7 +47,7 @@
 			<TextBlock Style="{StaticResource SectionHeaderStyle}" Width="{StaticResource SectionHeaderWidth}" Text="how much" />
 
 			<ComboBox Style="{StaticResource EnumComboBoxStyle}" PlaceholderText="chose..." MinWidth="100"
-					  ItemsSource="{x:Bind uae:RemoveActionData.RangeTypes}" SelectedItem="{x:Bind Data.RangeType, Mode=TwoWay}" />
+					  ItemsSource="{x:Bind uae:RemoveRenameJobData.RangeTypes}" SelectedItem="{x:Bind Data.RangeType, Mode=TwoWay}" />
 
 			<ContentControl Content="{x:Bind Data}"
 							ContentTemplate="{x:Bind Data.RangeType, Mode=OneWay, Converter={StaticResource TextRemovalTypeToTemplateConverter}}" />

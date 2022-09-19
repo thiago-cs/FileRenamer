@@ -1,21 +1,22 @@
 ﻿using System.ComponentModel;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.UserControls.ActionEditors;
 
 [ObservableObject]
-public sealed partial class ReplaceActionEditor : IActionEditor
+public sealed partial class MoveStringRenameJobEditor : IJobEditor
 {
-	public string DialogTitle => "Replace";
+	public string DialogTitle => "Move";
 
 	[ObservableProperty]
 	public bool _isValid = true;
 
 	#region Data
 
-	public ReplaceActionData Data { get; }
+	public MoveStringRenameJobData Data { get; }
 
 	private void Data_PropertyChanged(object sender, PropertyChangedEventArgs e)
 	{
@@ -26,13 +27,13 @@ public sealed partial class ReplaceActionEditor : IActionEditor
 	#endregion
 
 
-	public ReplaceActionEditor()
+	public MoveStringRenameJobEditor()
 	{
 		Data = new();
 		Initialize();
 	}
 
-	public ReplaceActionEditor(ReplaceAction action)
+	public MoveStringRenameJobEditor(MoveStringAction action)
 	{
 		Data = new(action);
 		Initialize();
@@ -46,7 +47,7 @@ public sealed partial class ReplaceActionEditor : IActionEditor
 	}
 
 
-	public RenameFileJob GetRenameAction() => Data.GetRenameAction();
+	public JobItem GetRenameAction() => Data.GetRenameAction();
 
 	private void Validate()
 	{
