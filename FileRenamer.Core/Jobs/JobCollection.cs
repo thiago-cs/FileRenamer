@@ -8,21 +8,28 @@ namespace FileRenamer.Core.Jobs;
 /// <summary>
 /// Represents a collection of actions to be executed in order on a string.
 /// </summary>
-public sealed class JobCollection : System.Collections.ObjectModel.ObservableCollection<IJobItem>, IXmlSerializableAsync
+public sealed class JobCollection : System.Collections.ObjectModel.ObservableCollection<JobItem>, Models.IDeepCopyable<JobCollection>, IXmlSerializableAsync
 {
+	#region Constructors
+
+	public JobCollection()
+	{ }
+
+	public JobCollection(IEnumerable<JobItem> collection)
+		: base(collection)
+	{ }
+
+	#endregion
+
+
 	/// <summary>
 	/// Executes the actions in this collection, in order, on the specified input.
 	/// </summary>
-	// <param name="input">A string.</param>
-	// <returns>The resulting string after the actions have been executed on it.</returns>
 	public void Run(JobTarget target, JobContext context)
 	{
-		foreach (IJobItem job in this)
-			if (job is RenameActionBase action)
-			{
-				if (action.IsEnabled)
-					action.Run(target, context);
-			}
+		foreach (JobItem job in this)
+			if (job.IsEnabled)
+				job.Run(target, context);
 	}
 
 	public void Reset()
@@ -30,12 +37,17 @@ public sealed class JobCollection : System.Collections.ObjectModel.ObservableCol
 		// todo: implement Reset method.
 	}
 
+	public JobCollection DeepCopy()
+	{
+		return new(this.Select(item => item.DeepCopy()));
+	}
+
 
 	#region XML serialization
 
 	public async Task WriteXmlAsync(XmlWriter writer)
 	{
-		foreach (IJobItem job in this)
+		foreach (JobItem job in this)
 			await job.WriteXmlAsync(writer).ConfigureAwait(false);
 	}
 
@@ -45,7 +57,7 @@ public sealed class JobCollection : System.Collections.ObjectModel.ObservableCol
 
 		while (reader.NodeType != XmlNodeType.EndElement)
 		{
-			IJobItem item = await reader.ReadJobItemAsync().ConfigureAwait(false);
+			JobItem item = await reader.ReadJobItemAsync().ConfigureAwait(false);
 			jobs.Add(item);
 		}
 
