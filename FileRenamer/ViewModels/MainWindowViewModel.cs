@@ -40,16 +40,26 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	partial void OnProjectChanging(Project value)
 	{
 		if (value != null)
+		{
+			value.PropertyChanged += Project_PropertyChanged;
 			value.Jobs.CollectionChanged -= Actions_CollectionChanged;
+		}
 	}
 
 	partial void OnProjectChanged(Project value)
 	{
 		if (value != null)
 		{
+			value.PropertyChanged += Project_PropertyChanged;
 			value.Jobs.CollectionChanged += Actions_CollectionChanged;
 			UpdateCommandStates();
 		}
+	}
+
+	private void Project_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(Project.Scope))
+			UpdatePreview();
 	}
 
 	[ObservableProperty]
@@ -641,7 +651,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	partial void OnFolderChanged(IFolder value)
 	{
 		if (value != null)
-		{ 
+		{
 			DoItCommand.NotifyCanExecuteChanged();
 
 			_ = UpdateItemsInFolderAsync();
