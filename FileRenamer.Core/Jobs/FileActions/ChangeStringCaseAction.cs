@@ -74,7 +74,7 @@ public sealed class ChangeStringCaseAction : RenameFileJob
 		target.NewFileName = input;
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		string @case = TextCase switch
 		{

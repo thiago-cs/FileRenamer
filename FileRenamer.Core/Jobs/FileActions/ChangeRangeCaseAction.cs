@@ -62,7 +62,7 @@ public sealed class ChangeRangeCaseAction : RenameFileJob
 		target.NewFileName = s1 + s2 + s3;
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		string @case = TextCase switch
 		{

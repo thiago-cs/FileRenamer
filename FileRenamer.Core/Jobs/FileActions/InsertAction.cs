@@ -52,7 +52,7 @@ public sealed class InsertAction : RenameFileJob
 		return;
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		Description = @$"insert {ValueSource.Description} {InsertIndex.Description.ToString(includePreposition: true)}";
 	}

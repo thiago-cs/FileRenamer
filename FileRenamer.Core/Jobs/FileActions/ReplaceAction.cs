@@ -82,7 +82,7 @@ public sealed class ReplaceAction : RenameFileJob
 						   + input[endIndex..];
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		bool newIsEmpty = string.IsNullOrEmpty(NewString);
 		System.Text.StringBuilder sb = new();

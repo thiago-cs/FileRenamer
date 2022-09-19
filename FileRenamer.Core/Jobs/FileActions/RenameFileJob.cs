@@ -5,6 +5,5 @@
 /// </summary>
 public abstract partial class RenameFileJob : FileActionJob
 {
-	// todo: make this protected.
-	public abstract void UpdateDescription();
+	protected abstract void UpdateDescription();
 }

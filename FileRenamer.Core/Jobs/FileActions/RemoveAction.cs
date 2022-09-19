@@ -85,7 +85,7 @@ public sealed class RemoveAction : RenameFileJob
 		return;
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		if (EndIndex != null)
 		{

@@ -95,7 +95,7 @@ public sealed class MoveStringAction : RenameFileJob
 		target.NewFileName = (input[..index] + input[endIndex..]).Insert(index + count, value);
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		int count = Math.Abs(Count);
 
