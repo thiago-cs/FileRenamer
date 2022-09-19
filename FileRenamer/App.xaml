@@ -19,8 +19,6 @@
 
 			<!-- Other app resources here -->
 			<c:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
-			<c:EnumToDescriptionConverter2 x:Key="C2" Type="e:RenamingScope" />
-			<c:IntToScopeConverter x:Key="IntToScopeConverter" />
 			<x:Double x:Key="ContentDialogMaxWidth">1600</x:Double>
 			<x:Double x:Key="ContentDialogMaxHeight">1000</x:Double>
 
