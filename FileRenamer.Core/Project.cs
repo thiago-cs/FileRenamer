@@ -40,7 +40,7 @@ public sealed partial class Project : ObservableValidator
 
 	public JobTarget[] ComputeChanges(IList<IItem> items)
 	{
-		JobTarget[] targets = items.Select((file, i) => new JobTarget(file, i)).ToArray();
+		JobTarget[] targets = items.Select((item, i) => new JobTarget(item, i)).ToArray();
 		JobContext context = new(Jobs, targets);
 
 		for (int i = 0; i < targets.Length; i++)
@@ -70,15 +70,37 @@ public sealed partial class Project : ObservableValidator
 		}
 
 		// 1. 
-		IFile[] files = await folder.GetFilesAsync();
-		JobTarget[] targets = ComputeChanges(files);
+		IList<IItem> items;
+		switch (Scope)
+		{
+			case JobScope.Files:
+				items = await folder.GetFilesAsync();
+				break;
 
-		for (int i = 0; i < files.Length; i++)
+			case JobScope.Folders:
+				items = await folder.GetSubfoldersAsync();
+				break;
+
+			case JobScope.FilesAndFolders:
+				List<IItem> list = new();
+				list.AddRange(await folder.GetSubfoldersAsync());
+				list.AddRange(await folder.GetFilesAsync());
+
+				items = list;
+				break;
+
+			default:
+				throw new Exception(@$"Unknown {nameof(JobScope)} value ""{Scope}"".");
+		}
+
+		JobTarget[] targets = ComputeChanges(items);
+
+		for (int i = 0; i < items.Count; i++)
 		{
 			if (cancellationToken.IsCancellationRequested)
 				break;
 
-			await files[i].RenameAsync(targets[i].NewFileName).ConfigureAwait(true);
+			await targets[i].StorageItem.RenameAsync(targets[i].NewFileName).ConfigureAwait(true);
 			Progress = i;
 		}
 	}
