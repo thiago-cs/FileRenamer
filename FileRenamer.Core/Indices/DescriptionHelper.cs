@@ -9,15 +9,15 @@ public static class Range
 	{
 		return (startIndex, endIndex) switch
 		{
-			(BeginningIndex, FileExtensionIndex) => "file name",
-			(FixedIndex fix, FileExtensionIndex) when fix.Index == 0 => "file name",
+			(BeginningIndex, FileExtensionIndex) or
+			(FixedIndex { Index: 0 }, FileExtensionIndex) => "file name",
 
 			(FileExtensionIndex, EndIndex) => "file extension",
 
-			(BeginningIndex, EndIndex) => "all characters",
-			(FixedIndex fix, EndIndex) when fix.Index == 0 => "all characters",
+			(BeginningIndex, EndIndex) or
+			(FixedIndex { Index: 0 }, EndIndex) => "all characters",
 
-			(FixedIndex fix, EndIndex) when fix.Index == -1 => "the last character",
+			(FixedIndex { Index: -1 }, EndIndex) => "the last character",
 			(FixedIndex fix, EndIndex) when fix.Index < 0 => "the last " + "character".ToQuantity(-fix.Index),
 
 			_ => $"characters from {startIndex.Description.ToString(includePreposition: false)} to {endIndex.Description.ToString(includePreposition: false)}",
