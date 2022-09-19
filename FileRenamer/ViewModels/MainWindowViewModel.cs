@@ -17,6 +17,7 @@ using FileRenamer.Core.Jobs;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Models;
 using FileRenamer.UserControls.ActionEditors;
+using FileRenamer.Core.Jobs.Conditionals;
 
 
 namespace FileRenamer.ViewModels;
@@ -63,9 +64,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	}
 
 	[ObservableProperty]
-	private IJobItem _selectedAction;
+	private JobItem _selectedAction;
 
-	partial void OnSelectedActionChanged(IJobItem value)
+	partial void OnSelectedActionChanged(JobItem value)
 	{
 		UpdateCommandStates();
 	}
@@ -167,7 +168,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		// 3.
 		try
 		{
-			using Stream stream = await file.OpenStreamForWriteAsync();
+			using Stream stream = await file.OpenStreamForWriteAsync().ConfigureAwait(false);
 			using StreamReader input = new(stream);
 			Project = await Project.ReadXmlAsync(input).ConfigureAwait(false);
 			HasUnsavedChanges = false;
@@ -313,7 +314,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Manage existing actions commands
+	#region Manage actions commands
 
 	#region Move Up
 
@@ -416,7 +417,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		};
 
 		//
-		IJobItem item = await EditJobItemInDialogAsync(actionEditor);
+		JobItem item = await EditJobItemInDialogAsync(actionEditor);
 
 		if (item == null)
 			return;
@@ -513,7 +514,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Add new actions commands
+	#region Add actions commands
 
 	#region Add InsertAction
 
@@ -640,7 +641,41 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Pick folder
+	#region Add conditional item commands
+
+	#region Add ItemNameJobConditional
+
+	private AsyncUICommand _addConditionalCommand;
+	public AsyncUICommand AddConditionalCommand => _addConditionalCommand ??= new(
+		description: "Add a name pattern check",
+		label: "name pattern",
+		accessKey: "",
+		modifier: null,
+		acceleratorKey: null,
+		icon: CreateIconFromSymbol(Symbol.Street),
+		execute: AddConditionalAsync);
+
+	private async Task AddConditionalAsync()
+	{
+		try
+		{
+			await Task.CompletedTask;
+			var conditional = new ItemNameJobConditional("\\d{3,4}", false);
+			Project.Jobs.Add(conditional);
+			HasUnsavedChanges = true;
+
+		}
+		catch (Exception ex)
+		{
+
+			throw;
+		}	}
+
+	#endregion
+
+	#endregion
+
+	#region Pick folder command
 
 	/// <summary>
 	/// Gets or sets the current working directory on which file operations are run.
@@ -821,20 +856,24 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		switch (e.Action)
 		{
 			case NotifyCollectionChangedAction.Add:
-				foreach (RenameActionBase action in e.NewItems)
+				foreach (JobItem item in e.NewItems)
+					if (item is RenameFileJob action)
 					action.PropertyChanged += Action_PropertyChanged;
 				break;
 
 			case NotifyCollectionChangedAction.Remove:
-				foreach (RenameActionBase action in e.OldItems)
+				foreach (JobItem item in e.OldItems)
+					if (item is RenameFileJob action)
 					action.PropertyChanged -= Action_PropertyChanged;
 				break;
 
 			case NotifyCollectionChangedAction.Replace:
-				foreach (RenameActionBase action in e.NewItems)
+				foreach (JobItem item in e.NewItems)
+					if (item is RenameFileJob action)
 					action.PropertyChanged += Action_PropertyChanged;
 
-				foreach (RenameActionBase action in e.OldItems)
+				foreach (JobItem item in e.OldItems)
+					if (item is RenameFileJob action)
 					action.PropertyChanged -= Action_PropertyChanged;
 
 				break;
@@ -858,7 +897,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#region Helper functions
 
-	private async Task<IJobItem> EditJobItemInDialogAsync(IActionEditor editor)
+	private async Task<JobItem> EditJobItemInDialogAsync(IActionEditor editor)
 	{
 		if (editor == null)
 		{
@@ -883,12 +922,16 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task EditAndAddJobItemAsync(IActionEditor actionEditor)
 	{
-		IJobItem newAction = await EditJobItemInDialogAsync(actionEditor);
+		JobItem newAction = await EditJobItemInDialogAsync(actionEditor);
 
 		if (newAction == null)
 			return;
 
-		Project.Jobs.Add(newAction);
+		if (SelectedAction is ComplexJobItem complexItem)
+			complexItem.Jobs.Add(newAction);
+		else
+			Project.Jobs.Add(newAction);
+
 		SelectedAction = newAction;
 	}
 
