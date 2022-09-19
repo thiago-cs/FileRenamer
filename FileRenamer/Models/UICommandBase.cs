@@ -80,13 +80,15 @@ public abstract class UICommandBase
 	/// <param name="acceleratorKey">The key combinations that invokes the action associated with this command.</param>
 	/// <param name="icon">The icon for this command.</param>
 	public UICommandBase(string description, string label, string accessKey,
-						 VirtualKeyModifiers? modifier, VirtualKey acceleratorKey, IconSource icon)
+						 VirtualKeyModifiers? modifier, VirtualKey? acceleratorKey, IconSource icon)
 	{
 		Label = label;
 		Description = description;
 		IconSource = icon;
 		AccessKey = accessKey;
-		KeyboardAccelerator = CreateKeyboardAccelerator(modifier, acceleratorKey);
+
+		if (acceleratorKey != null)
+			KeyboardAccelerator = CreateKeyboardAccelerator(modifier, acceleratorKey.Value);
 
 
 		// Helper function

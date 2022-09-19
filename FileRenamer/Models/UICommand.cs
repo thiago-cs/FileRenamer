@@ -21,7 +21,7 @@ public sealed class UICommand : UICommandBase
 	/// <param name="execute">The method to be called when the command is invoked.</param>
 	/// <param name="canExecute">The method that determines whether the command can execute in its current state.</param>
 	public UICommand(string description, string label, string accessKey,
-					 VirtualKeyModifiers? modifier, VirtualKey acceleratorKey, IconSource icon,
+					 VirtualKeyModifiers? modifier, VirtualKey? acceleratorKey, IconSource icon,
 					 Action execute, Func<bool> canExecute = null)
 		: base(description, label, accessKey, modifier, acceleratorKey, icon)
 	{
@@ -51,7 +51,7 @@ public sealed class AsyncUICommand : UICommandBase
 	/// <param name="execute">The method to be called when the command is invoked.</param>
 	/// <param name="canExecute">The method that determines whether the command can execute in its current state.</param>
 	public AsyncUICommand(string description, string label, string accessKey,
-						  VirtualKeyModifiers? modifier, VirtualKey acceleratorKey, IconSource icon,
+						  VirtualKeyModifiers? modifier, VirtualKey? acceleratorKey, IconSource icon,
 						  Func<Task> execute, Func<bool> canExecute = null)
 		: base(description, label, accessKey, modifier, acceleratorKey, icon)
 	{
