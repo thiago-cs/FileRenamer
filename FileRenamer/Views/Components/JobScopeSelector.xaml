@@ -1,0 +1,17 @@
+﻿<UserControl
+	x:Class="FileRenamer.Views.Components.JobScopeSelector"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:FileRenamer.Views.Components" >
+
+	<UserControl.Resources>
+		
+	</UserControl.Resources>
+
+	<RadioButtons Name="Radios" MaxColumns="3" Header="Rename" SelectionChanged="RadioButtons_SelectionChanged" >
+		<x:String>Files only</x:String>
+		<x:String>Folders only</x:String>
+		<x:String>Files and folders</x:String>
+	</RadioButtons>
+
+</UserControl>
