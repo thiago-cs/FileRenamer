@@ -89,11 +89,7 @@
 				</Button>
 			</Grid>
 
-			<!--<RadioButtons MaxColumns="3" Header="Rename" SelectedIndex="{x:Bind ViewModel.Scope, Mode=TwoWay, Converter={StaticResource IntToScopeConverter}}" >
-				<x:String>Files only</x:String>
-				<x:String>Folders only</x:String>
-				<x:String>Files and folders</x:String>
-			</RadioButtons>-->
+			<comp:JobScopeSelector Grid.Row="1" Scope="{x:Bind ViewModel.Project.Scope, Mode=TwoWay}" />
 
 			<Expander Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Live preview"
 					  IsExpanded="{x:Bind ViewModel.ShowLivePreview, Mode=TwoWay}" HorizontalContentAlignment="Stretch" >
