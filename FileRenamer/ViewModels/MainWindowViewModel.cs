@@ -43,7 +43,8 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		if (value != null)
 		{
 			value.PropertyChanged -= Project_PropertyChanged;
-			value.Jobs.CollectionChanged -= Actions_CollectionChanged;
+			value.Jobs.CollectionChanged -= Jobs_CollectionChanged;
+			value.Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
 		}
 	}
 
@@ -52,7 +53,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		if (value != null)
 		{
 			value.PropertyChanged += Project_PropertyChanged;
-			value.Jobs.CollectionChanged += Actions_CollectionChanged;
+			value.Jobs.CollectionChanged += Jobs_CollectionChanged;
+			value.Jobs.NestedJobChanged += Jobs_NestedJobChanged;
+
 			UpdateCommandStates();
 		}
 	}
@@ -661,6 +664,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		await Task.CompletedTask;
 		var conditional = new ItemNameJobConditional("\\d{3,4}", false);
 		Project.Jobs.Add(conditional);
+
 		HasUnsavedChanges = true;
 	}
 
@@ -834,9 +838,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Action and ActionCollection event handlers
+	#region JobCollection event handlers
 
-	private void Actions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+	private void Jobs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
 		// 1.
 		UpdateCommandStates();
@@ -844,41 +848,17 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 		// 2. 
 		_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
-
-		// 3. 
-		switch (e.Action)
-		{
-			case NotifyCollectionChangedAction.Add:
-				foreach (JobItem item in e.NewItems)
-					item.PropertyChanged += Action_PropertyChanged;
-				break;
-
-			case NotifyCollectionChangedAction.Remove:
-				foreach (JobItem item in e.OldItems)
-					item.PropertyChanged -= Action_PropertyChanged;
-				break;
-
-			case NotifyCollectionChangedAction.Replace:
-				foreach (JobItem item in e.NewItems)
-					item.PropertyChanged += Action_PropertyChanged;
-
-				foreach (JobItem item in e.OldItems)
-					item.PropertyChanged -= Action_PropertyChanged;
-
-				break;
-
-			case NotifyCollectionChangedAction.Reset:
-			case NotifyCollectionChangedAction.Move:
-			default:
-				break;
-		}
 	}
 
-	private void Action_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	private void Jobs_NestedJobChanged(object sender, PropertyChangedEventArgs e)
 	{
-		UpdateTestOutput();
+		// 1.
 		UpdatePreview();
 
+		// 2. 
+		UpdateTestOutput();
+
+		// 3.
 		HasUnsavedChanges = true;
 	}
 
