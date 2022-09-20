@@ -14,10 +14,10 @@ using CommunityToolkit.Mvvm.Input;
 using FileRenamer.Core;
 using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Jobs.Conditionals;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Models;
 using FileRenamer.UserControls.ActionEditors;
-using FileRenamer.Core.Jobs.Conditionals;
 
 
 namespace FileRenamer.ViewModels;
@@ -42,7 +42,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	{
 		if (value != null)
 		{
-			value.PropertyChanged += Project_PropertyChanged;
+			value.PropertyChanged -= Project_PropertyChanged;
 			value.Jobs.CollectionChanged -= Actions_CollectionChanged;
 		}
 	}
