@@ -43,7 +43,7 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 		System.Text.StringBuilder sb = new();
 
 		sb.Append(@"if name ")
-		  .Append(UseRegex ? "contains" : "matches the expression")
+		  .Append(UseRegex ? "matches the expression" : "contains")
 		  .Append(@" """)
 		  .Append(Pattern)
 		  .Append('"');
