@@ -74,8 +74,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		UpdateCommandStates();
 	}
 
-	public int SelectedIndex { get; set; } = -1;
-
 	#endregion
 
 
@@ -334,18 +332,26 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	public void MoveSelectedActionUp()
 	{
-		if (SelectedIndex < 1)
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
+
+		if (jobs == null)
 		{
 			// Oops!
 			return;
 		}
 
-		JobCollection actions = Project.Jobs;
-		int index = SelectedIndex;
+		int index = jobs.IndexOf(SelectedAction);
 
-		var previousAction = actions[index - 1];
-		actions.RemoveAt(index - 1);
-		actions.Insert(index, previousAction);
+		if (index < 1)
+		{
+			// Oops!
+			return;
+		}
+
+		//jobs.Move(index, index - 1);
+		JobItem previousJob = jobs[index - 1];
+		jobs.RemoveAt(index - 1);
+		jobs.Insert(index, previousJob);
 
 		HasUnsavedChanges = true;
 	}
@@ -367,18 +373,25 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	public void MoveSelectedActionDown()
 	{
-		if (SelectedIndex == -1 || Project.Jobs.Count - 2 < SelectedIndex)
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
+
+		if (jobs == null)
 		{
 			// Oops!
 			return;
 		}
 
-		JobCollection actions = Project.Jobs;
-		int index = SelectedIndex;
+		int index = jobs.IndexOf(SelectedAction);
+		if (index == -1 || jobs.Count - 2 < index)
+		{
+			// Oops!
+			return;
+		}
 
-		var nextAction = actions[index + 1];
-		actions.RemoveAt(index + 1);
-		actions.Insert(index, nextAction);
+		//jobs.Move(index, index + 1);
+		JobItem nextJob = jobs[index + 1];
+		jobs.RemoveAt(index + 1);
+		jobs.Insert(index, nextJob);
 
 		HasUnsavedChanges = true;
 	}
@@ -407,6 +420,14 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			return;
 		}
 
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
+
+		if (jobs == null)
+		{
+			// Oops!
+			return;
+		}
+
 		//
 		IJobEditor jobEditor = SelectedAction switch
 		{
@@ -426,9 +447,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		if (item == null)
 			return;
 
-		int index = Project.Jobs.IndexOf(SelectedAction);
-		Project.Jobs.RemoveAt(index);
-		Project.Jobs.Insert(index, item);
+		int index = jobs.IndexOf(SelectedAction);
+		jobs.RemoveAt(index);
+		jobs.Insert(index, item);
 
 		HasUnsavedChanges = true;
 	}
@@ -456,12 +477,24 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			return;
 		}
 
-		if (SelectedAction is Core.Models.IDeepCopyable<RenameFileJob> copyable)
-		{
-			Project.Jobs.Insert(SelectedIndex + 1, copyable.DeepCopy());
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
 
-			HasUnsavedChanges = true;
+		if (jobs == null)
+		{
+			// Oops!
+			return;
 		}
+		int index = jobs.IndexOf(SelectedAction);
+
+		if (index == -1)
+		{
+			// Oops!
+			return;
+		}
+
+		jobs.Insert(index + 1, SelectedAction.DeepCopy());
+
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
@@ -487,7 +520,15 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			return;
 		}
 
-		Project.Jobs.RemoveAt(SelectedIndex);
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
+
+		if (jobs == null)
+		{
+			// Oops!
+			return;
+		}
+
+		jobs.Remove(SelectedAction);
 
 		HasUnsavedChanges = true;
 	}
@@ -782,17 +823,23 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	public bool CanExecuteWhenSelectedActionIsNotNull()
 	{
-		return Project.Jobs.Count != 0 && SelectedAction != null;
+		return /*Project.Jobs.Count != 0 &&*/ SelectedAction != null;
 	}
 
 	public bool CanExecuteWhenSelectedActionIsNotFirst()
 	{
-		return Project.Jobs.Count != 0 && SelectedAction != null && SelectedAction != Project.Jobs[0];
+		return SelectedAction != null
+			&& GetOwningJobCollection(SelectedAction) is JobCollection jobs
+			&& jobs.Count != 0
+			&& SelectedAction != jobs[0];
 	}
 
 	public bool CanExecuteWhenSelectedActionIsNotLast()
 	{
-		return Project.Jobs.Count != 0 && SelectedAction != null && SelectedAction != Project.Jobs[^1];
+		return SelectedAction != null
+			&& GetOwningJobCollection(SelectedAction) is JobCollection jobs
+			&& jobs.Count != 0
+			&& SelectedAction != jobs[^1];
 	}
 
 	#endregion
@@ -899,7 +946,10 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		if (SelectedAction is ComplexJobItem complexItem)
 			complexItem.Jobs.Add(newAction);
 		else
-			Project.Jobs.Add(newAction);
+		{
+			JobCollection jobs = GetOwningJobCollection(SelectedAction) ?? Project.Jobs;
+			jobs.Add(newAction);
+		}
 
 		SelectedAction = newAction;
 	}
@@ -926,6 +976,17 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 		//
 		DoItCommand.NotifyCanExecuteChanged();
+	}
+
+	private JobCollection GetOwningJobCollection(JobItem job)
+	{
+		return job == null
+				? null
+			 : job.OwningJobCollectionReference == null
+				? Project.Jobs
+			 : job.OwningJobCollectionReference.TryGetTarget(out JobCollection jobs)
+				? jobs
+				: null;
 	}
 
 	#endregion
