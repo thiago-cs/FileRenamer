@@ -11,15 +11,16 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 
 	public string Pattern { get; }
 	public bool IgnoreCase { get; }
+	public bool UseRegex { get; }
 
 
 	#region Constructors
 
-	public ItemNameJobConditional(string pattern, bool ignoreCase)
-		: this(pattern, ignoreCase, new())
+	public ItemNameJobConditional(string pattern, bool ignoreCase, bool useRegex)
+		: this(pattern, ignoreCase, useRegex, new())
 	{ }
 
-	public ItemNameJobConditional(string pattern, bool ignoreCase, JobCollection jobs)
+	public ItemNameJobConditional(string pattern, bool ignoreCase, bool useRegex, JobCollection jobs)
 		: base(jobs)
 	{
 		if (string.IsNullOrEmpty(pattern))
@@ -27,6 +28,7 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 
 		Pattern = pattern;
 		IgnoreCase = ignoreCase;
+		UseRegex = useRegex;
 
 		UpdateDescription();
 	}
@@ -38,7 +40,9 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 	{
 		System.Text.StringBuilder sb = new();
 
-		sb.Append(@"if name matches """)
+		sb.Append(@"if name ")
+		  .Append(UseRegex ? "contains" : "matches the expression")
+		  .Append(@" """)
 		  .Append(Pattern)
 		  .Append('"');
 
@@ -71,7 +75,7 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 
 	public override JobItem DeepCopy()
 	{
-		return new ItemNameJobConditional(Pattern, IgnoreCase, Jobs.DeepCopy());
+		return new ItemNameJobConditional(Pattern, IgnoreCase, UseRegex, Jobs.DeepCopy());
 	}
 
 
@@ -83,6 +87,7 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 
 		await writer.WriteAttributeAsync(nameof(Pattern), Pattern).ConfigureAwait(false);
 		await writer.WriteAttributeAsync(nameof(IgnoreCase), IgnoreCase).ConfigureAwait(false);
+		await writer.WriteAttributeAsync(nameof(UseRegex), UseRegex).ConfigureAwait(false);
 
 		await writer.WriteElementAsync(nameof(Jobs), Jobs).ConfigureAwait(false);
 
@@ -94,6 +99,7 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 		bool isEnable = true;
 		string? pattern = null;
 		bool? ignoreCase = null;
+		bool? useRegex = null;
 
 		while (reader.MoveToNextAttribute())
 			switch (reader.Name)
@@ -108,6 +114,10 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 
 				case nameof(IgnoreCase):
 					ignoreCase = XmlSerializationHelper.ParseBoolean(reader.Value);
+					break;
+
+				case nameof(UseRegex):
+					useRegex = XmlSerializationHelper.ParseBoolean(reader.Value);
 					break;
 
 				default:
@@ -139,8 +149,9 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 		//
 		XmlSerializationHelper.ThrowIfNull(pattern, nameof(Pattern));
 		XmlSerializationHelper.ThrowIfNull(ignoreCase, nameof(IgnoreCase));
+		XmlSerializationHelper.ThrowIfNull(useRegex, nameof(UseRegex));
 
-		ItemNameJobConditional result = new(pattern, ignoreCase.Value, jobs ?? new()) { IsEnabled = isEnable };
+		ItemNameJobConditional result = new(pattern, ignoreCase.Value, useRegex.Value, jobs ?? new()) { IsEnabled = isEnable };
 		return result;
 	}
 
