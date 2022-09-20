@@ -80,8 +80,10 @@ public sealed partial class ReplaceRenameJobData : ObservableValidator
 
 		NewString = action.NewString;
 
-		RangeData = new(action?.StartIndex, action?.EndIndex);
-		ExecutionScope = GetScopeFromIndices(action?.StartIndex, action?.EndIndex);
+		RangeData = action.StartIndex != null && action.EndIndex != null
+				  ? new(action.StartIndex, action.EndIndex)
+				  : new();
+		ExecutionScope = GetScopeFromIndices(action.StartIndex, action.EndIndex);
 
 		Initialize();
 	}
