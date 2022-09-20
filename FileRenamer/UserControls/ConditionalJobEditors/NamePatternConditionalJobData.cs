@@ -39,7 +39,7 @@ public sealed partial class NamePatternConditionalJobData : ObservableValidator,
 	{
 		ArgumentNullException.ThrowIfNull(job, nameof(job));
 
-		Pattern.TextType = /*job.UseRegex ? TextType.Regex :*/ TextType.Text;
+		Pattern.TextType = job.UseRegex ? TextType.Regex : TextType.Text;
 		Pattern.IgnoreCase = job.IgnoreCase;
 		Pattern.Text = job.Pattern;
 
@@ -59,8 +59,12 @@ public sealed partial class NamePatternConditionalJobData : ObservableValidator,
 
 	public JobItem GetJobItem()
 	{
+		string pattern = Pattern.Text;
+		bool ignoreCase = Pattern.IgnoreCase;
+		bool useRegex = Pattern.TextType == TextType.Regex;
+
 		return oldJobs == null
-			 ? new ItemNameJobConditional(Pattern.Text, Pattern.IgnoreCase/*, Pattern.TextType == TextType.Regex*/)
-			 : new ItemNameJobConditional(Pattern.Text, Pattern.IgnoreCase/*, Pattern.TextType == TextType.Regex*/, oldJobs);
+			 ? new ItemNameJobConditional(pattern, ignoreCase, useRegex)
+			 : new ItemNameJobConditional(pattern, ignoreCase, useRegex, oldJobs);
 	}
 }
