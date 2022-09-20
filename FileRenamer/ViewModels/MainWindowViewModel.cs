@@ -171,9 +171,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		// 3.
 		try
 		{
-			using Stream stream = await file.OpenStreamForWriteAsync().ConfigureAwait(false);
+			using Stream stream = await file.OpenStreamForWriteAsync();
 			using StreamReader input = new(stream);
-			Project = await Project.ReadXmlAsync(input).ConfigureAwait(false);
+			Project = await Project.ReadXmlAsync(input);
 			HasUnsavedChanges = false;
 			projectPath = file.Path;
 		}
