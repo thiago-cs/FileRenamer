@@ -56,17 +56,26 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 
 	public override bool TestTarget(JobTarget target)
 	{
-		if (regex == null)
+		if (UseRegex)
 		{
-			RegexOptions regexOptions = RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture;
+			if (regex == null)
+			{
+				RegexOptions regexOptions = RegexOptions.CultureInvariant | RegexOptions.ExplicitCapture;
 
-			if (IgnoreCase)
-				regexOptions |= RegexOptions.IgnoreCase;
+				if (IgnoreCase)
+					regexOptions |= RegexOptions.IgnoreCase;
 
-			regex = new(Pattern, regexOptions);
+				regex = new(Pattern, regexOptions);
+			}
+
+			return regex.IsMatch(target.NewFileName);
 		}
+		else
+		{
+			StringComparison comparisonType = IgnoreCase ? StringComparison.InvariantCultureIgnoreCase : StringComparison.InvariantCulture;
 
-		return regex.IsMatch(target.NewFileName);
+			return target.NewFileName.Contains(Pattern, comparisonType);
+		}
 	}
 
 	public override void Run(JobTarget target, JobContext context)
