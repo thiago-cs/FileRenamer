@@ -1,5 +1,6 @@
-﻿using System.Xml;
-using FileRenamer.Core.Jobs.FileActions;
+﻿using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Xml;
 using FileRenamer.Core.Serialization;
 
 
@@ -13,11 +14,15 @@ public sealed class JobCollection : System.Collections.ObjectModel.ObservableCol
 	#region Constructors
 
 	public JobCollection()
-	{ }
+	{
+		CollectionChanged += Base_CollectionChanged;
+	}
 
 	public JobCollection(IEnumerable<JobItem> collection)
 		: base(collection)
-	{ }
+	{
+		CollectionChanged += Base_CollectionChanged;
+	}
 
 	#endregion
 
@@ -41,6 +46,41 @@ public sealed class JobCollection : System.Collections.ObjectModel.ObservableCol
 	{
 		return new(this.Select(item => item.DeepCopy()));
 	}
+
+
+	#region Nested job changed notification
+
+	public event PropertyChangedEventHandler? NestedJobChanged;
+
+	private void Base_CollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		//
+		if (e.OldItems != null)
+			foreach (JobItem job in e.OldItems)
+			{
+				job.PropertyChanged -= NestedItem_PropertyChanged;
+
+				if (job is ComplexJobItem complexJob)
+					complexJob.Jobs.NestedJobChanged -= NestedItem_PropertyChanged;
+			}
+
+		//
+		if (e.NewItems != null)
+			foreach (JobItem job in e.NewItems)
+			{
+				job.PropertyChanged += NestedItem_PropertyChanged;
+
+				if (job is ComplexJobItem complexJob)
+					complexJob.Jobs.NestedJobChanged += NestedItem_PropertyChanged;
+			}
+	}
+
+	private void NestedItem_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		NestedJobChanged?.Invoke(this, e);
+	}
+
+	#endregion
 
 
 	#region XML serialization
