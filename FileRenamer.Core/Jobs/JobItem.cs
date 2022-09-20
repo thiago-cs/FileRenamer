@@ -14,6 +14,8 @@ public abstract partial class JobItem : ObservableObject, IDeepCopyable<JobItem>
 	[ObservableProperty]
 	private string _description = "";
 
+	public WeakReference<JobCollection>? OwningJobCollectionReference { get; internal set; }
+
 
 	public abstract void Run(JobTarget target, JobContext context);
 

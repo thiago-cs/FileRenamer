@@ -18,7 +18,7 @@ public sealed class JobCollection : System.Collections.ObjectModel.ObservableCol
 		CollectionChanged += Base_CollectionChanged;
 	}
 
-	public JobCollection(IEnumerable<JobItem> collection)
+	private JobCollection(IEnumerable<JobItem> collection)
 		: base(collection)
 	{
 		CollectionChanged += Base_CollectionChanged;
@@ -58,6 +58,8 @@ public sealed class JobCollection : System.Collections.ObjectModel.ObservableCol
 		if (e.OldItems != null)
 			foreach (JobItem job in e.OldItems)
 			{
+				job.OwningJobCollectionReference = null;
+
 				job.PropertyChanged -= NestedItem_PropertyChanged;
 
 				if (job is ComplexJobItem complexJob)
@@ -68,6 +70,8 @@ public sealed class JobCollection : System.Collections.ObjectModel.ObservableCol
 		if (e.NewItems != null)
 			foreach (JobItem job in e.NewItems)
 			{
+				job.OwningJobCollectionReference = new(this);
+
 				job.PropertyChanged += NestedItem_PropertyChanged;
 
 				if (job is ComplexJobItem complexJob)
