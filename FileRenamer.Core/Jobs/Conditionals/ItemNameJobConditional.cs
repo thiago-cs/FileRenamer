@@ -31,6 +31,8 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 		UseRegex = useRegex;
 
 		UpdateDescription();
+
+		Jobs.CollectionChanged += Jobs_CollectionChanged;
 	}
 
 	#endregion
@@ -76,6 +78,12 @@ public sealed class ItemNameJobConditional : ConditionalJobItem
 	public override JobItem DeepCopy()
 	{
 		return new ItemNameJobConditional(Pattern, IgnoreCase, UseRegex, Jobs.DeepCopy());
+	}
+
+
+	private void Jobs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		OnPropertyChanged("Count");
 	}
 
 
