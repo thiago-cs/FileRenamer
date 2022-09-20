@@ -37,13 +37,13 @@
 		</MenuFlyout>
 
 		<DataTemplate x:Key="ItemDataTemplate" x:DataType="jobs:JobTarget" >
-			<ListViewItem MinHeight="28" Margin="0 -1" ContextFlyout="{StaticResource MenuFlyout}" ToolTipService.ToolTip="{x:Bind FileName}" >
+			<ListViewItem MinHeight="28" Margin="0 -1" ContextFlyout="{StaticResource MenuFlyout}" >
 				<RelativePanel>
 					<SymbolIcon Name="Icon" Width="16" Height="16" Symbol="{x:Bind Converter={StaticResource TargetToSymbolConverter}}"
 								Foreground="{x:Bind Converter={StaticResource TargetToBrushConverter}}" />
 
 					<TextBlock RelativePanel.RightOf="Icon" Margin="{StaticResource XSmallLeftMargin}" FontSize="12"
-							   Text="{x:Bind NewFileName}" TextTrimming="CharacterEllipsis" />
+							   Text="{x:Bind NewFileName}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{x:Bind FileName}" />
 				</RelativePanel>
 			</ListViewItem>
 		</DataTemplate>
