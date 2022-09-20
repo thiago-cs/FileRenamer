@@ -114,7 +114,8 @@ public sealed partial class ReplaceRenameJobData : ObservableValidator
 		{
 			(BeginningIndex, FileExtensionIndex) => ExecutionScope.FileName,
 			(FileExtensionIndex, EndIndex) => ExecutionScope.FileExtension,
-			(BeginningIndex, EndIndex) => ExecutionScope.WholeInput,
+			(BeginningIndex, EndIndex) or
+			(null, null) => ExecutionScope.WholeInput,
 			_ => ExecutionScope.CustomRange,
 		};
 	}
