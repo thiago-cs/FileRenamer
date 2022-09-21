@@ -8,7 +8,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class ReplaceActionData : ObservableValidator
+public sealed partial class ReplaceRenameJobData : ObservableValidator, IJobEditorData
 {
 	#region Constants
 
@@ -64,7 +64,7 @@ public sealed partial class ReplaceActionData : ObservableValidator
 
 	#region Constructors
 
-	public ReplaceActionData()
+	public ReplaceRenameJobData()
 	{
 		RangeData = new();
 		ExecutionScope = ExecutionScope.FileName;
@@ -72,7 +72,7 @@ public sealed partial class ReplaceActionData : ObservableValidator
 		Initialize();
 	}
 
-	public ReplaceActionData(ReplaceAction action)
+	public ReplaceRenameJobData(ReplaceAction action)
 	{
 		OldString.TextType = action.UseRegex ? TextType.Regex : TextType.Text;
 		OldString.IgnoreCase = action.IgnoreCase;
@@ -80,8 +80,10 @@ public sealed partial class ReplaceActionData : ObservableValidator
 
 		NewString = action.NewString;
 
-		RangeData = new(action?.StartIndex, action?.EndIndex);
-		ExecutionScope = GetScopeFromIndices(action?.StartIndex, action?.EndIndex);
+		RangeData = action.StartIndex != null && action.EndIndex != null
+				  ? new(action.StartIndex, action.EndIndex)
+				  : new();
+		ExecutionScope = GetScopeFromIndices(action.StartIndex, action.EndIndex);
 
 		Initialize();
 	}
@@ -96,11 +98,11 @@ public sealed partial class ReplaceActionData : ObservableValidator
 	#endregion
 
 
-	public ReplaceAction GetRenameAction()
+	public Core.Jobs.JobItem GetJobItem()
 	{
 		return ExecutionScope switch
 		{
-			ExecutionScope.WholeInput => new(OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
+			ExecutionScope.WholeInput => new ReplaceAction(OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
 			ExecutionScope.FileName => new(new BeginningIndex(), new FileExtensionIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
 			ExecutionScope.FileExtension => new(new FileExtensionIndex(), new EndIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
 			ExecutionScope.CustomRange => new(RangeData.StartIndexData.GetIIndex(), RangeData.EndIndexData.GetIIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
@@ -114,7 +116,8 @@ public sealed partial class ReplaceActionData : ObservableValidator
 		{
 			(BeginningIndex, FileExtensionIndex) => ExecutionScope.FileName,
 			(FileExtensionIndex, EndIndex) => ExecutionScope.FileExtension,
-			(BeginningIndex, EndIndex) => ExecutionScope.WholeInput,
+			(BeginningIndex, EndIndex) or
+			(null, null) => ExecutionScope.WholeInput,
 			_ => ExecutionScope.CustomRange,
 		};
 	}

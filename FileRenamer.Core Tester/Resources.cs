@@ -61,7 +61,7 @@ internal static class Resources
 
 
 
-	public static readonly RenameActionBase[] actions =
+	public static readonly RenameFileJob[] actions =
 	{
 		new InsertAction(new BeginningIndex(), (StringValueSource)"Once upon a time,"),
 		new InsertAction(new EndIndex(), (StringValueSource)"The End."),

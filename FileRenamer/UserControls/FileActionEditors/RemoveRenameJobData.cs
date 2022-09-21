@@ -8,7 +8,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class RemoveActionData : ObservableValidator
+public sealed partial class RemoveRenameJobData : ObservableValidator, IJobEditorData
 {
 	#region Constants
 
@@ -67,7 +67,7 @@ public sealed partial class RemoveActionData : ObservableValidator
 	#region EndIndex
 
 	[NoErrors]
-	[CustomValidation(typeof(RemoveActionData), nameof(ValidateIndices))]
+	[CustomValidation(typeof(RemoveRenameJobData), nameof(ValidateIndices))]
 	public IndexEditorData EndIndexData { get; }
 
 	[ObservableProperty]
@@ -91,7 +91,7 @@ public sealed partial class RemoveActionData : ObservableValidator
 
 	[ObservableProperty]
 	[NotifyDataErrorInfo]
-	[CustomValidation(typeof(RemoveActionData), nameof(ValidateCount))]
+	[CustomValidation(typeof(RemoveRenameJobData), nameof(ValidateCount))]
 	private int _count = 1;
 
 	[ObservableProperty]
@@ -102,7 +102,7 @@ public sealed partial class RemoveActionData : ObservableValidator
 
 	#region Constructors
 
-	public RemoveActionData()
+	public RemoveRenameJobData()
 	{
 		StartIndexData = new();
 		EndIndexData = new();
@@ -110,7 +110,7 @@ public sealed partial class RemoveActionData : ObservableValidator
 		Initialize();
 	}
 
-	public RemoveActionData(RemoveAction action)
+	public RemoveRenameJobData(RemoveAction action)
 	{
 		StartIndexData = new(action.StartIndex);
 		EndIndexData = new(action.EndIndex);
@@ -127,11 +127,22 @@ public sealed partial class RemoveActionData : ObservableValidator
 	#endregion
 
 
+	public Core.Jobs.JobItem GetJobItem()
+	{
+		return RangeType switch
+		{
+			TextRangeType.Count => new RemoveAction(StartIndexData.GetIIndex(), Count),
+			TextRangeType.Range => new RemoveAction(StartIndexData.GetIIndex(), EndIndexData.GetIIndex()),
+			_ => throw new System.NotImplementedException(),
+		};
+	}
+
+
 	#region Validation
 
 	public static ValidationResult ValidateIndices(IndexEditorData indexData, ValidationContext context)
 	{
-		RemoveActionData instance = context.ObjectInstance as RemoveActionData;
+		RemoveRenameJobData instance = context.ObjectInstance as RemoveRenameJobData;
 
 		if (instance.RangeType != TextRangeType.Range)
 			return ValidationResult.Success;
@@ -162,7 +173,7 @@ public sealed partial class RemoveActionData : ObservableValidator
 
 	public static ValidationResult ValidateCount(int count, ValidationContext context)
 	{
-		RemoveActionData instance = context.ObjectInstance as RemoveActionData;
+		RemoveRenameJobData instance = context.ObjectInstance as RemoveRenameJobData;
 		string errorMessage = null;
 
 		if (count == 0)

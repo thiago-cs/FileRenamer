@@ -9,7 +9,7 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #if DEBUG
 [System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 #endif
-public sealed class ReplaceAction : RenameActionBase
+public sealed class ReplaceAction : RenameFileJob
 {
 	#region Properties and fields
 
@@ -82,7 +82,7 @@ public sealed class ReplaceAction : RenameActionBase
 						   + input[endIndex..];
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		bool newIsEmpty = string.IsNullOrEmpty(NewString);
 		System.Text.StringBuilder sb = new();
@@ -106,7 +106,7 @@ public sealed class ReplaceAction : RenameActionBase
 		Description = sb.ToString();
 	}
 
-	public override RenameActionBase DeepCopy()
+	public override RenameFileJob DeepCopy()
 	{
 		return StartIndex != null && EndIndex != null
 				? new ReplaceAction(StartIndex, EndIndex, OldString, NewString, IgnoreCase, UseRegex)
@@ -161,7 +161,7 @@ public sealed class ReplaceAction : RenameActionBase
 		await writer.WriteEndElementAsync().ConfigureAwait(false);
 	}
 
-	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	public static async Task<RenameFileJob> ReadXmlAsync(XmlReader reader)
 	{
 		bool isEnable = true;
 		string? oldString = null;

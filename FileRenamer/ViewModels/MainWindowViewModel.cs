@@ -14,9 +14,11 @@ using CommunityToolkit.Mvvm.Input;
 using FileRenamer.Core;
 using FileRenamer.Core.FileSystem;
 using FileRenamer.Core.Jobs;
+using FileRenamer.Core.Jobs.Conditionals;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Models;
 using FileRenamer.UserControls.ActionEditors;
+using FileRenamer.UserControls.ConditionalJobEditors;
 
 
 namespace FileRenamer.ViewModels;
@@ -41,8 +43,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	{
 		if (value != null)
 		{
-			value.PropertyChanged += Project_PropertyChanged;
-			value.Jobs.CollectionChanged -= Actions_CollectionChanged;
+			value.PropertyChanged -= Project_PropertyChanged;
+			value.Jobs.CollectionChanged -= Jobs_CollectionChanged;
+			value.Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
 		}
 	}
 
@@ -51,7 +54,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		if (value != null)
 		{
 			value.PropertyChanged += Project_PropertyChanged;
-			value.Jobs.CollectionChanged += Actions_CollectionChanged;
+			value.Jobs.CollectionChanged += Jobs_CollectionChanged;
+			value.Jobs.NestedJobChanged += Jobs_NestedJobChanged;
+
 			UpdateCommandStates();
 		}
 	}
@@ -63,14 +68,12 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	}
 
 	[ObservableProperty]
-	private IJobItem _selectedAction;
+	private JobItem _selectedAction;
 
-	partial void OnSelectedActionChanged(IJobItem value)
+	partial void OnSelectedActionChanged(JobItem value)
 	{
 		UpdateCommandStates();
 	}
-
-	public int SelectedIndex { get; set; } = -1;
 
 	#endregion
 
@@ -169,7 +172,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		{
 			using Stream stream = await file.OpenStreamForWriteAsync();
 			using StreamReader input = new(stream);
-			Project = await Project.ReadXmlAsync(input).ConfigureAwait(false);
+			Project = await Project.ReadXmlAsync(input);
 			HasUnsavedChanges = false;
 			projectPath = file.Path;
 		}
@@ -313,7 +316,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Manage existing actions commands
+	#region Manage actions commands
 
 	#region Move Up
 
@@ -330,18 +333,26 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	public void MoveSelectedActionUp()
 	{
-		if (SelectedIndex < 1)
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
+
+		if (jobs == null)
 		{
 			// Oops!
 			return;
 		}
 
-		JobCollection actions = Project.Jobs;
-		int index = SelectedIndex;
+		int index = jobs.IndexOf(SelectedAction);
 
-		var previousAction = actions[index - 1];
-		actions.RemoveAt(index - 1);
-		actions.Insert(index, previousAction);
+		if (index < 1)
+		{
+			// Oops!
+			return;
+		}
+
+		//jobs.Move(index, index - 1);
+		JobItem previousJob = jobs[index - 1];
+		jobs.RemoveAt(index - 1);
+		jobs.Insert(index, previousJob);
 
 		HasUnsavedChanges = true;
 	}
@@ -363,18 +374,26 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	public void MoveSelectedActionDown()
 	{
-		if (SelectedIndex == -1 || Project.Jobs.Count - 2 < SelectedIndex)
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
+
+		if (jobs == null)
 		{
 			// Oops!
 			return;
 		}
 
-		JobCollection actions = Project.Jobs;
-		int index = SelectedIndex;
+		int index = jobs.IndexOf(SelectedAction);
 
-		var nextAction = actions[index + 1];
-		actions.RemoveAt(index + 1);
-		actions.Insert(index, nextAction);
+		if (index == -1 || jobs.Count - 2 < index)
+		{
+			// Oops!
+			return;
+		}
+
+		//jobs.Move(index, index + 1);
+		JobItem nextJob = jobs[index + 1];
+		jobs.RemoveAt(index + 1);
+		jobs.Insert(index, nextJob);
 
 		HasUnsavedChanges = true;
 	}
@@ -403,27 +422,38 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			return;
 		}
 
-		//
-		IActionEditor actionEditor = SelectedAction switch
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
+
+		if (jobs == null)
 		{
-			InsertAction action => new InsertActionEditor(action),
-			RemoveAction action => new RemoveActionEditor(action),
-			ReplaceAction action => new ReplaceActionEditor(action),
-			ChangeRangeCaseAction action => new ChangeCaseActionEditor(action),
-			ChangeStringCaseAction action => new ChangeCaseActionEditor(action),
-			MoveStringAction action => new MoveStringActionEditor(action),
+			// Oops!
+			return;
+		}
+
+		//
+		IJobEditor<IJobEditorData> jobEditor = SelectedAction switch
+		{
+			InsertAction job => new InsertRenameJobEditor(job),
+			RemoveAction job => new RemoveRenameJobEditor(job),
+			ReplaceAction job => new ReplaceRenameJobEditor(job),
+			ChangeRangeCaseAction job => new ChangeCaseRenameJobEditor(job),
+			ChangeStringCaseAction job => new ChangeCaseRenameJobEditor(job),
+			MoveStringAction job => new MoveStringRenameJobEditor(job),
+
+			ItemNameJobConditional job => new NamePatternConditionalJobEditor(job),
+
 			_ => null,
 		};
 
 		//
-		IJobItem item = await EditJobItemInDialogAsync(actionEditor);
+		JobItem item = await EditJobItemInDialogAsync(jobEditor);
 
 		if (item == null)
 			return;
 
-		int index = Project.Jobs.IndexOf(SelectedAction);
-		Project.Jobs.RemoveAt(index);
-		Project.Jobs.Insert(index, item);
+		int index = jobs.IndexOf(SelectedAction);
+		jobs.RemoveAt(index);
+		jobs.Insert(index, item);
 
 		HasUnsavedChanges = true;
 	}
@@ -451,12 +481,25 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			return;
 		}
 
-		if (SelectedAction is Core.Models.IDeepCopyable<RenameActionBase> copyable)
-		{
-			Project.Jobs.Insert(SelectedIndex + 1, copyable.DeepCopy());
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
 
-			HasUnsavedChanges = true;
+		if (jobs == null)
+		{
+			// Oops!
+			return;
 		}
+
+		int index = jobs.IndexOf(SelectedAction);
+
+		if (index == -1)
+		{
+			// Oops!
+			return;
+		}
+
+		jobs.Insert(index + 1, SelectedAction.DeepCopy());
+
+		HasUnsavedChanges = true;
 	}
 
 	#endregion
@@ -482,7 +525,15 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			return;
 		}
 
-		Project.Jobs.RemoveAt(SelectedIndex);
+		JobCollection jobs = GetOwningJobCollection(SelectedAction);
+
+		if (jobs == null)
+		{
+			// Oops!
+			return;
+		}
+
+		jobs.Remove(SelectedAction);
 
 		HasUnsavedChanges = true;
 	}
@@ -513,7 +564,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Add new actions commands
+	#region Add actions commands
 
 	#region Add InsertAction
 
@@ -529,7 +580,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddInsertActionAsync()
 	{
-		await EditAndAddJobItemAsync(new InsertActionEditor());
+		await EditAndAddJobItemAsync(new InsertRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -549,10 +600,10 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddInsertCounterActionAsync()
 	{
-		InsertActionEditor actionEditor = new();
-		actionEditor.Data.ValueSourceType = UserControls.InputControls.ValueSourceType.Counter;
+		InsertRenameJobEditor jobEditor = new();
+		jobEditor.Data.ValueSourceType = UserControls.InputControls.ValueSourceType.Counter;
 
-		await EditAndAddJobItemAsync(actionEditor);
+		await EditAndAddJobItemAsync(jobEditor);
 		HasUnsavedChanges = true;
 	}
 
@@ -572,7 +623,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddRemoveActionAsync()
 	{
-		await EditAndAddJobItemAsync(new RemoveActionEditor());
+		await EditAndAddJobItemAsync(new RemoveRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -592,7 +643,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddReplaceActionAsync()
 	{
-		await EditAndAddJobItemAsync(new ReplaceActionEditor());
+		await EditAndAddJobItemAsync(new ReplaceRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -612,7 +663,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddConvertCaseActionAsync()
 	{
-		await EditAndAddJobItemAsync(new ChangeCaseActionEditor());
+		await EditAndAddJobItemAsync(new ChangeCaseRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -632,7 +683,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddMoveStringActionAsync()
 	{
-		await EditAndAddJobItemAsync(new MoveStringActionEditor());
+		await EditAndAddJobItemAsync(new MoveStringRenameJobEditor());
 		HasUnsavedChanges = true;
 	}
 
@@ -640,7 +691,33 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Pick folder
+	#region Add conditional item commands
+
+	#region Add ItemNameJobConditional
+
+	private AsyncUICommand _addConditionalCommand;
+	public AsyncUICommand AddConditionalCommand => _addConditionalCommand ??= new(
+		description: "Add a name pattern check",
+		label: "name pattern",
+		accessKey: "",
+		modifier: null,
+		acceleratorKey: null,
+		icon: CreateIconFromSymbol(Symbol.Street),
+		execute: AddConditionalAsync);
+
+	private async Task AddConditionalAsync()
+	{
+		NamePatternConditionalJobEditor jobEditor = new();
+
+		await EditAndAddJobItemAsync(jobEditor);
+		HasUnsavedChanges = true;
+	}
+
+	#endregion
+
+	#endregion
+
+	#region Pick folder command
 
 	/// <summary>
 	/// Gets or sets the current working directory on which file operations are run.
@@ -750,17 +827,23 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	public bool CanExecuteWhenSelectedActionIsNotNull()
 	{
-		return Project.Jobs.Count != 0 && SelectedAction != null;
+		return /*Project.Jobs.Count != 0 &&*/ SelectedAction != null;
 	}
 
 	public bool CanExecuteWhenSelectedActionIsNotFirst()
 	{
-		return Project.Jobs.Count != 0 && SelectedAction != null && SelectedAction != Project.Jobs[0];
+		return SelectedAction != null
+			&& GetOwningJobCollection(SelectedAction) is JobCollection jobs
+			&& jobs.Count != 0
+			&& SelectedAction != jobs[0];
 	}
 
 	public bool CanExecuteWhenSelectedActionIsNotLast()
 	{
-		return Project.Jobs.Count != 0 && SelectedAction != null && SelectedAction != Project.Jobs[^1];
+		return SelectedAction != null
+			&& GetOwningJobCollection(SelectedAction) is JobCollection jobs
+			&& jobs.Count != 0
+			&& SelectedAction != jobs[^1];
 	}
 
 	#endregion
@@ -806,9 +889,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Action and ActionCollection event handlers
+	#region JobCollection event handlers
 
-	private void Actions_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+	private void Jobs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
 		// 1.
 		UpdateCommandStates();
@@ -816,41 +899,17 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 		// 2. 
 		_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
-
-		// 3. 
-		switch (e.Action)
-		{
-			case NotifyCollectionChangedAction.Add:
-				foreach (RenameActionBase action in e.NewItems)
-					action.PropertyChanged += Action_PropertyChanged;
-				break;
-
-			case NotifyCollectionChangedAction.Remove:
-				foreach (RenameActionBase action in e.OldItems)
-					action.PropertyChanged -= Action_PropertyChanged;
-				break;
-
-			case NotifyCollectionChangedAction.Replace:
-				foreach (RenameActionBase action in e.NewItems)
-					action.PropertyChanged += Action_PropertyChanged;
-
-				foreach (RenameActionBase action in e.OldItems)
-					action.PropertyChanged -= Action_PropertyChanged;
-
-				break;
-
-			case NotifyCollectionChangedAction.Reset:
-			case NotifyCollectionChangedAction.Move:
-			default:
-				break;
-		}
 	}
 
-	private void Action_PropertyChanged(object sender, PropertyChangedEventArgs e)
+	private void Jobs_NestedJobChanged(object sender, PropertyChangedEventArgs e)
 	{
-		UpdateTestOutput();
+		// 1.
 		UpdatePreview();
 
+		// 2. 
+		UpdateTestOutput();
+
+		// 3.
 		HasUnsavedChanges = true;
 	}
 
@@ -858,7 +917,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#region Helper functions
 
-	private async Task<IJobItem> EditJobItemInDialogAsync(IActionEditor editor)
+	private async Task<JobItem> EditJobItemInDialogAsync<T>(IJobEditor<T> editor) where T : IJobEditorData
 	{
 		if (editor == null)
 		{
@@ -872,23 +931,41 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		if (result != ContentDialogResult.Primary)
 			return null;
 
-		if (!editor.IsValid)
+		if (editor.Data.HasErrors)
 		{
 			// Oops!
 			return null;
 		}
 
-		return editor.GetRenameAction();
+		try
+		{
+			return editor.Data.GetJobItem();
+		}
+#pragma warning disable CS0168 // Variable is declared but never used
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+		catch (Exception ex)
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+#pragma warning restore CS0168 // Variable is declared but never used
+		{
+			throw;
+		}
 	}
 
-	private async Task EditAndAddJobItemAsync(IActionEditor actionEditor)
+	private async Task EditAndAddJobItemAsync<T>(IJobEditor<T> jobEditor) where T : IJobEditorData
 	{
-		IJobItem newAction = await EditJobItemInDialogAsync(actionEditor);
+		JobItem newAction = await EditJobItemInDialogAsync(jobEditor);
 
 		if (newAction == null)
 			return;
 
-		Project.Jobs.Add(newAction);
+		if (SelectedAction is ComplexJobItem complexItem)
+			complexItem.Jobs.Add(newAction);
+		else
+		{
+			JobCollection jobs = GetOwningJobCollection(SelectedAction) ?? Project.Jobs;
+			jobs.Add(newAction);
+		}
+
 		SelectedAction = newAction;
 	}
 
@@ -914,6 +991,17 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 		//
 		DoItCommand.NotifyCanExecuteChanged();
+	}
+
+	private JobCollection GetOwningJobCollection(JobItem job)
+	{
+		return job == null
+				? null
+			 : job.OwningJobCollectionReference == null
+				? Project.Jobs
+			 : job.OwningJobCollectionReference.TryGetTarget(out JobCollection jobs)
+				? jobs
+				: null;
 	}
 
 	#endregion

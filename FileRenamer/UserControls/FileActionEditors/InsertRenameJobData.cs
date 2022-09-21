@@ -9,7 +9,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class InsertActionData : ObservableValidator
+public sealed partial class InsertRenameJobData : ObservableValidator, IJobEditorData
 {
 	#region Value Source Type
 
@@ -70,7 +70,7 @@ public sealed partial class InsertActionData : ObservableValidator
 
 	#region Constructors
 
-	public InsertActionData()
+	public InsertRenameJobData()
 	{
 		ValueSourceViewModel = new StringValueSourceViewModel();
 		IndexData = new();
@@ -78,7 +78,7 @@ public sealed partial class InsertActionData : ObservableValidator
 		Initialize();
 	}
 
-	public InsertActionData(InsertAction insertAction)
+	public InsertRenameJobData(InsertAction insertAction)
 	{
 		_valueSourceType = ToValueSourceType(insertAction.ValueSource);
 		OnPropertyChanged(nameof(ValueSourceType));
@@ -98,6 +98,18 @@ public sealed partial class InsertActionData : ObservableValidator
 	}
 
 	#endregion
+
+
+	public Core.Jobs.JobItem GetJobItem()
+	{
+		if (HasErrors)
+		{
+			// Oops!
+			return null;
+		}
+
+		return new InsertAction(IndexData.GetIIndex(), ValueSource);
+	}
 
 
 	#region Static helpers

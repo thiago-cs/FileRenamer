@@ -1,5 +1,5 @@
 ﻿<UserControl
-	x:Class="FileRenamer.UserControls.ActionEditors.InsertActionEditor"
+	x:Class="FileRenamer.UserControls.ActionEditors.InsertRenameJobEditor"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:vsvm="using:FileRenamer.ViewModels.ValueSources"
@@ -48,6 +48,14 @@
 							<TextBox Width="{StaticResource InputBoxWidth}" Text="{x:Bind Symbols, Mode=TwoWay}" PlaceholderText="type here..." CharacterSpacing="250" />
 						</StackPanel>
 					</CheckBox>
+
+					<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}"
+							   Text="{x:Bind OptionsErrorMessage, Mode=OneWay}"
+							   Visibility="{x:Bind OptionsErrorMessage, Mode=OneWay, Converter={StaticResource VisibleIfNotNullConverter}}" />
+
+					<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}"
+							   Text="{x:Bind SymbolsErrorMessage, Mode=OneWay}"
+							   Visibility="{x:Bind SymbolsErrorMessage, Mode=OneWay, Converter={StaticResource VisibleIfNotNullConverter}}" />
 				</StackPanel>
 			</StackPanel>
 		</DataTemplate>
@@ -146,7 +154,6 @@
 													NumberToWordsFormatter="{StaticResource NumberToWordsFormatterDataTemplate}"
 													PaddedNumberFormatter="{StaticResource PaddedNumberFormatterDataTemplate}"
 													RomanNumberFormatter="{StaticResource RomanNumberFormatterDataTemplate}" />
-
 		<!--#endregion-->
 
 	</UserControl.Resources>
@@ -161,7 +168,7 @@
 
 				<StackPanel Spacing="{StaticResource RowSpacing}" >
 					<ComboBox Width="{StaticResource InputBoxWidth}" PlaceholderText="choose..." 
-							  ItemsSource="{x:Bind uae:InsertActionData.ValueSourceTypes}"
+							  ItemsSource="{x:Bind uae:InsertRenameJobData.ValueSourceTypes}"
 							  ItemTemplate="{StaticResource EnumDescriptionDataTemplate}"
 							  SelectedItem="{x:Bind Data.ValueSourceType, Mode=TwoWay}" />
 

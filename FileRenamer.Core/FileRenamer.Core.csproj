@@ -11,8 +11,4 @@
     <PackageReference Include="Humanizer.Core" Version="2.14.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="FileOperations\" />
-  </ItemGroup>
-
 </Project>

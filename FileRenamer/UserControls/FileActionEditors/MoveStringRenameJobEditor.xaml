@@ -1,5 +1,5 @@
 ﻿<UserControl
-	x:Class="FileRenamer.UserControls.ActionEditors.MoveStringActionEditor"
+	x:Class="FileRenamer.UserControls.ActionEditors.MoveStringRenameJobEditor"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:uic="using:FileRenamer.UserControls.InputControls" >

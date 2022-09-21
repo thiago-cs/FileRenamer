@@ -9,7 +9,7 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #if DEBUG
 [System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 #endif
-public sealed class MoveStringAction : RenameActionBase
+public sealed class MoveStringAction : RenameFileJob
 {
 	#region Properties and fields
 
@@ -95,7 +95,7 @@ public sealed class MoveStringAction : RenameActionBase
 		target.NewFileName = (input[..index] + input[endIndex..]).Insert(index + count, value);
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		int count = Math.Abs(Count);
 
@@ -117,7 +117,7 @@ public sealed class MoveStringAction : RenameActionBase
 		Description = sb.ToString();
 	}
 
-	public override RenameActionBase DeepCopy()
+	public override RenameFileJob DeepCopy()
 	{
 		return new MoveStringAction(Text, IgnoreCase, UseRegex, Count);
 	}
@@ -140,7 +140,7 @@ public sealed class MoveStringAction : RenameActionBase
 		await writer.WriteEndElementAsync().ConfigureAwait(false);
 	}
 
-	public static Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	public static Task<RenameFileJob> ReadXmlAsync(XmlReader reader)
 	{
 		bool isEnable = true;
 		string? text = null;
@@ -186,7 +186,7 @@ public sealed class MoveStringAction : RenameActionBase
 		XmlSerializationHelper.ThrowIfNull(length, nameof(Count));
 
 		MoveStringAction result = new(text, ignoreCase.Value, useRegex.Value, length.Value) { IsEnabled = isEnable };
-		return Task.FromResult(result as RenameActionBase);
+		return Task.FromResult(result as RenameFileJob);
 	}
 
 	#endregion

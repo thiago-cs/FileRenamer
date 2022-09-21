@@ -13,7 +13,7 @@
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="UserControls\ActionEditors\MoveStringActionEditor.xaml" />
+    <None Remove="UserControls\FileActionEditors\MoveStringRenameJobEditor.xaml" />
     <None Remove="UserControls\InputControls\ChangeCaseActionEditor.xaml" />
     <None Remove="UserControls\InputControls\ReplaceActionEditor.xaml" />
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
@@ -48,7 +48,7 @@
     <ProjectReference Include="..\FileRenamer.Core\FileRenamer.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UserControls\ActionEditors\ChangeCaseActionEditor.xaml">
+    <Page Update="UserControls\FileActionEditors\ChangeCaseRenameJobEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -63,14 +63,14 @@
     <Page Update="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="UserControls\ActionEditors\MoveStringActionEditor.xaml">
+    <Page Update="UserControls\FileActionEditors\MoveStringRenameJobEditor.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UserControls\InputControls\IndexEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Update="UserControls\ActionEditors\RemoveActionEditor.xaml">
+    <Page Update="UserControls\FileActionEditors\RemoveRenameJobEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
@@ -80,7 +80,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="UserControls\ActionEditors\ReplaceActionEditor.xaml">
+    <Page Update="UserControls\FileActionEditors\ReplaceRenameJobEditor.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

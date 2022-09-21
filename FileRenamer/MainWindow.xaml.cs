@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml.Controls;
 using FileRenamer.ViewModels;
+using FileRenamer.UserControls.ActionEditors;
 
 
 namespace FileRenamer;
@@ -31,7 +32,7 @@ public sealed partial class MainWindow
 		return result;
 	}
 
-	public async Task<ContentDialogResult> ShowJobEditorDialogAsync(UserControls.ActionEditors.IActionEditor editor)
+	public async Task<ContentDialogResult> ShowJobEditorDialogAsync<T>(IJobEditor<T> editor) where T : IJobEditorData
 	{
 		dialog.DataContext = editor;
 

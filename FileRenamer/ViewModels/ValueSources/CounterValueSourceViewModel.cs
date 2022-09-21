@@ -1,10 +1,11 @@
-﻿using FileRenamer.Core.ValueSources;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Core.ValueSources;
 using FileRenamer.Core.ValueSources.NumberFormatters;
 
 
 namespace FileRenamer.ViewModels.ValueSources;
 
-internal sealed class CounterValueSourceViewModel : CommunityToolkit.Mvvm.ComponentModel.ObservableValidator, IValueSourceViewModel
+internal sealed partial class CounterValueSourceViewModel : ObservableValidator, IValueSourceViewModel
 {
 	public static readonly NumberFormatterType[] ValueSourceTypes = System.Enum.GetValues<NumberFormatterType>();
 
@@ -13,23 +14,21 @@ internal sealed class CounterValueSourceViewModel : CommunityToolkit.Mvvm.Compon
 
 	public int Increment { get; set; }
 
+	[ObservableProperty]
 	private NumberFormatterType? _numberFormatterType;
-	public NumberFormatterType? NumberFormatterType
-	{
-		get => _numberFormatterType;
 
-		set
-		{
-			if (SetProperty(ref _numberFormatterType, value))
-				Formatter = ToNumberFormatter(value);
-		}
+	partial void OnNumberFormatterTypeChanged(NumberFormatterType? value)
+	{
+		Formatter = ToNumberFormatter(value);
 	}
 
+	[ObservableProperty]
 	private INumberFormatter _formatter;
-	public INumberFormatter Formatter { get => _formatter; set => SetProperty(ref _formatter, value); }
 
 	public IValueSource ValueSource => new CounterValueSource() { InitialValue = InitialValue, Increment = Increment, Formatter = Formatter };
 
+
+	#region Constructors
 
 	public CounterValueSourceViewModel() : this(new())
 	{ }
@@ -42,6 +41,10 @@ internal sealed class CounterValueSourceViewModel : CommunityToolkit.Mvvm.Compon
 		Formatter = valueSource.Formatter;
 	}
 
+	#endregion
+
+
+	#region Private helpers
 
 	private static INumberFormatter ToNumberFormatter(NumberFormatterType? value)
 	{
@@ -66,4 +69,6 @@ internal sealed class CounterValueSourceViewModel : CommunityToolkit.Mvvm.Compon
 			_ => throw new System.NotImplementedException(),
 		};
 	}
+
+	#endregion
 }

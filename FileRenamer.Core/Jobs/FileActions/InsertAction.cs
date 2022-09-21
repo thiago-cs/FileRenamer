@@ -10,7 +10,7 @@ namespace FileRenamer.Core.Jobs.FileActions;
 #if DEBUG
 [System.Diagnostics.DebuggerDisplay($"{{{nameof(GetDebuggerDisplay)}(),nq}}")]
 #endif
-public sealed class InsertAction : RenameActionBase
+public sealed class InsertAction : RenameFileJob
 {
 	#region Properties and fields
 
@@ -52,12 +52,12 @@ public sealed class InsertAction : RenameActionBase
 		return;
 	}
 
-	public override void UpdateDescription()
+	protected override void UpdateDescription()
 	{
 		Description = @$"insert {ValueSource.Description} {InsertIndex.Description.ToString(includePreposition: true)}";
 	}
 
-	public override RenameActionBase DeepCopy()
+	public override RenameFileJob DeepCopy()
 	{
 		return new InsertAction(InsertIndex, ValueSource);
 	}
@@ -79,7 +79,7 @@ public sealed class InsertAction : RenameActionBase
 		await writer.WriteEndElementAsync().ConfigureAwait(false);
 	}
 
-	public static async Task<RenameActionBase> ReadXmlAsync(XmlReader reader)
+	public static async Task<RenameFileJob> ReadXmlAsync(XmlReader reader)
 	{
 		//
 		bool isEnable = true;

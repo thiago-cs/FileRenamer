@@ -18,7 +18,9 @@
 			</ResourceDictionary.MergedDictionaries>
 
 			<!-- Other app resources here -->
+			<c:InvertedBooleanConverter x:Key="InvertedBooleanConverter" />
 			<c:EnumToDescriptionConverter x:Key="EnumToDescriptionConverter" />
+			<c:NullToVisibilityConverter x:Key="VisibleIfNotNullConverter" />
 			<x:Double x:Key="ContentDialogMaxWidth">1600</x:Double>
 			<x:Double x:Key="ContentDialogMaxHeight">1000</x:Double>
 
