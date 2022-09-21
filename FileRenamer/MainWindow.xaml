@@ -2,7 +2,7 @@
 	x:Class="FileRenamer.MainWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:a="using:FileRenamer.Core.Jobs.FileActions"
+	xmlns:jobs="using:FileRenamer.Core.Jobs"
 	xmlns:comp="using:FileRenamer.Views.Components"
 	xmlns:ut="using:FileRenamer.UserControls.Toolbar" >
 
@@ -43,19 +43,28 @@
 					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddConvertCaseActionCommand}" />
 					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddMoveStringActionCommand}" />
 				</ut:ToolbarGroup>
+				<ut:ToolbarGroup Header="Conditionals" >
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddConditionalCommand}" />
+				</ut:ToolbarGroup>
 			</ut:Toolbar>
 
 			<!-- Action list view -->
-			<ListView Grid.Row="1" CornerRadius="4" Background="#3888" CanReorderItems="True" SelectionMode="Single" AllowDrop="True"
+			<TreeView Grid.Row="1" CornerRadius="4" Background="#3888" CanReorderItems="True" SelectionMode="Single" AllowDrop="True"
 					  ItemsSource="{x:Bind ViewModel.Project.Jobs, Mode=OneWay}" 
-					  SelectedItem="{x:Bind ViewModel.SelectedAction, Mode=TwoWay}" SelectedIndex="{x:Bind ViewModel.SelectedIndex, Mode=TwoWay}" >
-				<ItemsControl.ItemTemplate>
-					<DataTemplate x:DataType="a:RenameActionBase" >
-						<CheckBox Margin="{StaticResource XSmallLeftMargin}" FontSize="12" VerticalContentAlignment="Center"
-								  IsChecked="{x:Bind IsEnabled, Mode=TwoWay}" Content="{x:Bind Description}" />
+					  SelectedItem="{x:Bind ViewModel.SelectedAction, Mode=TwoWay}" >
+				<TreeView.ItemTemplate>
+					<DataTemplate x:DataType="jobs:JobItem" >
+						<TreeViewItem Height="36" Margin="0 -2" ItemsSource="{Binding Jobs, Mode=OneTime}" IsExpanded="True" >
+							<RelativePanel>
+								<CheckBox Name="PART_CheckBox" IsChecked="{x:Bind IsEnabled, Mode=TwoWay}" MinWidth="0" />
+								
+								<TextBlock RelativePanel.RightOf="PART_CheckBox" RelativePanel.AlignVerticalCenterWithPanel="True"
+										   Text="{x:Bind Description}" FontSize="12" />
+							</RelativePanel>
+						</TreeViewItem>
 					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ListView>
+				</TreeView.ItemTemplate>
+			</TreeView>
 
 			<!-- Test lab -->
 			<StackPanel Grid.Row="2" Spacing="{StaticResource XXSmallSpacing}" >
