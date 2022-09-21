@@ -48,6 +48,14 @@
 							<TextBox Width="{StaticResource InputBoxWidth}" Text="{x:Bind Symbols, Mode=TwoWay}" PlaceholderText="type here..." CharacterSpacing="250" />
 						</StackPanel>
 					</CheckBox>
+
+					<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}"
+							   Text="{x:Bind OptionsErrorMessage, Mode=OneWay}"
+							   Visibility="{x:Bind OptionsErrorMessage, Mode=OneWay, Converter={StaticResource VisibleIfNotNullConverter}}" />
+
+					<TextBlock Style="{StaticResource ErrorMessageTextBlockStyle}"
+							   Text="{x:Bind SymbolsErrorMessage, Mode=OneWay}"
+							   Visibility="{x:Bind SymbolsErrorMessage, Mode=OneWay, Converter={StaticResource VisibleIfNotNullConverter}}" />
 				</StackPanel>
 			</StackPanel>
 		</DataTemplate>
