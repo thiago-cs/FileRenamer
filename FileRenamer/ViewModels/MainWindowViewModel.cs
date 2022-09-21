@@ -18,6 +18,7 @@ using FileRenamer.Core.Jobs.Conditionals;
 using FileRenamer.Core.Jobs.FileActions;
 using FileRenamer.Models;
 using FileRenamer.UserControls.ActionEditors;
+using FileRenamer.UserControls.ConditionalJobEditors;
 
 
 namespace FileRenamer.ViewModels;
@@ -382,6 +383,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		}
 
 		int index = jobs.IndexOf(SelectedAction);
+
 		if (index == -1 || jobs.Count - 2 < index)
 		{
 			// Oops!
@@ -437,6 +439,8 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			ChangeRangeCaseAction job => new ChangeCaseRenameJobEditor(job),
 			ChangeStringCaseAction job => new ChangeCaseRenameJobEditor(job),
 			MoveStringAction job => new MoveStringRenameJobEditor(job),
+
+			ItemNameJobConditional job => new NamePatternConditionalJobEditor(job),
 
 			_ => null,
 		};
@@ -703,10 +707,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	private async Task AddConditionalAsync()
 	{
-		await Task.CompletedTask;
-		var conditional = new ItemNameJobConditional("\\d{3,4}", false);
-		Project.Jobs.Add(conditional);
+		NamePatternConditionalJobEditor jobEditor = new();
 
+		await EditAndAddJobItemAsync(jobEditor);
 		HasUnsavedChanges = true;
 	}
 
