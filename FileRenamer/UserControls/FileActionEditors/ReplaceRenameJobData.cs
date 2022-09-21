@@ -8,7 +8,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class ReplaceRenameJobData : ObservableValidator
+public sealed partial class ReplaceRenameJobData : ObservableValidator, IJobEditorData
 {
 	#region Constants
 
@@ -98,11 +98,11 @@ public sealed partial class ReplaceRenameJobData : ObservableValidator
 	#endregion
 
 
-	public ReplaceAction GetRenameAction()
+	public Core.Jobs.JobItem GetJobItem()
 	{
 		return ExecutionScope switch
 		{
-			ExecutionScope.WholeInput => new(OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
+			ExecutionScope.WholeInput => new ReplaceAction(OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
 			ExecutionScope.FileName => new(new BeginningIndex(), new FileExtensionIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
 			ExecutionScope.FileExtension => new(new FileExtensionIndex(), new EndIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),
 			ExecutionScope.CustomRange => new(RangeData.StartIndexData.GetIIndex(), RangeData.EndIndexData.GetIIndex(), OldString.Text, NewString, OldString.IgnoreCase, OldString.TextType == TextType.Regex),

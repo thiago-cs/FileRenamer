@@ -8,7 +8,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class RemoveRenameJobData : ObservableValidator
+public sealed partial class RemoveRenameJobData : ObservableValidator, IJobEditorData
 {
 	#region Constants
 
@@ -125,6 +125,17 @@ public sealed partial class RemoveRenameJobData : ObservableValidator
 	}
 
 	#endregion
+
+
+	public Core.Jobs.JobItem GetJobItem()
+	{
+		return RangeType switch
+		{
+			TextRangeType.Count => new RemoveAction(StartIndexData.GetIIndex(), Count),
+			TextRangeType.Range => new RemoveAction(StartIndexData.GetIIndex(), EndIndexData.GetIIndex()),
+			_ => throw new System.NotImplementedException(),
+		};
+	}
 
 
 	#region Validation

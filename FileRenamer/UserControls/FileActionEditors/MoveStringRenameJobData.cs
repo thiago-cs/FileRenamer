@@ -8,7 +8,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class MoveStringRenameJobData : ObservableValidator
+public sealed partial class MoveStringRenameJobData : ObservableValidator, IJobEditorData
 {
 	private const string ZeroCountErrorMessage = "Enter a value other than zero.";
 
@@ -87,8 +87,8 @@ public sealed partial class MoveStringRenameJobData : ObservableValidator
 	#endregion
 
 
-	public MoveStringAction GetRenameAction()
+	public Core.Jobs.JobItem GetJobItem()
 	{
-		return new(OldString.Text, OldString.IgnoreCase, OldString.TextType == TextType.Regex, Count);
+		return new MoveStringAction(OldString.Text, OldString.IgnoreCase, OldString.TextType == TextType.Regex, Count);
 	}
 }

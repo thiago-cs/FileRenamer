@@ -1,19 +1,15 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
-using FileRenamer.Core.Jobs;
-using FileRenamer.Core.Jobs.FileActions;
+﻿using FileRenamer.Core.Jobs.FileActions;
 
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class ChangeCaseRenameJobEditor : UserControl, IJobEditor
+public sealed partial class ChangeCaseRenameJobEditor : IJobEditor<ChangeCaseRenameJobData>
 {
 	#region Properties
 
 	public string DialogTitle => "Change case";
 
 	public ChangeCaseRenameJobData Data { get; }
-	IJobEditorData IJobEditor.Data => Data;
 
 	#endregion
 
@@ -39,5 +35,4 @@ public sealed partial class ChangeCaseRenameJobEditor : UserControl, IJobEditor
 	}
 
 	#endregion
-
 }

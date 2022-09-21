@@ -1,13 +1,7 @@
-﻿using FileRenamer.Core.Jobs;
+﻿namespace FileRenamer.UserControls.ActionEditors;
 
-
-namespace FileRenamer.UserControls.ActionEditors;
-
-public interface IJobEditor
+public interface IJobEditor<out T> where T : IJobEditorData
 {
 	public string DialogTitle { get; }
-
-	public bool IsValid { get; }
-
-	public JobItem GetRenameAction();
+	public T Data { get; }
 }

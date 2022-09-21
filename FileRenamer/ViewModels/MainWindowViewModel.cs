@@ -429,7 +429,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		}
 
 		//
-		IJobEditor jobEditor = SelectedAction switch
+		IJobEditor<IJobEditorData> jobEditor = SelectedAction switch
 		{
 			InsertAction job => new InsertRenameJobEditor(job),
 			RemoveAction job => new RemoveRenameJobEditor(job),
@@ -484,6 +484,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 			// Oops!
 			return;
 		}
+
 		int index = jobs.IndexOf(SelectedAction);
 
 		if (index == -1)
@@ -913,7 +914,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#region Helper functions
 
-	private async Task<JobItem> EditJobItemInDialogAsync(IJobEditor editor)
+	private async Task<JobItem> EditJobItemInDialogAsync<T>(IJobEditor<T> editor) where T : IJobEditorData
 	{
 		if (editor == null)
 		{
@@ -927,16 +928,27 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		if (result != ContentDialogResult.Primary)
 			return null;
 
-		if (!editor.IsValid)
+		if (editor.Data.HasErrors)
 		{
 			// Oops!
 			return null;
 		}
 
-		return editor.GetRenameAction();
+		try
+		{
+			return editor.Data.GetJobItem();
+		}
+#pragma warning disable CS0168 // Variable is declared but never used
+#pragma warning disable IDE0059 // Unnecessary assignment of a value
+		catch (Exception ex)
+#pragma warning restore IDE0059 // Unnecessary assignment of a value
+#pragma warning restore CS0168 // Variable is declared but never used
+		{
+			throw;
+		}
 	}
 
-	private async Task EditAndAddJobItemAsync(IJobEditor jobEditor)
+	private async Task EditAndAddJobItemAsync<T>(IJobEditor<T> jobEditor) where T : IJobEditorData
 	{
 		JobItem newAction = await EditJobItemInDialogAsync(jobEditor);
 

@@ -3,14 +3,13 @@
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class InsertRenameJobEditor : IJobEditor
+public sealed partial class InsertRenameJobEditor : IJobEditor<InsertRenameJobData>
 {
 	#region Properties
 
 	public string DialogTitle => "Insert";
 
 	public InsertRenameJobData Data { get; }
-	IJobEditorData IJobEditor.Data => Data;
 
 	#endregion
 

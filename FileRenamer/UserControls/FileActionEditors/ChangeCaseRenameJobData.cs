@@ -9,7 +9,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class ChangeCaseRenameJobData : ObservableValidator
+public sealed partial class ChangeCaseRenameJobData : ObservableValidator, IJobEditorData
 {
 	#region Constants
 
@@ -115,7 +115,7 @@ public sealed partial class ChangeCaseRenameJobData : ObservableValidator
 	#endregion
 
 
-	public RenameFileJob GetRenameAction()
+	public Core.Jobs.JobItem GetJobItem()
 	{
 		return ExecutionScope switch
 		{

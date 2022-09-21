@@ -3,12 +3,11 @@
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class ReplaceRenameJobEditor : IJobEditor
+public sealed partial class ReplaceRenameJobEditor : IJobEditor<ReplaceRenameJobData>
 {
 	public string DialogTitle => "Replace";
 
 	public ReplaceRenameJobData Data { get; }
-	IJobEditorData IJobEditor.Data => Data;
 
 
 	public ReplaceRenameJobEditor()

@@ -4,12 +4,11 @@ using FileRenamer.UserControls.ActionEditors;
 
 namespace FileRenamer.UserControls.ConditionalJobEditors;
 
-public sealed partial class NamePatternConditionalJobEditor : IJobEditor
+public sealed partial class NamePatternConditionalJobEditor : IJobEditor<NamePatternConditionalJobData>
 {
 	public string DialogTitle => "If name...";
 
 	public NamePatternConditionalJobData Data { get; }
-	IJobEditorData IJobEditor.Data => Data;
 
 
 	public NamePatternConditionalJobEditor()

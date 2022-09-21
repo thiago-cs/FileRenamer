@@ -75,6 +75,7 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
+			<!--  Folder picker  -->
 			<Grid Grid.Row="0" >
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="*" />
@@ -91,6 +92,7 @@
 
 			<comp:JobScopeSelector Grid.Row="1" Scope="{x:Bind ViewModel.Project.Scope, Mode=TwoWay}" />
 
+			<!--  Live preview  -->
 			<Expander Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Live preview"
 					  IsExpanded="{x:Bind ViewModel.ShowLivePreview, Mode=TwoWay}" HorizontalContentAlignment="Stretch" >
 
@@ -98,6 +100,7 @@
 
 			</Expander>
 
+			<!--  Main button  -->
 			<Button Grid.Row="9" VerticalAlignment="Bottom" HorizontalAlignment="Right" HorizontalContentAlignment="Center"
 					Margin="{StaticResource MediumTopMargin}" Padding="24 12"
 					Command="{x:Bind ViewModel.DoItCommand}" >
@@ -113,7 +116,7 @@
 		</Grid>
 
 		<ContentDialog Name="dialog" Title="{Binding DialogTitle, Mode=OneTime}" Content="{Binding}" Padding="{StaticResource SmallBottomMargin}" 
-					   PrimaryButtonText="add" IsPrimaryButtonEnabled="{Binding IsValid, Mode=OneWay}" 
+					   PrimaryButtonText="add" IsPrimaryButtonEnabled="{Binding Data.HasErrors, Mode=OneWay, Converter={StaticResource InvertedBooleanConverter}}" 
 					   CloseButtonText="cancel" DefaultButton="Primary" />
 
 	</Grid>

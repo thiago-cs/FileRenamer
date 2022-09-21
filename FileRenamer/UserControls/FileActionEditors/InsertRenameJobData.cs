@@ -9,7 +9,7 @@ using FileRenamer.UserControls.InputControls;
 
 namespace FileRenamer.UserControls.ActionEditors;
 
-public sealed partial class InsertRenameJobData : ObservableValidator
+public sealed partial class InsertRenameJobData : ObservableValidator, IJobEditorData
 {
 	#region Value Source Type
 
@@ -98,6 +98,18 @@ public sealed partial class InsertRenameJobData : ObservableValidator
 	}
 
 	#endregion
+
+
+	public Core.Jobs.JobItem GetJobItem()
+	{
+		if (HasErrors)
+		{
+			// Oops!
+			return null;
+		}
+
+		return new InsertAction(IndexData.GetIIndex(), ValueSource);
+	}
 
 
 	#region Static helpers
