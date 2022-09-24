@@ -14,8 +14,11 @@ File operations can be groupped and treated the same way as a single one. This a
 
 * Different types of values may be inserted (e.g.: a counter or a given text).
 
-* In turn, counter values may be formatted.
-
 Each of these abstractoins are decoupled from the implementation so that the two can vary independently, e.g. new implementations can be added.
+
+### Strategy Pattern
+
+* The value of a counter may be formatted. The value generation logic is separated from the value formatting logic, which is defined (chosen) only during run-time
+
 
 _(to be continued)_
