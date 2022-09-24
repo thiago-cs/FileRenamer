@@ -57,7 +57,7 @@
 						<TreeViewItem Height="36" Margin="0 -2" ItemsSource="{Binding Jobs, Mode=OneTime}" IsExpanded="True" >
 							<RelativePanel>
 								<CheckBox Name="PART_CheckBox" IsChecked="{x:Bind IsEnabled, Mode=TwoWay}" MinWidth="0" />
-								
+
 								<TextBlock RelativePanel.RightOf="PART_CheckBox" RelativePanel.AlignVerticalCenterWithPanel="True"
 										   Text="{x:Bind Description}" FontSize="12" />
 							</RelativePanel>
@@ -82,6 +82,7 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
 			<!--  Folder picker  -->
@@ -102,12 +103,10 @@
 			<comp:JobScopeSelector Grid.Row="1" Scope="{x:Bind ViewModel.Project.Scope, Mode=TwoWay}" />
 
 			<!--  Live preview  -->
-			<Expander Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Top" Header="Live preview"
-					  IsExpanded="{x:Bind ViewModel.ShowLivePreview, Mode=TwoWay}" HorizontalContentAlignment="Stretch" >
+			<comp:FolderView Grid.Row="2" Folder="{x:Bind ViewModel.Folder, Mode=OneWay}"
+							 Project="{x:Bind ViewModel.Project}"
+							 TestRequested="FolderView_TestRequested" />
 
-				<comp:FolderView Items="{x:Bind ViewModel.Preview, Mode=OneWay}" TestRequested="FolderView_TestRequested" />
-
-			</Expander>
 
 			<!--  Main button  -->
 			<Button Grid.Row="9" VerticalAlignment="Bottom" HorizontalAlignment="Right" HorizontalContentAlignment="Center"

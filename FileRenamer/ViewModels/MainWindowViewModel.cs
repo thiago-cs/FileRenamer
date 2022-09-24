@@ -43,7 +43,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	{
 		if (value != null)
 		{
-			value.PropertyChanged -= Project_PropertyChanged;
 			value.Jobs.CollectionChanged -= Jobs_CollectionChanged;
 			value.Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
 		}
@@ -53,18 +52,11 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	{
 		if (value != null)
 		{
-			value.PropertyChanged += Project_PropertyChanged;
 			value.Jobs.CollectionChanged += Jobs_CollectionChanged;
 			value.Jobs.NestedJobChanged += Jobs_NestedJobChanged;
 
 			UpdateCommandStates();
 		}
-	}
-
-	private void Project_PropertyChanged(object sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName == nameof(Project.Scope))
-			UpdatePreview();
 	}
 
 	[ObservableProperty]
@@ -728,14 +720,8 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	partial void OnFolderChanged(IFolder value)
 	{
 		if (value != null)
-		{
 			DoItCommand.NotifyCanExecuteChanged();
-
-			_ = UpdateItemsInFolderAsync();
-		}
 	}
-
-	private List<IItem> itemsInFolder;
 
 
 	[RelayCommand]
@@ -762,36 +748,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		Folder = new Folder(folder);
 	}
 
-	private async Task UpdateItemsInFolderAsync()
-	{
-		itemsInFolder = new();
-		itemsInFolder.AddRange(await Folder.GetSubfoldersAsync());
-		itemsInFolder.AddRange(await Folder.GetFilesAsync());
-
-		UpdatePreview();
-	}
-
-	#endregion
-
-	#region Result preview
-
-	[ObservableProperty]
-	private IList<JobTarget> _preview;
-
-	[ObservableProperty]
-	private bool _showLivePreview = false;
-
-	partial void OnShowLivePreviewChanged(bool value)
-	{
-		UpdatePreview();
-	}
-
-	private void UpdatePreview()
-	{
-		if (ShowLivePreview)
-			Preview = itemsInFolder == null ? null : (IList<JobTarget>)Project.ComputeChanges(itemsInFolder);
-	}
-
 	#endregion
 
 	#region DoIt command
@@ -802,8 +758,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		try
 		{
 			await Project.RunAsync(Folder, CancellationToken.None);
-
-			await UpdateItemsInFolderAsync();
 		}
 		catch (Exception ex)
 		{
@@ -895,7 +849,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	{
 		// 1.
 		UpdateCommandStates();
-		UpdatePreview();
 
 		// 2. 
 		_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
@@ -904,12 +857,9 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	private void Jobs_NestedJobChanged(object sender, PropertyChangedEventArgs e)
 	{
 		// 1.
-		UpdatePreview();
-
-		// 2. 
 		UpdateTestOutput();
 
-		// 3.
+		// 2. 
 		HasUnsavedChanges = true;
 	}
 

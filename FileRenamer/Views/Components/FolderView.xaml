@@ -50,6 +50,18 @@
 
 	</FrameworkElement.Resources>
 
-	<ListView Name="ItemsControl" ItemTemplate="{StaticResource ItemDataTemplate}" CanDrag="False" CanDragItems="False" AllowDrop="False" />
+	<Expander Name="PART_Expander" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" 
+			  Expanding="Expander_Expanding" >
+		<Expander.Header>
+			<Grid>
+
+				<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Live preview" />
+
+			</Grid>
+		</Expander.Header>
+
+		<ListView Name="ItemsControl" ItemTemplate="{StaticResource ItemDataTemplate}" CanDrag="False" CanDragItems="False" AllowDrop="False" />
+
+	</Expander>
 
 </UserControl>
