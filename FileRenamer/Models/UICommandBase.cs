@@ -109,4 +109,14 @@ public abstract class UICommandBase
 	/// Notifies that the <see cref="ICommand.CanExecute"/> property has changed.
 	/// </summary>
 	public abstract void NotifyCanExecuteChanged();
+
+	public static SymbolIconSource CreateIconFromSymbol(Symbol symbol)
+	{
+		return new() { Symbol = symbol };
+	}
+
+	public static FontIconSource CreateIconFromGlyph(char glyph)
+	{
+		return new() { Glyph = glyph.ToString() };
+	}
 }

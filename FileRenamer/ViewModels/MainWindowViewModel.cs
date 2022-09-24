@@ -103,7 +103,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "N",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.N,
-		icon: CreateIconFromSymbol(Symbol.Add),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Add),
 		execute: NewProject);
 
 	public async Task NewProject()
@@ -130,7 +130,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "L",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.O,
-		icon: CreateIconFromSymbol(Symbol.OpenLocal),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.OpenLocal),
 		execute: LoadProject);
 
 	public async Task LoadProject()
@@ -186,7 +186,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "S",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.S,
-		icon: CreateIconFromSymbol(Symbol.Save),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Save),
 		execute: SaveProjectAsync,
 		canExecute: CanSaveProject);
 
@@ -319,7 +319,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "U",
 		modifier: VirtualKeyModifiers.Menu,
 		acceleratorKey: VirtualKey.Up,
-		icon: CreateIconFromSymbol(Symbol.Up),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Up),
 		execute: MoveSelectedActionUp,
 		canExecute: CanExecuteWhenSelectedActionIsNotFirst);
 
@@ -360,7 +360,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "D",
 		modifier: VirtualKeyModifiers.Menu,
 		acceleratorKey: VirtualKey.Down,
-		icon: CreateIconFromGlyph((char)0xE74B),
+		icon: UICommandBase.CreateIconFromGlyph((char)0xE74B),
 		execute: MoveSelectedActionDown,
 		canExecute: CanExecuteWhenSelectedActionIsNotLast);
 
@@ -401,7 +401,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "T",
 		modifier: null,
 		acceleratorKey: VirtualKey.F2,
-		icon: CreateIconFromSymbol(Symbol.Edit),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Edit),
 		execute: EditSelectedActionAsync,
 		canExecute: CanExecuteWhenSelectedActionIsNotNull);
 
@@ -461,7 +461,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "V",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.D,
-		icon: CreateIconFromSymbol(Symbol.Copy),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Copy),
 		execute: DuplicateSelectedAction,
 		canExecute: CanExecuteWhenSelectedActionIsNotNull);
 
@@ -505,7 +505,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "Del",
 		modifier: null,
 		acceleratorKey: VirtualKey.Delete,
-		icon: CreateIconFromSymbol(Symbol.Delete),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Delete),
 		execute: RemoveSelectedAction,
 		canExecute: CanExecuteWhenSelectedActionIsNotNull);
 
@@ -541,7 +541,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.Delete,
-		icon: CreateIconFromSymbol(Symbol.Clear),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Clear),
 		execute: RemoveAllActions,
 		canExecute: CanExecuteWhenActionsIsNotEmpty);
 
@@ -567,7 +567,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "I",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.I,
-		icon: CreateIconFromSymbol(Symbol.Add),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Add),
 		execute: AddInsertActionAsync);
 
 	private async Task AddInsertActionAsync()
@@ -587,7 +587,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "1",
 		modifier: VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift,
 		acceleratorKey: VirtualKey.I,
-		icon: CreateIconFromGlyph((char)0xE8EF),
+		icon: UICommandBase.CreateIconFromGlyph((char)0xE8EF),
 		execute: AddInsertCounterActionAsync);
 
 	private async Task AddInsertCounterActionAsync()
@@ -610,7 +610,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "R",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.R,
-		icon: CreateIconFromSymbol(Symbol.Remove),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Remove),
 		execute: AddRemoveActionAsync);
 
 	private async Task AddRemoveActionAsync()
@@ -630,7 +630,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "H",
 		modifier: VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift,
 		acceleratorKey: VirtualKey.R,
-		icon: CreateIconFromSymbol(Symbol.Sync),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Sync),
 		execute: AddReplaceActionAsync);
 
 	private async Task AddReplaceActionAsync()
@@ -650,7 +650,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "C",
 		modifier: VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift,
 		acceleratorKey: VirtualKey.C,
-		icon: CreateIconFromSymbol(Symbol.Font),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Font),
 		execute: AddConvertCaseActionAsync);
 
 	private async Task AddConvertCaseActionAsync()
@@ -670,7 +670,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "M",
 		modifier: VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift,
 		acceleratorKey: VirtualKey.M,
-		icon: CreateIconFromGlyph((char)0xE8AB),
+		icon: UICommandBase.CreateIconFromGlyph((char)0xE8AB),
 		execute: AddMoveStringActionAsync);
 
 	private async Task AddMoveStringActionAsync()
@@ -694,7 +694,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "",
 		modifier: null,
 		acceleratorKey: null,
-		icon: CreateIconFromSymbol(Symbol.Street),
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.Street),
 		execute: AddConditionalAsync);
 
 	private async Task AddConditionalAsync()
@@ -917,16 +917,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		}
 
 		SelectedAction = newAction;
-	}
-
-	private static SymbolIconSource CreateIconFromSymbol(Symbol symbol)
-	{
-		return new() { Symbol = symbol };
-	}
-
-	private static FontIconSource CreateIconFromGlyph(char glyph)
-	{
-		return new() { Glyph = glyph.ToString() };
 	}
 
 	private void UpdateCommandStates()
