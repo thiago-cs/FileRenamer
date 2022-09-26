@@ -6,7 +6,7 @@ using FileRenamer.Core.ValueSources;
 
 namespace FileRenamer.ViewModels.ValueSources;
 
-internal sealed partial class StringValueSourceViewModel : ObservableValidator, IValueSourceViewModel
+public sealed partial class StringValueSourceViewModel : ObservableValidator, IValueSourceViewModel
 {
 	private const string emptyTextErrorMessage = "Enter the text to be inserted.";
 
@@ -30,7 +30,7 @@ internal sealed partial class StringValueSourceViewModel : ObservableValidator, 
 
 	[ObservableProperty]
 	[NotifyDataErrorInfo]
-	[Required(ErrorMessage = emptyTextErrorMessage)]
+	[CustomValidation(typeof(StringValueSourceViewModel), nameof(ValidateText))]
 	[MaxLength(100)]
 	[NotifyPropertyChangedFor(nameof(TextErrorMessage))]
 	private string _text;
@@ -43,13 +43,27 @@ internal sealed partial class StringValueSourceViewModel : ObservableValidator, 
 
 	#region Constructors
 
-	public StringValueSourceViewModel() : this(new())
+	public StringValueSourceViewModel()
+		: this(new())
 	{ }
 
 	public StringValueSourceViewModel(StringValueSource valueSource)
 	{
 		Text = valueSource.Value;
+
+		ValidateAllProperties();
 	}
 
+	#endregion
+
+
+	#region Validation
+
+	public static ValidationResult ValidateText(string value, ValidationContext context)
+	{
+		return string.IsNullOrEmpty(value)
+			 ? new(emptyTextErrorMessage)
+			 : ValidationResult.Success;
+	}
 	#endregion
 }
