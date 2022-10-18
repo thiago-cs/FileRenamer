@@ -127,7 +127,7 @@ public sealed partial class Project : ObservableValidator
 
 	public static async Task<Project> ReadXmlAsync(TextReader input)
 	{
-		XmlReaderSettings settings = new() { Async = true };
+		XmlReaderSettings settings = new() { Async = true, IgnoreWhitespace = true, };
 		using XmlReader reader = XmlReader.Create(input, settings);
 
 		reader.MoveToContent();
