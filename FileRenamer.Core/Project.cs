@@ -158,6 +158,7 @@ public sealed partial class Project : ObservableValidator
 					break;
 
 				default:
+					reader.Skip();
 					break;
 			}
 
