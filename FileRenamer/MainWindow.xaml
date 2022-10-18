@@ -104,7 +104,7 @@
 
 			<!--  Live preview  -->
 			<comp:FolderView Grid.Row="2" Folder="{x:Bind ViewModel.Folder, Mode=OneWay}"
-							 Project="{x:Bind ViewModel.Project}"
+							 Project="{x:Bind ViewModel.Project, Mode=OneWay}"
 							 TestRequested="FolderView_TestRequested" />
 
 
