@@ -22,22 +22,22 @@ public sealed partial class FolderView : UserControl
 
 	partial void OnProjectChanging(Project value)
 	{
-		if (value != null)
-		{
-			value.PropertyChanged -= Project_PropertyChanged;
-			value.Jobs.CollectionChanged -= Jobs_CollectionChanged;
-			value.Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
-		}
+		if (Project == null)
+			return;
+
+		Project.PropertyChanged -= Project_PropertyChanged;
+		Project.Jobs.CollectionChanged -= Jobs_CollectionChanged;
+		Project.Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
 	}
 
 	partial void OnProjectChanged(Project value)
 	{
-		if (value != null)
-		{
-			value.PropertyChanged += Project_PropertyChanged;
-			value.Jobs.CollectionChanged += Jobs_CollectionChanged;
-			value.Jobs.NestedJobChanged += Jobs_NestedJobChanged;
-		}
+		if (Project == null)
+			return;
+
+		Project.PropertyChanged += Project_PropertyChanged;
+		Project.Jobs.CollectionChanged += Jobs_CollectionChanged;
+		Project.Jobs.NestedJobChanged += Jobs_NestedJobChanged;
 	}
 
 	private void Project_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
