@@ -121,6 +121,7 @@ public sealed partial class Project : ObservableValidator
 		await writer.WriteEndElementAsync().ConfigureAwait(false);
 
 		// 3. Writes the last closing element and flushes whatever is in the buffer.
+		output.SetLength(output.Position);
 		await writer.FlushAsync().ConfigureAwait(false);
 	}
 
