@@ -38,6 +38,8 @@ public sealed partial class FolderView : UserControl
 		Project.PropertyChanged += Project_PropertyChanged;
 		Project.Jobs.CollectionChanged += Jobs_CollectionChanged;
 		Project.Jobs.NestedJobChanged += Jobs_NestedJobChanged;
+
+		RefreshView();
 	}
 
 	private void Project_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
