@@ -19,7 +19,6 @@
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
     <None Remove="UserControls\InputControls\TextRangeEditor.xaml" />
     <None Remove="Views\Components\FolderView.xaml" />
-    <None Remove="Views\Components\JobScopeSelector.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,8 +32,8 @@
 
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.5" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -85,12 +84,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\FileActionEditors\" />
-    <Folder Include="Views\Pages\" />
-    <Folder Include="Views\Toolbars\" />
+    <Folder Include="Pages\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\Components\JobScopeSelector.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

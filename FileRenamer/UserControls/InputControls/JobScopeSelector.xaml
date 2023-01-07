@@ -1,0 +1,23 @@
+<UserControl
+	x:Class="FileRenamer.UserControls.InputControls.JobScopeSelector"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:jobs="using:FileRenamer.Core.Jobs" >
+
+	<StackPanel Orientation="Horizontal" >
+
+		<ToggleButton Name="FolderToggle" CornerRadius="4 0 0 4" Tag="{x:Bind jobs:JobScopes.Folders}"
+					  Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked" >
+			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16" Glyph="&#xE8B7;" />
+		</ToggleButton>
+
+		<AppBarSeparator Width="1" Foreground="Gray" />
+
+		<ToggleButton Name="FileToggle" CornerRadius="0 4 4 0" Tag="{x:Bind jobs:JobScopes.Files}"
+					  Checked="ToggleButton_Checked" Unchecked="ToggleButton_Unchecked" >
+			<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}" FontSize="16"  Glyph="&#xE7C3;"/>
+		</ToggleButton>
+
+	</StackPanel>
+
+</UserControl>

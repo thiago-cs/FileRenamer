@@ -20,9 +20,9 @@ public sealed partial class Project : ObservableValidator
 	/// <summary>
 	/// Gets or sets a value that indicates whether files, folders, or both should be manipulated.
 	/// </summary>
-	/// <remarks>The default value is <see cref="JobScope.Files"/>.</remarks>
+	/// <remarks>The default value is <see cref="JobScopes.Files"/>.</remarks>
 	[ObservableProperty]
-	private JobScope _scope = JobScope.Files;
+	private JobScopes _scope = JobScopes.Files;
 
 
 	public Project()
@@ -47,10 +47,11 @@ public sealed partial class Project : ObservableValidator
 		{
 			bool shouldRun = Scope switch
 			{
-				JobScope.Files => items[i] is IFile,
-				JobScope.Folders => items[i] is IFolder,
-				JobScope.FilesAndFolders => true,
-				_ => throw new NotImplementedException(@$"Unknown {nameof(JobScope)} ""{Scope}""."),
+				JobScopes.None => false,
+				JobScopes.Files => items[i] is IFile,
+				JobScopes.Folders => items[i] is IFolder,
+				JobScopes.FilesAndFolders => true,
+				_ => throw new NotImplementedException(@$"Unknown {nameof(JobScopes)} ""{Scope}""."),
 			};
 
 			if (shouldRun)
@@ -73,24 +74,27 @@ public sealed partial class Project : ObservableValidator
 		IList<IItem> items;
 		switch (Scope)
 		{
-			case JobScope.Files:
+			case JobScopes.None:
+				items = new List<IItem>();
+				break;
+
+			case JobScopes.Files:
 				items = await folder.GetFilesAsync();
 				break;
 
-			case JobScope.Folders:
+			case JobScopes.Folders:
 				items = await folder.GetSubfoldersAsync();
 				break;
 
-			case JobScope.FilesAndFolders:
+			case JobScopes.FilesAndFolders:
 				List<IItem> list = new();
 				list.AddRange(await folder.GetSubfoldersAsync());
 				list.AddRange(await folder.GetFilesAsync());
-
 				items = list;
 				break;
 
 			default:
-				throw new Exception(@$"Unknown {nameof(JobScope)} value ""{Scope}"".");
+				throw new Exception(@$"Unknown {nameof(JobScopes)} value ""{Scope}"".");
 		}
 
 		JobTarget[] targets = ComputeChanges(items);
@@ -133,14 +137,14 @@ public sealed partial class Project : ObservableValidator
 		reader.MoveToContent();
 
 		//
-		JobScope scope = default;
+		JobScopes scope = default;
 
 		if (reader.AttributeCount != 0)
 		{
 			string? value = reader.GetAttribute(nameof(Scope));
 
 			if (value != null)
-				scope = Enum.Parse<JobScope>(value);
+				scope = Enum.Parse<JobScopes>(value);
 		}
 
 		reader.ReadStartElement(nameof(Project));

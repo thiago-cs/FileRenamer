@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:jobs="using:FileRenamer.Core.Jobs"
 	xmlns:comp="using:FileRenamer.Views.Components"
+	xmlns:comp2="using:FileRenamer.UserControls.InputControls"
 	xmlns:ut="using:FileRenamer.UserControls.Toolbar" >
 
 	<Grid Padding="{StaticResource SmallLeftTopRightBottomMargin}" ColumnSpacing="{StaticResource MediumSpacing}" 
@@ -76,7 +77,7 @@
 		</Grid>
 
 		<!-- Right-hand side panel -->
-		<Grid Grid.Column="1" RowSpacing="{StaticResource SmallSpacing}" >
+		<Grid Grid.Column="1" RowSpacing="{StaticResource MediumSpacing}" >
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
@@ -100,7 +101,11 @@
 				</Button>
 			</Grid>
 
-			<comp:JobScopeSelector Grid.Row="1" Scope="{x:Bind ViewModel.Project.Scope, Mode=TwoWay}" />
+			<!--  JobScopes selector  -->
+			<StackPanel Grid.Row="1" Orientation="Horizontal" >
+				<TextBlock VerticalAlignment="Center" Margin="{StaticResource SmallRightMargin}" Text="Rename" />
+				<comp2:JobScopeSelector Scopes="{x:Bind ViewModel.Project.Scope, Mode=TwoWay}" />
+			</StackPanel>
 
 			<!--  Live preview  -->
 			<comp:FolderView Grid.Row="2" Folder="{x:Bind ViewModel.Folder, Mode=OneWay}"
