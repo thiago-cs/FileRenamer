@@ -3,6 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:jobs="using:FileRenamer.Core.Jobs"
+	xmlns:uc="using:FileRenamer.UserControls"
 	xmlns:comp="using:FileRenamer.Views.Components"
 	xmlns:comp2="using:FileRenamer.UserControls.InputControls"
 	xmlns:ut="using:FileRenamer.UserControls.Toolbar" >
@@ -68,11 +69,7 @@
 			</TreeView>
 
 			<!-- Test lab -->
-			<StackPanel Grid.Row="2" Spacing="{StaticResource XXSmallSpacing}" >
-				<TextBox Text="{x:Bind ViewModel.TestInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent"
-						 PlaceholderText="  Input a test text here" PlaceholderForeground="Gray" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" />
-				<TextBox Text="{x:Bind ViewModel.TestOutput, Mode=OneWay}" Background="Transparent" IsReadOnly="True" IsSpellCheckEnabled="False" />
-			</StackPanel>
+			<uc:TextPreviewer Grid.Row="2" Name="MyTextPreviewer" Project="{x:Bind ViewModel.Project, Mode=OneWay}" Loaded="MyTextPreviewer_Loaded" />
 
 		</Grid>
 

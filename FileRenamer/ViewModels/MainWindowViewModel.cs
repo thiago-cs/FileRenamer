@@ -27,8 +27,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 	#region Fields
 
 	private readonly MainWindow window;
-	private readonly Helpers.DelayedAction delayedUpdateTestOutput;
-	private const int testOutputUpdateDelay = 400; // ms
 
 	#endregion
 
@@ -40,19 +38,19 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	partial void OnProjectChanging(Project value)
 	{
-		if (value != null)
+		if (_project != null)
 		{
-			value.Jobs.CollectionChanged -= Jobs_CollectionChanged;
-			value.Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
+			_project.Jobs.CollectionChanged -= Jobs_CollectionChanged;
+			_project.Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
 		}
 	}
 
 	partial void OnProjectChanged(Project value)
 	{
-		if (value != null)
+		if (_project != null)
 		{
-			value.Jobs.CollectionChanged += Jobs_CollectionChanged;
-			value.Jobs.NestedJobChanged += Jobs_NestedJobChanged;
+			_project.Jobs.CollectionChanged += Jobs_CollectionChanged;
+			_project.Jobs.NestedJobChanged += Jobs_NestedJobChanged;
 
 			UpdateCommandStates();
 		}
@@ -71,7 +69,6 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	public MainWindowViewModel(MainWindow window)
 	{
-		delayedUpdateTestOutput = new(UpdateTestOutput);
 		Project = new();
 		this.window = window;
 	}
@@ -801,63 +798,16 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Test lab
-
-	private string _testInput;
-	public string TestInput
-	{
-		get => _testInput;
-		set
-		{
-			if (SetProperty(ref _testInput, value))
-				_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
-		}
-	}
-
-	private string _testOutput;
-	public string TestOutput { get => _testOutput; private set => SetProperty(ref _testOutput, value); }
-
-	internal void ImmidiatelyTestInput(string name)
-	{
-		TestInput = name;
-		UpdateTestOutput();
-	}
-
-	private void UpdateTestOutput()
-	{
-		if (string.IsNullOrEmpty(TestInput) || Project == null)
-		{
-			TestOutput = string.Empty;
-			return;
-		}
-
-		Project.Jobs.Reset();
-
-		JobTarget target = new(new Core.FileSystem.FileMock(TestInput), 0);
-		JobContext context = new(Project.Jobs, new[] { target });
-
-		Project.Jobs.Run(target, context);
-		TestOutput = target.NewFileName;
-	}
-
-	#endregion
-
 	#region JobCollection event handlers
 
 	private void Jobs_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 	{
 		// 1.
 		UpdateCommandStates();
-
-		// 2. 
-		_ = delayedUpdateTestOutput.InvokeAsync(testOutputUpdateDelay);
 	}
 
 	private void Jobs_NestedJobChanged(object sender, PropertyChangedEventArgs e)
 	{
-		// 1.
-		UpdateTestOutput();
-
 		// 2. 
 		HasUnsavedChanges = true;
 	}

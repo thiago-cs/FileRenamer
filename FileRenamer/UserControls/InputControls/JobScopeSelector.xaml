@@ -4,6 +4,13 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:jobs="using:FileRenamer.Core.Jobs" >
 
+	<FrameworkElement.Resources>
+		<StaticResource x:Key="ToggleButtonForegroundPressed" ResourceKey="TextFillColorPrimaryBrush" />
+		<StaticResource x:Key="ToggleButtonForegroundCheckedPressed" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+		<StaticResource x:Key="ToggleButtonBorderBrushPointerOver" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+		<StaticResource x:Key="ToggleButtonBorderBrushPressed" ResourceKey="ControlStrokeColorSecondaryBrush" />
+	</FrameworkElement.Resources>
+
 	<StackPanel Orientation="Horizontal" >
 
 		<ToggleButton Name="FolderToggle" CornerRadius="4 0 0 4" Tag="{x:Bind jobs:JobScopes.Folders}"

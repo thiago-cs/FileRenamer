@@ -37,9 +37,9 @@ public sealed class JobCollection : System.Collections.ObjectModel.ObservableCol
 				job.Run(target, context);
 	}
 
-	public void Reset()
+	public void ResetState()
 	{
-		// todo: implement Reset method.
+		// todo: implement ResetState method.
 	}
 
 	public JobCollection DeepCopy()

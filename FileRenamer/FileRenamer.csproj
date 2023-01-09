@@ -13,11 +13,13 @@
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Styles\TextBox.xaml" />
     <None Remove="UserControls\FileActionEditors\MoveStringRenameJobEditor.xaml" />
     <None Remove="UserControls\InputControls\ChangeCaseActionEditor.xaml" />
     <None Remove="UserControls\InputControls\ReplaceActionEditor.xaml" />
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
     <None Remove="UserControls\InputControls\TextRangeEditor.xaml" />
+    <None Remove="UserControls\TextPreviewer.xaml" />
     <None Remove="Views\Components\FolderView.xaml" />
   </ItemGroup>
 
@@ -85,6 +87,16 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Pages\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UserControls\TextPreviewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Styles\TextBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="Views\Components\FolderView.xaml">

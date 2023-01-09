@@ -1,0 +1,21 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
+
+	<!--Normal-->
+	<Thickness x:Key="TextControlBorderThemeThickness" >1 1 1 1</Thickness>
+	<!--<StaticResource x:Key="TextControlBorderBrush" ResourceKey="ControlStrokeColorDefaultBrush" />-->
+	<StaticResource x:Key="TextControlBorderBrush" ResourceKey="SystemControlForegroundBaseLowBrush" />
+
+	<!--PointerOver-->
+	<!--<StaticResource x:Key="TextControlBackgroundPointerOver" ResourceKey="SystemControlBackgroundAltMediumLowBrush" />-->
+	<SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="Transparent" />
+	<StaticResource x:Key="TextControlBorderBrushPointerOver" ResourceKey="SystemControlForegroundBaseLowBrush" />
+
+	<!--Focused-->
+	<Thickness x:Key="TextControlBorderThemeThicknessFocused" >1 1 1 1</Thickness>
+	<StaticResource x:Key="TextControlBackgroundFocused" ResourceKey="SystemControlBackgroundAltMediumBrush" />
+	<!--<StaticResource x:Key="TextControlBorderBrushFocused" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />-->
+	<StaticResource x:Key="TextControlBorderBrushFocused" ResourceKey="SystemControlForegroundBaseLowBrush" />
+
+</ResourceDictionary>
