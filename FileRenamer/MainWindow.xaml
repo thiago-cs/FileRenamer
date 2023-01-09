@@ -25,7 +25,7 @@
 			<ut:Toolbar Grid.Row="0" >
 				<ut:ToolbarGroup Header="Project" >
 					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.NewProjectCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.LoadProjectCommand}" />
+					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.OpenProjectCommand}" />
 					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.SaveProjectCommand}" />
 				</ut:ToolbarGroup>
 				<ut:ToolbarGroup Header="Management" >
@@ -50,7 +50,7 @@
 			</ut:Toolbar>
 
 			<!-- Action list view -->
-			<TreeView Grid.Row="1" CornerRadius="4" Background="#3888" CanReorderItems="True" SelectionMode="Single" AllowDrop="True"
+			<TreeView Grid.Row="1" CornerRadius="4" Background="#181A1E" CanReorderItems="True" SelectionMode="Single"
 					  ItemsSource="{x:Bind ViewModel.Project.Jobs, Mode=OneWay}" 
 					  SelectedItem="{x:Bind ViewModel.SelectedAction, Mode=TwoWay}" >
 				<TreeView.ItemTemplate>

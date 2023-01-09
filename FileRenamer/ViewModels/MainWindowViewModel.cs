@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -121,19 +120,19 @@ public sealed partial class MainWindowViewModel : ObservableObject
 
 	#endregion
 
-	#region Load Project
+	#region Open Project
 
-	private AsyncUICommand _loadProjectCommand;
-	public AsyncUICommand LoadProjectCommand => _loadProjectCommand ??= new(
-		description: "Load an existing project",
-		label: "Load",
-		accessKey: "L",
+	private AsyncUICommand _openProjectCommand;
+	public AsyncUICommand OpenProjectCommand => _openProjectCommand ??= new(
+		description: "Open an existing project",
+		label: "Open",
+		accessKey: "O",
 		modifier: VirtualKeyModifiers.Control,
 		acceleratorKey: VirtualKey.O,
-		icon: UICommandBase.CreateIconFromSymbol(Symbol.OpenLocal),
-		execute: LoadProject);
+		icon: UICommandBase.CreateIconFromSymbol(Symbol.OpenFile),
+		execute: OpenProject);
 
-	public async Task LoadProject()
+	public async Task OpenProject()
 	{
 		// 1.
 		bool changesWereSaved = await ShowSaveChangesConfirmationDialogAsync();
@@ -694,7 +693,7 @@ public sealed partial class MainWindowViewModel : ObservableObject
 		accessKey: "",
 		modifier: null,
 		acceleratorKey: null,
-		icon: UICommandBase.CreateIconFromSymbol(Symbol.Street),
+		icon: UICommandBase.CreateIconFromGlyph('\uEA38'),
 		execute: AddConditionalAsync);
 
 	private async Task AddConditionalAsync()

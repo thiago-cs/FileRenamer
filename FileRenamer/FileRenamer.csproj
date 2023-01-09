@@ -87,10 +87,6 @@
     <Folder Include="Pages\" />
   </ItemGroup>
   <ItemGroup>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
     <Page Update="Views\Components\FolderView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
