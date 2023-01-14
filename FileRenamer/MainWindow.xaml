@@ -2,11 +2,10 @@
 	x:Class="FileRenamer.MainWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:jobs="using:FileRenamer.Core.Jobs"
 	xmlns:uc="using:FileRenamer.UserControls"
+	xmlns:v="using:FileRenamer.Views"
 	xmlns:comp="using:FileRenamer.Views.Components"
-	xmlns:comp2="using:FileRenamer.UserControls.InputControls"
-	xmlns:ut="using:FileRenamer.UserControls.Toolbar" >
+	xmlns:comp2="using:FileRenamer.UserControls.InputControls" >
 
 	<Grid Padding="{StaticResource SmallLeftTopRightBottomMargin}" ColumnSpacing="{StaticResource MediumSpacing}" 
 		  Background="{StaticResource WindowBackgroundBrush}" BorderBrush="{StaticResource WindowBorderBrush}" BorderThickness="1" >
@@ -18,58 +17,13 @@
 		<!-- Left-hand side panel -->
 		<Grid Grid.Column="0" MinWidth="500" MaxWidth="800" RowSpacing="{StaticResource MediumSpacing}" >
 			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
 				<RowDefinition Height="*" />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<ut:Toolbar Grid.Row="0" >
-				<ut:ToolbarGroup Header="Project" >
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.NewProjectCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.OpenProjectCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.SaveProjectCommand}" />
-				</ut:ToolbarGroup>
-				<ut:ToolbarGroup Header="Management" >
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.MoveUpActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.MoveDownActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.EditActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.DuplicateActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.RemoveActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.RemoveAllActionsCommand}" />
-				</ut:ToolbarGroup>
-				<ut:ToolbarGroup Header="Actions" >
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddInsertActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddRemoveActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddInsertCounterActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddReplaceActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddConvertCaseActionCommand}" />
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddMoveStringActionCommand}" />
-				</ut:ToolbarGroup>
-				<ut:ToolbarGroup Header="Conditionals" >
-					<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind ViewModel.AddConditionalCommand}" />
-				</ut:ToolbarGroup>
-			</ut:Toolbar>
+			<v:ProjectActionsView Grid.Row="0" Project="{x:Bind ViewModel.Project, Mode=TwoWay}" />
 
-			<!-- Action list view -->
-			<TreeView Grid.Row="1" CornerRadius="4" Background="#181A1E" CanReorderItems="True" SelectionMode="Single"
-					  ItemsSource="{x:Bind ViewModel.Project.Jobs, Mode=OneWay}" 
-					  SelectedItem="{x:Bind ViewModel.SelectedAction, Mode=TwoWay}" >
-				<TreeView.ItemTemplate>
-					<DataTemplate x:DataType="jobs:JobItem" >
-						<TreeViewItem Height="36" Margin="0 -2" ItemsSource="{Binding Jobs, Mode=OneTime}" IsExpanded="True" >
-							<RelativePanel>
-								<CheckBox Name="PART_CheckBox" IsChecked="{x:Bind IsEnabled, Mode=TwoWay}" MinWidth="0" />
-
-								<TextBlock RelativePanel.RightOf="PART_CheckBox" RelativePanel.AlignVerticalCenterWithPanel="True"
-										   Text="{x:Bind Description}" FontSize="12" />
-							</RelativePanel>
-						</TreeViewItem>
-					</DataTemplate>
-				</TreeView.ItemTemplate>
-			</TreeView>
-
-			<!-- Test lab -->
-			<uc:TextPreviewer Grid.Row="2" Name="MyTextPreviewer" Project="{x:Bind ViewModel.Project, Mode=OneWay}" Loaded="MyTextPreviewer_Loaded" />
+			<uc:TextPreviewer Grid.Row="1" Project="{x:Bind ViewModel.Project, Mode=OneWay}" Name="MyTextPreviewer" Loaded="MyTextPreviewer_Loaded" />
 
 		</Grid>
 
@@ -108,7 +62,6 @@
 			<comp:FolderView Grid.Row="2" Folder="{x:Bind ViewModel.Folder, Mode=OneWay}"
 							 Project="{x:Bind ViewModel.Project, Mode=OneWay}"
 							 TestRequested="FolderView_TestRequested" />
-
 
 			<!--  Main button  -->
 			<Button Grid.Row="9" VerticalAlignment="Bottom" HorizontalAlignment="Right" HorizontalContentAlignment="Center"

@@ -13,6 +13,7 @@
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Pages\ProjectActionsPanel.xaml" />
     <None Remove="Styles\TextBox.xaml" />
     <None Remove="UserControls\FileActionEditors\MoveStringRenameJobEditor.xaml" />
     <None Remove="UserControls\InputControls\ChangeCaseActionEditor.xaml" />
@@ -86,7 +87,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Pages\" />
+    <Page Update="Pages\ProjectActionsPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="UserControls\TextPreviewer.xaml">

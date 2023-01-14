@@ -9,13 +9,33 @@ namespace FileRenamer.Core;
 
 public sealed partial class Project : ObservableValidator
 {
+	#region Jobs
+
 	public JobCollection Jobs { get; }
+
+	private void Jobs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		HasUnsavedChanges = true;
+	}
+
+	private void Jobs_NestedJobChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		HasUnsavedChanges= true;
+	}
+
+	#endregion
+
+	#region Progress
 
 	private double _progress;
 	/// <summary>
 	/// Gets a value between 0 and 100 representing the progress of the ongoing operation.
 	/// </summary>
 	public double Progress { get => _progress; private set => SetProperty(ref _progress, value); }
+
+	#endregion
+
+	#region Scope
 
 	/// <summary>
 	/// Gets or sets a value that indicates whether files, folders, or both should be manipulated.
@@ -24,10 +44,28 @@ public sealed partial class Project : ObservableValidator
 	[ObservableProperty]
 	private JobScopes _scope = JobScopes.Files;
 
+	partial void OnScopeChanged(JobScopes value)
+	{
+		HasUnsavedChanges = true;
+	}
+
+	#endregion
+
+	#region HasUnsavedChanges
+
+	[ObservableProperty]
+	private bool _hasUnsavedChanges = false;
+
+	#endregion
+
+
+	#region Constructors
 
 	public Project()
 	{
 		Jobs = new();
+		Jobs.CollectionChanged += Jobs_CollectionChanged;
+		Jobs.NestedJobChanged += Jobs_NestedJobChanged;
 	}
 
 	public Project(JobCollection jobs)
@@ -35,7 +73,17 @@ public sealed partial class Project : ObservableValidator
 		ArgumentNullException.ThrowIfNull(jobs, nameof(jobs));
 
 		Jobs = jobs;
+		Jobs.CollectionChanged += Jobs_CollectionChanged;
+		Jobs.NestedJobChanged += Jobs_NestedJobChanged;
 	}
+
+	~Project()
+	{
+		Jobs.CollectionChanged -= Jobs_CollectionChanged;
+		Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
+	}
+
+	#endregion
 
 
 	public JobTarget[] ComputeChanges(IList<IItem> items)
@@ -71,31 +119,7 @@ public sealed partial class Project : ObservableValidator
 		}
 
 		// 1. 
-		IList<IItem> items;
-		switch (Scope)
-		{
-			case JobScopes.None:
-				items = new List<IItem>();
-				break;
-
-			case JobScopes.Files:
-				items = await folder.GetFilesAsync();
-				break;
-
-			case JobScopes.Folders:
-				items = await folder.GetSubfoldersAsync();
-				break;
-
-			case JobScopes.FilesAndFolders:
-				List<IItem> list = new();
-				list.AddRange(await folder.GetSubfoldersAsync());
-				list.AddRange(await folder.GetFilesAsync());
-				items = list;
-				break;
-
-			default:
-				throw new Exception(@$"Unknown {nameof(JobScopes)} value ""{Scope}"".");
-		}
+		IList<IItem> items = await GetItems(folder, Scope);
 
 		JobTarget[] targets = ComputeChanges(items);
 
@@ -106,6 +130,30 @@ public sealed partial class Project : ObservableValidator
 
 			await targets[i].StorageItem.RenameAsync(targets[i].NewFileName).ConfigureAwait(true);
 			Progress = i;
+		}
+	}
+
+	private static async Task<IList<IItem>> GetItems(IFolder folder, JobScopes scope)
+	{
+		switch (scope)
+		{
+			case JobScopes.None:
+				return new List<IItem>();
+
+			case JobScopes.Files:
+				return await folder.GetFilesAsync();
+
+			case JobScopes.Folders:
+				return await folder.GetSubfoldersAsync();
+
+			case JobScopes.FilesAndFolders:
+				List<IItem> list = new();
+				list.AddRange(await folder.GetSubfoldersAsync());
+				list.AddRange(await folder.GetFilesAsync());
+				return list;
+
+			default:
+				throw new Exception(@$"Unknown {nameof(JobScopes)} value ""{scope}"".");
 		}
 	}
 
@@ -127,16 +175,24 @@ public sealed partial class Project : ObservableValidator
 		// 3. Writes the last closing element and flushes whatever is in the buffer.
 		output.SetLength(output.Position);
 		await writer.FlushAsync().ConfigureAwait(false);
+
+		// 4.
+		HasUnsavedChanges = false;
 	}
 
 	public static async Task<Project> ReadXmlAsync(TextReader input)
 	{
+		// 0.
+		if (input == null)
+			throw new ArgumentNullException(nameof(input));
+
+		// 1.
 		XmlReaderSettings settings = new() { Async = true, IgnoreWhitespace = true, };
 		using XmlReader reader = XmlReader.Create(input, settings);
 
 		reader.MoveToContent();
 
-		//
+		// 2.
 		JobScopes scope = default;
 
 		if (reader.AttributeCount != 0)
@@ -149,7 +205,7 @@ public sealed partial class Project : ObservableValidator
 
 		reader.ReadStartElement(nameof(Project));
 
-		//
+		// 3.
 		JobCollection? jobs = null;
 
 		while (reader.NodeType != XmlNodeType.EndElement)

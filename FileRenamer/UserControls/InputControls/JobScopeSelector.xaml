@@ -5,10 +5,13 @@
 	xmlns:jobs="using:FileRenamer.Core.Jobs" >
 
 	<FrameworkElement.Resources>
-		<StaticResource x:Key="ToggleButtonForegroundPressed" ResourceKey="TextFillColorPrimaryBrush" />
-		<StaticResource x:Key="ToggleButtonForegroundCheckedPressed" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
+
 		<StaticResource x:Key="ToggleButtonBorderBrushPointerOver" ResourceKey="SurfaceStrokeColorDefaultBrush" />
+		<StaticResource x:Key="ToggleButtonForegroundPressed" ResourceKey="TextFillColorPrimaryBrush" />
 		<StaticResource x:Key="ToggleButtonBorderBrushPressed" ResourceKey="ControlStrokeColorSecondaryBrush" />
+		<StaticResource x:Key="ToggleButtonBackgroundChecked" ResourceKey="ControlSkeumorphicAccentBackgroundBrush" />
+		<StaticResource x:Key="ToggleButtonBackgroundCheckedPointerOver" ResourceKey="ControlSkeumorphicAccentBackgroundBrushLight" />
+		<StaticResource x:Key="ToggleButtonForegroundCheckedPressed" ResourceKey="TextOnAccentFillColorPrimaryBrush" />
 	</FrameworkElement.Resources>
 
 	<StackPanel Orientation="Horizontal" >
