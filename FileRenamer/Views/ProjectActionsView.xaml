@@ -15,6 +15,9 @@
 			<ut:ToolbarGroup Header="Project" >
 				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind NewProjectCommand}" />
 				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind OpenProjectCommand}" />
+				<ut:ToolbarSplitButton Command="{x:Bind SaveProjectCommand}" >
+					<ut:ToolbarButton Command="{x:Bind SaveProjectAsCommand}" />
+				</ut:ToolbarSplitButton>
 			</ut:ToolbarGroup>
 			<ut:ToolbarGroup Header="Management" >
 				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveUpActionCommand}" />

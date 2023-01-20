@@ -21,6 +21,7 @@
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
     <None Remove="UserControls\InputControls\TextRangeEditor.xaml" />
     <None Remove="UserControls\TextPreviewer.xaml" />
+    <None Remove="UserControls\Toolbar\ToolbarSplitButton.xaml" />
     <None Remove="Views\Components\FolderView.xaml" />
   </ItemGroup>
 
@@ -34,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
     <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
     <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
     <Manifest Include="$(ApplicationManifest)" />
@@ -48,6 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileRenamer.Core\FileRenamer.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UserControls\Toolbar\ToolbarSplitButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="UserControls\FileActionEditors\ChangeCaseRenameJobEditor.xaml">
