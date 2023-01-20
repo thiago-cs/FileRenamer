@@ -9,7 +9,23 @@ namespace FileRenamer.Core;
 
 public sealed partial class Project : ObservableValidator
 {
+	#region Jobs
+
 	public JobCollection Jobs { get; }
+
+	private void Jobs_CollectionChanged(object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+	{
+		HasUnsavedChanges = true;
+	}
+
+	private void Jobs_NestedJobChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+	{
+		HasUnsavedChanges= true;
+	}
+
+	#endregion
+
+	#region Progress
 
 	private double _progress;
 	/// <summary>
@@ -17,17 +33,39 @@ public sealed partial class Project : ObservableValidator
 	/// </summary>
 	public double Progress { get => _progress; private set => SetProperty(ref _progress, value); }
 
+	#endregion
+
+	#region Scope
+
 	/// <summary>
 	/// Gets or sets a value that indicates whether files, folders, or both should be manipulated.
 	/// </summary>
-	/// <remarks>The default value is <see cref="JobScope.Files"/>.</remarks>
+	/// <remarks>The default value is <see cref="JobScopes.Files"/>.</remarks>
 	[ObservableProperty]
-	private JobScope _scope = JobScope.Files;
+	private JobScopes _scope = JobScopes.Files;
 
+	partial void OnScopeChanged(JobScopes value)
+	{
+		HasUnsavedChanges = true;
+	}
+
+	#endregion
+
+	#region HasUnsavedChanges
+
+	[ObservableProperty]
+	private bool _hasUnsavedChanges = false;
+
+	#endregion
+
+
+	#region Constructors
 
 	public Project()
 	{
 		Jobs = new();
+		Jobs.CollectionChanged += Jobs_CollectionChanged;
+		Jobs.NestedJobChanged += Jobs_NestedJobChanged;
 	}
 
 	public Project(JobCollection jobs)
@@ -35,7 +73,17 @@ public sealed partial class Project : ObservableValidator
 		ArgumentNullException.ThrowIfNull(jobs, nameof(jobs));
 
 		Jobs = jobs;
+		Jobs.CollectionChanged += Jobs_CollectionChanged;
+		Jobs.NestedJobChanged += Jobs_NestedJobChanged;
 	}
+
+	~Project()
+	{
+		Jobs.CollectionChanged -= Jobs_CollectionChanged;
+		Jobs.NestedJobChanged -= Jobs_NestedJobChanged;
+	}
+
+	#endregion
 
 
 	public JobTarget[] ComputeChanges(IList<IItem> items)
@@ -47,10 +95,11 @@ public sealed partial class Project : ObservableValidator
 		{
 			bool shouldRun = Scope switch
 			{
-				JobScope.Files => items[i] is IFile,
-				JobScope.Folders => items[i] is IFolder,
-				JobScope.FilesAndFolders => true,
-				_ => throw new NotImplementedException(@$"Unknown {nameof(JobScope)} ""{Scope}""."),
+				JobScopes.None => false,
+				JobScopes.Files => items[i] is IFile,
+				JobScopes.Folders => items[i] is IFolder,
+				JobScopes.FilesAndFolders => true,
+				_ => throw new NotImplementedException(@$"Unknown {nameof(JobScopes)} ""{Scope}""."),
 			};
 
 			if (shouldRun)
@@ -70,28 +119,7 @@ public sealed partial class Project : ObservableValidator
 		}
 
 		// 1. 
-		IList<IItem> items;
-		switch (Scope)
-		{
-			case JobScope.Files:
-				items = await folder.GetFilesAsync();
-				break;
-
-			case JobScope.Folders:
-				items = await folder.GetSubfoldersAsync();
-				break;
-
-			case JobScope.FilesAndFolders:
-				List<IItem> list = new();
-				list.AddRange(await folder.GetSubfoldersAsync());
-				list.AddRange(await folder.GetFilesAsync());
-
-				items = list;
-				break;
-
-			default:
-				throw new Exception(@$"Unknown {nameof(JobScope)} value ""{Scope}"".");
-		}
+		IList<IItem> items = await GetItems(folder, Scope);
 
 		JobTarget[] targets = ComputeChanges(items);
 
@@ -102,6 +130,30 @@ public sealed partial class Project : ObservableValidator
 
 			await targets[i].StorageItem.RenameAsync(targets[i].NewFileName).ConfigureAwait(true);
 			Progress = i;
+		}
+	}
+
+	private static async Task<IList<IItem>> GetItems(IFolder folder, JobScopes scope)
+	{
+		switch (scope)
+		{
+			case JobScopes.None:
+				return new List<IItem>();
+
+			case JobScopes.Files:
+				return await folder.GetFilesAsync();
+
+			case JobScopes.Folders:
+				return await folder.GetSubfoldersAsync();
+
+			case JobScopes.FilesAndFolders:
+				List<IItem> list = new();
+				list.AddRange(await folder.GetSubfoldersAsync());
+				list.AddRange(await folder.GetFilesAsync());
+				return list;
+
+			default:
+				throw new Exception(@$"Unknown {nameof(JobScopes)} value ""{scope}"".");
 		}
 	}
 
@@ -121,30 +173,39 @@ public sealed partial class Project : ObservableValidator
 		await writer.WriteEndElementAsync().ConfigureAwait(false);
 
 		// 3. Writes the last closing element and flushes whatever is in the buffer.
+		output.SetLength(output.Position);
 		await writer.FlushAsync().ConfigureAwait(false);
+
+		// 4.
+		HasUnsavedChanges = false;
 	}
 
 	public static async Task<Project> ReadXmlAsync(TextReader input)
 	{
-		XmlReaderSettings settings = new() { Async = true };
+		// 0.
+		if (input == null)
+			throw new ArgumentNullException(nameof(input));
+
+		// 1.
+		XmlReaderSettings settings = new() { Async = true, IgnoreWhitespace = true, };
 		using XmlReader reader = XmlReader.Create(input, settings);
 
 		reader.MoveToContent();
 
-		//
-		JobScope scope = default;
+		// 2.
+		JobScopes scope = default;
 
 		if (reader.AttributeCount != 0)
 		{
 			string? value = reader.GetAttribute(nameof(Scope));
 
 			if (value != null)
-				scope = Enum.Parse<JobScope>(value);
+				scope = Enum.Parse<JobScopes>(value);
 		}
 
 		reader.ReadStartElement(nameof(Project));
 
-		//
+		// 3.
 		JobCollection? jobs = null;
 
 		while (reader.NodeType != XmlNodeType.EndElement)
@@ -157,6 +218,7 @@ public sealed partial class Project : ObservableValidator
 					break;
 
 				default:
+					reader.Skip();
 					break;
 			}
 

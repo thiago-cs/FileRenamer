@@ -5,7 +5,8 @@
 	<SolidColorBrush x:Key="WindowBackgroundBrush" Color="#111317" />
 	<SolidColorBrush x:Key="WindowBorderBrush" Color="#333539" />
 	<SolidColorBrush x:Key="PageBackgroundBrush" Color="#222" />
-	<SolidColorBrush x:Key="ControlBackgroundBrush" Color="#2B2B2B" />
+	<SolidColorBrush x:Key="ControlBackgroundBrush" Color="#181A1E" />
 	<SolidColorBrush x:Key="ControlBorderBrush" Color="#555" />
+	<SolidColorBrush x:Key="ControlBorderBrushLow" Color="#6555" />
 
 </ResourceDictionary>

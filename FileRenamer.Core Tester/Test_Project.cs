@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading.Tasks;
 using NUnit.Framework;
 using FileRenamer.Core;
 using FileRenamer.Core.Extensions;
@@ -15,8 +16,10 @@ namespace FileRenamer.Core_Tester;
 public static class Test_Project
 {
 	[Test]
-	public static async void TestRun1()
+	public static async Task TestRun1()
 	{
+		// 1. Tests serializing/deserializing a project.
+		// 1.1. Creates a test subject.
 		JobCollection jobCollection = new()
 		{
 			new InsertAction(new BeginningIndex(), new StringValueSource("My name is ")),
@@ -31,15 +34,49 @@ public static class Test_Project
 		};
 
 		Project project = new(jobCollection);
+		byte[] bytes;
 
-		using MemoryStream writeStream = new();
-		await project.WriteXmlAsync(writeStream);
+		// 1.2. Serializes and then deserializes the project.
+		{
+			using MemoryStream memoryStream = new();
+			await project.WriteXmlAsync(memoryStream);
 
-		writeStream.Position = 0;
-		using StreamReader readStream = new(writeStream, System.Text.Encoding.UTF8);
-		Project project2 = await Project.ReadXmlAsync(readStream);
+			bytes = memoryStream.ToArray();
 
+			memoryStream.Position = 0;
+			using StreamReader readStream = new(memoryStream, System.Text.Encoding.UTF8);
+			Project copyProject = await Project.ReadXmlAsync(readStream);
+			memoryStream.SetLength(bytes.Length);
+			AssertAreEqual(project, copyProject);
+		}
 
-		Assert.AreEqual(project.Jobs.Count, project2.Jobs.Count);
+		// 2. Replaces the first action with one that yields a smaller XML when serialized.
+		// 2.1.
+		jobCollection[0] = new InsertAction(new BeginningIndex(), new StringValueSource("I am "));
+
+		// 2.2. Serializes and then deserializes the project.
+		try
+		{
+			using MemoryStream memoryStream = new(bytes);
+			await project.WriteXmlAsync(memoryStream);
+
+			bytes = memoryStream.ToArray();
+
+			memoryStream.Position = 0;
+			using StreamReader readStream = new(memoryStream, System.Text.Encoding.UTF8);
+			Project copyProject = await Project.ReadXmlAsync(readStream);
+
+			AssertAreEqual(project, copyProject);
+		}
+		catch (System.Xml.XmlException)
+		{
+			System.Console.WriteLine(System.Text.Encoding.UTF8.GetChars(bytes));
+			throw;
+		}
+	}
+
+	private static void AssertAreEqual(Project p1, Project p2)
+	{
+		Assert.AreEqual(p1.Jobs.Count, p2.Jobs.Count);
 	}
 }

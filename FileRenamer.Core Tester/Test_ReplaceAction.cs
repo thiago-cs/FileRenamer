@@ -55,8 +55,8 @@ public sealed class Test_ReplaceAction
 
 
 	[Test]
-	[TestCase(0, 5, "fox", "ninja cat", false, @"replace ""fox"" within file name with ""ninja cat""")]
-	[TestCase(2, 4, regex1, "new text", true, @"replace the expression "",[^\.]*(?=,)"" within characters from before ""sunset"" to after the expression ""(Hi|Hello) kitty"" with ""new text""")]
+	[TestCase(0, 5, "fox", "ninja cat", false, @"replace ""fox"" with ""ninja cat"" within file name")]
+	[TestCase(2, 4, regex1, "new text", true, @"replace the expression "",[^\.]*(?=,)"" with ""new text"" within characters from before ""sunset"" to after the expression ""(Hi|Hello) kitty""")]
 	public void TestDescriptionWithBounds(int i1, int i2, string oldString, string newString, bool useRegex, string expected)
 	{
 		ReplaceAction replaceAction = new(finders[i1], finders[i2], oldString, newString, false, useRegex);

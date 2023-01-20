@@ -13,13 +13,16 @@
     <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Pages\ProjectActionsPanel.xaml" />
+    <None Remove="Styles\TextBox.xaml" />
     <None Remove="UserControls\FileActionEditors\MoveStringRenameJobEditor.xaml" />
     <None Remove="UserControls\InputControls\ChangeCaseActionEditor.xaml" />
     <None Remove="UserControls\InputControls\ReplaceActionEditor.xaml" />
     <None Remove="UserControls\InputControls\SearchTextEditor.xaml" />
     <None Remove="UserControls\InputControls\TextRangeEditor.xaml" />
+    <None Remove="UserControls\TextPreviewer.xaml" />
+    <None Remove="UserControls\Toolbar\ToolbarSplitButton.xaml" />
     <None Remove="Views\Components\FolderView.xaml" />
-    <None Remove="Views\Components\JobScopeSelector.xaml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,9 +35,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.0.0" />
-    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.1.5" />
-    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.1" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.2.221209.1" />
+    <PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22621.755" />
     <Manifest Include="$(ApplicationManifest)" />
   </ItemGroup>
 
@@ -46,6 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileRenamer.Core\FileRenamer.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="UserControls\Toolbar\ToolbarSplitButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Page Update="UserControls\FileActionEditors\ChangeCaseRenameJobEditor.xaml">
@@ -85,12 +93,17 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\FileActionEditors\" />
-    <Folder Include="Views\Pages\" />
-    <Folder Include="Views\Toolbars\" />
+    <Page Update="Pages\ProjectActionsPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="Views\Components\JobScopeSelector.xaml">
+    <Page Update="UserControls\TextPreviewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Styles\TextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>

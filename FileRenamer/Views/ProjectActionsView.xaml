@@ -1,0 +1,61 @@
+<UserControl
+	x:Class="FileRenamer.Views.ProjectActionsView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:jobs="using:FileRenamer.Core.Jobs"
+	xmlns:ut="using:FileRenamer.UserControls.Toolbar" >
+
+	<Grid MinWidth="500" MaxWidth="800" RowSpacing="{StaticResource MediumSpacing}" >
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<ut:Toolbar Grid.Row="0" >
+			<ut:ToolbarGroup Header="Project" >
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind NewProjectCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind OpenProjectCommand}" />
+				<ut:ToolbarSplitButton Command="{x:Bind SaveProjectCommand}" >
+					<ut:ToolbarButton Command="{x:Bind SaveProjectAsCommand}" />
+				</ut:ToolbarSplitButton>
+			</ut:ToolbarGroup>
+			<ut:ToolbarGroup Header="Management" >
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveUpActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind MoveDownActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind EditActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind DuplicateActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind RemoveAllActionsCommand}" />
+			</ut:ToolbarGroup>
+			<ut:ToolbarGroup Header="Actions" >
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddRemoveActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddInsertCounterActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddReplaceActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddConvertCaseActionCommand}" />
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddMoveStringActionCommand}" />
+			</ut:ToolbarGroup>
+			<ut:ToolbarGroup Header="Conditionals" >
+				<ut:ToolbarButton ItemSize="Medium" Command="{x:Bind AddConditionalCommand}" />
+			</ut:ToolbarGroup>
+		</ut:Toolbar>
+
+		<TreeView Grid.Row="1" CornerRadius="4" Background="{StaticResource ControlBackgroundBrush}" CanReorderItems="True" SelectionMode="Single"
+				  ItemsSource="{x:Bind Project.Jobs, Mode=OneWay}" SelectedItem="{x:Bind SelectedAction, Mode=TwoWay}" >
+			<TreeView.ItemTemplate>
+				<DataTemplate x:DataType="jobs:JobItem" >
+					<TreeViewItem Height="36" Margin="0 -2" ItemsSource="{Binding Jobs, Mode=OneTime}" IsExpanded="True" >
+						<RelativePanel>
+							<CheckBox Name="PART_CheckBox" IsChecked="{x:Bind IsEnabled, Mode=TwoWay}" MinWidth="0" />
+
+							<TextBlock RelativePanel.RightOf="PART_CheckBox" RelativePanel.AlignVerticalCenterWithPanel="True"
+									   Text="{x:Bind Description}" FontSize="12" />
+						</RelativePanel>
+					</TreeViewItem>
+				</DataTemplate>
+			</TreeView.ItemTemplate>
+		</TreeView>
+
+	</Grid>
+
+</UserControl>

@@ -44,6 +44,13 @@ public sealed partial class MainWindow
 	private void FolderView_TestRequested(object sender, EventArgs e)
 	{
 		var itemNode = sender as Core.Jobs.JobTarget;
-		ViewModel.ImmidiatelyTestInput(itemNode.StorageItem.Name);
+		MyTextPreviewer.ProcessName(itemNode.StorageItem.Name);
+	}
+
+	// Look what you made me do!
+	private UserControls.TextPreviewer MyTextPreviewer;
+	private void MyTextPreviewer_Loaded(object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
+	{
+		MyTextPreviewer = sender as UserControls.TextPreviewer;
 	}
 }

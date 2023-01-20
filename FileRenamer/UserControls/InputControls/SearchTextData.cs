@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FileRenamer.Helpers;
 
 
 namespace FileRenamer.UserControls.InputControls;
@@ -11,7 +11,7 @@ public sealed partial class SearchTextData : ObservableValidator
 {
 	private const string ERROR_MESSAGE_TEXT_EMPTY = "Enter the pattern to search for.";
 	private const string ERROR_MESSAGE_INVALID_REGEX = "Enter a valid pattern.";
-	private readonly Helpers.DelayedAction delayedValidation;
+	private readonly Func<Task> debouncedValidateTextAsync;
 
 
 	#region TextType
@@ -23,7 +23,7 @@ public sealed partial class SearchTextData : ObservableValidator
 
 	partial void OnTextTypeChanged(TextType value)
 	{
-		_ = InvokeTextValidationAsync();
+		_ = debouncedValidateTextAsync();
 	}
 
 	#endregion
@@ -37,7 +37,7 @@ public sealed partial class SearchTextData : ObservableValidator
 
 	partial void OnTextChanged(string value)
 	{
-		_ = InvokeTextValidationAsync();
+		_ = debouncedValidateTextAsync();
 	}
 
 	[ObservableProperty]
@@ -52,19 +52,15 @@ public sealed partial class SearchTextData : ObservableValidator
 
 	public SearchTextData()
 	{
-		delayedValidation = new(() => ValidateProperty(Text, nameof(Text)));
+		Action action = () => ValidateProperty(Text, nameof(Text));
+		debouncedValidateTextAsync = action.DebounceAsync(200);
 		ValidateAllProperties();
 	}
 
 
 	#region Validation
 
-	private async Task InvokeTextValidationAsync()
-	{
-		await delayedValidation.InvokeAsync(TextType == TextType.Text ? 200 : 1000);
-	}
-
-	public static ValidationResult ValidateText(string text, ValidationContext context)
+	public static ValidationResult ValidateText(string _text, ValidationContext context)
 	{
 		// 1. 
 		SearchTextData instance = context.ObjectInstance as SearchTextData;

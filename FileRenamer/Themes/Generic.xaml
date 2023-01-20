@@ -1,7 +1,22 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:sys="using:System" >
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
+
+	<LinearGradientBrush x:Key="ControlSkeumorphicAccentBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+		<LinearGradientBrush.GradientStops>
+			<GradientStop Offset="0.0" Color="{StaticResource SystemAccentColor}" />
+			<GradientStop Offset="0.2" Color="{StaticResource SystemAccentColorLight1}" />
+			<GradientStop Offset="1.0" Color="{StaticResource SystemAccentColorDark1}" />
+		</LinearGradientBrush.GradientStops>
+	</LinearGradientBrush>
+
+	<LinearGradientBrush x:Key="ControlSkeumorphicAccentBackgroundBrushLight" StartPoint="0,0" EndPoint="0,1">
+		<LinearGradientBrush.GradientStops>
+			<GradientStop Offset="0.0" Color="{StaticResource SystemAccentColorLight1}" />
+			<GradientStop Offset="0.2" Color="{StaticResource SystemAccentColorLight2}" />
+			<GradientStop Offset="1.0" Color="{StaticResource SystemAccentColor}" />
+		</LinearGradientBrush.GradientStops>
+	</LinearGradientBrush>
 
 	<!--#region ComboBox -->
 
@@ -19,6 +34,8 @@
 	<!--#endregion-->
 
 	<!--#region Toolbar resources -->
+
+	<x:Double x:Key="MediumToolbarIconSize" >14</x:Double>
 
 	<Style x:Key="ToolbarBorderStyle" TargetType="Border" >
 		<Setter Property="Background" Value="{StaticResource ControlBackgroundBrush}" />
@@ -43,49 +60,6 @@
 		<Setter Property="Stretch" Value="Fill" />
 		<Setter Property="Stroke" Value="{StaticResource ControlBorderBrush}" />
 	</Style>
-
-	<Style x:Key="ToolbarItemBaseStyle" TargetType="Control" >
-		<Setter Property="HorizontalAlignment" Value="Stretch" />
-		<Setter Property="Margin" Value="4 2" />
-	</Style>
-
-	<!--#endregion-->
-
-	<!--#region Toolbar button resources -->
-
-	<!--#region Medium button resources -->
-
-	<x:Double x:Key="MediumToolbarIconSize" >14</x:Double>
-
-	<Style x:Key="MediumToolbarButtonStyle" TargetType="ContentControl" BasedOn="{StaticResource ToolbarItemBaseStyle}" >
-		<Setter Property="Content" Value="{Binding}" />
-		<Setter Property="ContentTemplate" Value="{StaticResource MediumToolbarButtonDataTemplate}" />
-	</Style>
-
-	<DataTemplate x:Key="MediumToolbarButtonDataTemplate" >
-		<!-- x:DataType="UICommand" -->
-		<Button Style="{StaticResource ButtonStyle1}" Command="{Binding Command}" AccessKey="{Binding AccessKey}" ToolTipService.ToolTip="{Binding ToolTip}" >
-			<StackPanel Orientation="Horizontal" >
-				<Viewbox Margin="{StaticResource XSmallRightMargin}" Width="{StaticResource MediumToolbarIconSize}" Height="{StaticResource MediumToolbarIconSize}" >
-					<IconSourceElement IconSource="{Binding IconSource}" />
-				</Viewbox>
-				<TextBlock VerticalAlignment="Center" Text="{Binding Label}" />
-			</StackPanel>
-		</Button>
-	</DataTemplate>
-
-	<Style x:Key="ButtonStyle1" TargetType="Button" >
-		<Setter Property="MinWidth" Value="40" />
-		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="BorderBrush" Value="Transparent" />
-		<Setter Property="CornerRadius" Value="2" />
-		<Setter Property="Padding" Value="4 4 8 4" />
-		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-		<Setter Property="FontSize" Value="11" />
-		<Setter Property="Command" Value="{Binding}" />
-	</Style>
-
-	<!--#endregion-->
 
 	<!--#endregion-->
 

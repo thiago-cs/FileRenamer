@@ -7,6 +7,8 @@
 
 	<FrameworkElement.Resources>
 
+		<!--#region File/Folder resources -->
+
 		<Symbol x:Key="FolderIcon" >Folder</Symbol>
 		<Symbol x:Key="FileIcon"   >Page</Symbol>
 
@@ -48,8 +50,48 @@
 			</ListViewItem>
 		</DataTemplate>
 
+		<!--#endregion-->
+
+		<!--#region Header buttons -->
+
+		<x:Double x:Key="HeaderButtonSize">10</x:Double>
+
+		<Style x:Key="HeaderButtonStyle" TargetType="Button" >
+			<Setter Property="Background" Value="Transparent" />
+			<Setter Property="BorderThickness" Value="0" />
+			<Setter Property="Padding" Value="11" />
+		</Style>
+
+		<!--#endregion-->
+
 	</FrameworkElement.Resources>
 
-	<ListView Name="ItemsControl" ItemTemplate="{StaticResource ItemDataTemplate}" CanDrag="False" CanDragItems="False" AllowDrop="False" />
+	<Expander Name="PART_Expander" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch"  VerticalContentAlignment="Stretch" 
+			  Padding="{StaticResource SmallTopRightBottomMargin}"
+			  IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}" >
+		<Expander.Header>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" MinWidth="{StaticResource SmallSpacing}" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Grid.Column="0" VerticalAlignment="Center" Text="Live preview" />
+
+				<StackPanel Grid.Column="2" Orientation="Horizontal" Background="Transparent" Spacing="{StaticResource SmallSpacing}"
+							PointerPressed="StackPanel_PointerPressed" >
+					<Button Style="{StaticResource HeaderButtonStyle}" Command="{x:Bind RefreshItemsInFolderCommand}" >
+						<Viewbox Width="{StaticResource HeaderButtonSize}" >
+							<SymbolIcon Symbol="Refresh" />
+						</Viewbox>
+					</Button>
+				</StackPanel>
+			</Grid>
+		</Expander.Header>
+
+		<ListView Name="ItemsControl" ItemTemplate="{StaticResource ItemDataTemplate}" CanDrag="False" CanDragItems="False" AllowDrop="False" />
+
+	</Expander>
 
 </UserControl>

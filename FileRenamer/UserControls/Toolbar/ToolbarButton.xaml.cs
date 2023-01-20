@@ -1,12 +1,11 @@
-﻿using Microsoft.UI.Xaml.Controls;
-using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
 using FileRenamer.Models;
 
 
 namespace FileRenamer.UserControls.Toolbar;
 
 [INotifyPropertyChanged]
-public sealed partial class ToolbarButton : UserControl
+public sealed partial class ToolbarButton
 {
 	#region Properties
 
@@ -14,13 +13,7 @@ public sealed partial class ToolbarButton : UserControl
 	private ToolbarItemSize _itemSize;
 
 	[ObservableProperty]
-	private UICommandBase _command;
-
-	partial void OnCommandChanged(UICommandBase value)
-	{
-		if (value.KeyboardAccelerator != null)
-			KeyboardAccelerators.Add(value.KeyboardAccelerator);
-	}
+	private ExtendedUICommand _command;
 
 	#endregion
 
