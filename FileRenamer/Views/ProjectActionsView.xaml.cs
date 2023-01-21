@@ -127,7 +127,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "N",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Add)
 		};
-		//NewProjectCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.N });
+		NewProjectCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.N });
 		NewProjectCommand.ExecuteRequested += NewProjectCommand_ExecuteRequested;
 
 		OpenProjectCommand = new()
@@ -137,7 +137,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "O",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.OpenFile),
 		};
-		//OpenProjectCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.O });
+		OpenProjectCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.O });
 		OpenProjectCommand.ExecuteRequested += OpenProjectCommand_ExecuteRequested;
 
 		SaveProjectCommand = new()
@@ -147,7 +147,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "S",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Save),
 		};
-		//SaveProjectCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.S });
+		SaveProjectCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.S });
 		SaveProjectCommand.ExecuteRequested += SaveProjectCommand_ExecuteRequested;
 		SaveProjectCommand.CanExecuteRequested += SaveProjectCommand_CanExecuteRequested;
 
@@ -158,7 +158,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "B",
 			IconSource = ExtendedUICommand.CreateIconSource('\uE792'),
 		};
-		//SaveProjectAsCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, Key = VirtualKey.S });
+		SaveProjectAsCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, Key = VirtualKey.S });
 		SaveProjectAsCommand.ExecuteRequested += SaveProjectAsCommand_ExecuteRequested;
 
 
@@ -169,7 +169,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "U",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Up),
 		};
-		//MoveUpActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Menu, Key = VirtualKey.Up });
+		MoveUpActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Menu, Key = VirtualKey.Up });
 		MoveUpActionCommand.ExecuteRequested += MoveSelectedActionUpCommand_ExecuteRequested;
 		MoveUpActionCommand.CanExecuteRequested += MoveSelectedActionUpCommand_CanExecuteRequested;
 
@@ -180,7 +180,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "D",
 			IconSource = ExtendedUICommand.CreateIconSource('\uE74B'),
 		};
-		//MoveDownActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Menu, Key = VirtualKey.Down });
+		MoveDownActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Menu, Key = VirtualKey.Down });
 		MoveDownActionCommand.ExecuteRequested += MoveSelectedActionDownCommand_ExecuteRequested;
 		MoveDownActionCommand.CanExecuteRequested += MoveSelectedActionDownCommand_CanExecuteRequested;
 
@@ -201,7 +201,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "V",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Copy),
 		};
-		//DuplicateActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.D });
+		DuplicateActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.D });
 		DuplicateActionCommand.ExecuteRequested += DuplicateSelectedActionCommand_ExecuteRequested;
 		DuplicateActionCommand.CanExecuteRequested += DuplicateSelectedActionCommand_CanExecuteRequested;
 
@@ -221,7 +221,7 @@ public sealed partial class ProjectActionsView : UserControl
 			Label = "Clear",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Clear),
 		};
-		//RemoveAllActionsCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.Delete });
+		RemoveAllActionsCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.Delete });
 		RemoveAllActionsCommand.ExecuteRequested += RemoveAllActionsCommand_ExecuteRequested;
 		RemoveAllActionsCommand.CanExecuteRequested += RemoveAllActionsCommand_CanExecuteRequested;
 
@@ -233,7 +233,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "I",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Add),
 		};
-		//AddInsertActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.I });
+		AddInsertActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.I });
 		AddInsertActionCommand.ExecuteRequested += AddInsertActionCommand_ExecuteRequested;
 
 		AddInsertCounterActionCommand = new()
@@ -243,7 +243,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "1",
 			IconSource = ExtendedUICommand.CreateIconSource('\uE8EF'),
 		};
-		//AddInsertCounterActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, Key = VirtualKey.I });
+		AddInsertCounterActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, Key = VirtualKey.I });
 		AddInsertCounterActionCommand.ExecuteRequested += AddInsertCounterActionCommand_ExecuteRequested;
 
 		AddRemoveActionCommand = new()
@@ -253,7 +253,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "R",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Remove),
 		};
-		//AddRemoveActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.R });
+		AddRemoveActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.R });
 		AddRemoveActionCommand.ExecuteRequested += AddRemoveActionCommand_ExecuteRequested;
 
 		AddReplaceActionCommand = new()
@@ -263,7 +263,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "H",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Sync),
 		};
-		//AddReplaceActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.H });
+		AddReplaceActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control, Key = VirtualKey.H });
 		AddReplaceActionCommand.ExecuteRequested += AddReplaceActionCommand_ExecuteRequested;
 
 		AddConvertCaseActionCommand = new()
@@ -273,7 +273,7 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "C",
 			IconSource = ExtendedUICommand.CreateIconSource(Symbol.Font),
 		};
-		//AddConvertCaseActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, Key = VirtualKey.C });
+		AddConvertCaseActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, Key = VirtualKey.C });
 		AddConvertCaseActionCommand.ExecuteRequested += AddConvertCaseActionCommand_ExecuteRequested;
 
 		AddMoveStringActionCommand = new()
@@ -283,14 +283,14 @@ public sealed partial class ProjectActionsView : UserControl
 			AccessKey = "M",
 			IconSource = ExtendedUICommand.CreateIconSource('\uE8AB'),
 		};
-		//AddMoveStringActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, Key = VirtualKey.M });
+		AddMoveStringActionCommand.KeyboardAccelerators.Add(new() { Modifiers = VirtualKeyModifiers.Control | VirtualKeyModifiers.Shift, Key = VirtualKey.M });
 		AddMoveStringActionCommand.ExecuteRequested += AddMoveStringActionCommand_ExecuteRequested;
 
 
 		AddConditionalCommand = new()
 		{
 			Description = "Add a name pattern check",
-			Label = "name pattern",
+			Label = "Name pattern",
 			IconSource = ExtendedUICommand.CreateIconSource('\uEA38'),
 		};
 		AddConditionalCommand.ExecuteRequested += AddConditionalCommand_ExecuteRequested;

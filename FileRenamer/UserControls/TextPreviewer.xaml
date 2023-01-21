@@ -4,9 +4,19 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" >
 
 	<StackPanel Spacing="{StaticResource XXSmallSpacing}" >
+
 		<TextBox Text="{x:Bind Input, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent"
 				 PlaceholderText="  Input a test text here" PlaceholderForeground="Gray" IsSpellCheckEnabled="False" IsTextPredictionEnabled="False" />
 
-		<TextBox Text="{x:Bind Output, Mode=OneWay}" Background="Transparent" IsReadOnly="True" IsSpellCheckEnabled="False" />
+		<Grid PointerEntered="OutputPanel_PointerEntered" PointerExited="OutputPanel_PointerExited" >
+			<TextBox Text="{x:Bind Output, Mode=OneWay}" IsReadOnly="True" IsSpellCheckEnabled="False" Background="Transparent" BorderBrush="#4888" />
+
+			<Button Name="CopyButton" HorizontalAlignment="Right" VerticalAlignment="Center"
+					Width="28" Height="24" Margin="4" Padding="6 4"
+					Background="Transparent" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" BorderBrush="Transparent"
+					DataContext="{x:Bind CopyOutputCommand}" Command="{x:Bind CopyOutputCommand}" Template="{StaticResource ButtonWithCommandTemplate}"
+					Visibility="{x:Bind CopyOutputButtonVisibility, Mode=OneWay}" />
+		</Grid>
+
 	</StackPanel>
 </UserControl>
