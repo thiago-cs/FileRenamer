@@ -55,10 +55,10 @@ public sealed class Test_RemoveAction
 	}
 
 	[Test]
-	[TestCase(loremIpsum, 00, int.MaxValue, "remove 2147483647 characters after the 1st character", "")]
+	[TestCase(loremIpsum, 00, int.MaxValue, "remove 2147483647 characters before the 1st character", "")]
 	[TestCase(loremIpsum, 11, 107, "remove 107 characters after the 11th character", "Lorem ipsum")]
 	[TestCase(loremIpsum, 26, int.MaxValue, "remove 2147483647 characters after the 26th character", "Lorem ipsum dolor sit amet")]
-	[TestCase(neverForget, 0, 17, "remove 17 characters after the 1st character", "never forget kindnesses")]
+	[TestCase(neverForget, 0, 17, "remove 17 characters before the 1st character", "never forget kindnesses")]
 	public void Test8(string input, int startIndex, int count, string description, string expected)
 	{
 		RemoveAction action = new(new FixedIndex(startIndex), count);

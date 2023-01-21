@@ -101,10 +101,9 @@ public sealed class Test_FindIndex
 	[TestCase(4, @"after the expression ""(Hi|Hello) kitty""")]
 	[TestCase(5, "before file's extension")]
 	[TestCase(6, "at the end")]
-	// TODO: fix the action descriptions and re-run the tests below.
-	//[TestCase(7, "before the 2nd to last character")]
-	//[TestCase(8, "before the last character")]
-	//[TestCase(9, "before the 1st character")]
+	[TestCase(7, "before the last character")]
+	[TestCase(8, "after the last character")]
+	[TestCase(9, "before the 1st character")]
 	[TestCase(10, "after the 1st character")]
 	public void DescriptionTest(int index, string expected)
 	{

@@ -14,14 +14,16 @@ public sealed class FixedIndex : IIndex
 	{
 		get
 		{
-			const string startPrepositon = "after the";
+			const string textBefore = "before the";
+			const string textAfter = "after the";
 
 			return Index switch
 			{
-				< -1 => new(startPrepositon, $"{(-Index).Ordinalize(GrammaticalGender.Neuter)} to last character"),
-				-1 => new(startPrepositon, "last character"),
-				0 => new(startPrepositon, "1st character"),
-				_ => new("after the", $"{Index.Ordinalize(GrammaticalGender.Neuter)} character")
+				< -2 => new(textBefore, $"{(-Index - 1).Ordinalize(GrammaticalGender.Neuter)} to last character"),
+				-2 => new(textBefore, "last character"),
+				-1 => new(textAfter, "last character"),
+				0 => new(textBefore, "1st character"),
+				_ => new(textAfter, $"{Index.Ordinalize(GrammaticalGender.Neuter)} character")
 			};
 		}
 	}

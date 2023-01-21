@@ -39,35 +39,36 @@ internal static class Resources
 		"Area.effect",
 	};
 
-
 	// language=regex
 	public const string regex1 = @",[^\.]*(?=,)";
 
-
 	public static readonly IIndex[] finders =
 	{
+		// 0
 		new BeginningIndex(),
 		new FixedIndex(3),
 		new SubstringIndex("sunset", true, false, false),
 		new SubstringIndex("dark", false, false, false),
 		new SubstringIndex("(Hi|Hello) kitty", false, false, true),
+		// 5
 		new FileExtensionIndex(),
 		new EndIndex(),
 		new FixedIndex(-2),
 		new FixedIndex(-1),
 		new FixedIndex(0),
+		// 10
 		new FixedIndex(1),
 	};
 
-
-
 	public static readonly RenameFileJob[] actions =
 	{
+		// 0
 		new InsertAction(new BeginningIndex(), (StringValueSource)"Once upon a time,"),
 		new InsertAction(new EndIndex(), (StringValueSource)"The End."),
 		new RemoveAction(new BeginningIndex(), new EndIndex()),
 		new RemoveAction(new FixedIndex(7), 2),
 		new InsertAction(new SubstringIndex("episode", false, false, false), new CounterValueSource() { InitialValue = 1, Formatter = new PaddedNumberFormatter() { MinWidth = 2 } }),
+		// 5
 		new ReplaceAction("out with the old", "in with the new", false, true),
 		new ReplaceAction(new FixedIndex(3), new FileExtensionIndex(), "out with the old", "in with the new", false, true),
 		new ChangeRangeCaseAction(new BeginningIndex(), new FileExtensionIndex(), Core.Extensions.TextCasing.TitleCaseIgnoreCommonWords),
