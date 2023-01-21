@@ -15,8 +15,6 @@ internal class File : IFile
 {
 	private readonly Windows.Storage.StorageFile file;
 
-	// todo: remove all references to inheritdoc!
-	/// <inheritdoc/>
 	public string Path => file.Path;
 
 
@@ -35,7 +33,6 @@ internal class File : IFile
 	#endregion
 
 
-	/// <inheritdoc/>
 	public async Task<bool> RenameAsync(string newName)
 	{
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
@@ -53,7 +50,6 @@ internal class File : IFile
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
 	}
 
-	/// <inheritdoc/>
 	public async Task<bool> MoveAsync(IFolder newFolder)
 	{
 		try

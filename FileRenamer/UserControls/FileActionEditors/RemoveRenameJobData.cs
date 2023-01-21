@@ -92,7 +92,7 @@ public sealed partial class RemoveRenameJobData : ObservableValidator, IJobEdito
 	[ObservableProperty]
 	[NotifyDataErrorInfo]
 	[CustomValidation(typeof(RemoveRenameJobData), nameof(ValidateCount))]
-	private int _count = 1;
+	private int _count;
 
 	[ObservableProperty]
 	private string _countErrorMessage;
@@ -104,17 +104,19 @@ public sealed partial class RemoveRenameJobData : ObservableValidator, IJobEdito
 
 	public RemoveRenameJobData()
 	{
+		RangeType = TextRangeType.Count;
 		StartIndexData = new();
 		EndIndexData = new();
-		RangeType = TextRangeType.Count;
+		Count = 1;
 		Initialize();
 	}
 
 	public RemoveRenameJobData(RemoveAction action)
 	{
+		RangeType = action.EndIndex == null ? TextRangeType.Count : TextRangeType.Range;
 		StartIndexData = new(action.StartIndex);
 		EndIndexData = new(action.EndIndex);
-		RangeType = action.EndIndex == null ? TextRangeType.Count : TextRangeType.Range;
+		Count = action.Count;
 		Initialize();
 	}
 

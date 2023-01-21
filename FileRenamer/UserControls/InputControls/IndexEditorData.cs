@@ -118,7 +118,7 @@ public sealed partial class IndexEditorData : ObservableValidator
 
 	#region Validation
 
-	public static ValidationResult ValidateSearchTextData(SearchTextData searchTextData, ValidationContext context)
+	public static ValidationResult ValidateSearchTextData(SearchTextData _searchTextData, ValidationContext context)
 	{
 		IndexEditorData instance = context.ObjectInstance as IndexEditorData;
 
